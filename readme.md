@@ -1,83 +1,84 @@
-Universal Converter & Calculator (المحول الشامل)
+# **Universal Converter & Calculator (المحول الشامل)**
 
-A robust, single-file web application designed for comprehensive date management and unit conversions. This tool is built entirely with vanilla HTML, CSS, and JavaScript, ensuring zero dependencies and high performance.
+A robust, single-file web application designed for comprehensive date management and unit conversions. Built entirely with vanilla **HTML, CSS, and JavaScript**, ensuring zero dependencies and high performance.
 
-🔗 Live Demo
+---
 
-Try the application online here: uniconvert.pages.dev
+## 🔗 **Live Demo**
 
-🌟 Key Features
+You can try the application online here:
+**[https://uniconvert.pages.dev](https://uniconvert.pages.dev)**
 
-1. Date Converter (تحويل التاريخ)
+---
 
-Gregorian to Hijri: Convert standard Gregorian dates to the Islamic Hijri calendar.
+## 🌟 **Key Features**
 
-Hijri to Gregorian: Convert Hijri dates (Day/Month/Year) back to Gregorian format using the Kuwaiti algorithm variant.
+### **1. Date Converter (تحويل التاريخ)**
 
-Localized Output: Displays dates in the appropriate language format (English or Arabic).
+* **Gregorian → Hijri:** Convert standard Gregorian dates to the Islamic Hijri calendar.
+* **Hijri → Gregorian:** Convert Hijri dates (Day/Month/Year) back to Gregorian format using a Kuwaiti-algorithm variant.
+* **Localized Output:** Displays dates in Arabic or English depending on selected language.
 
-2. Age Calculator (حساب العمر)
+---
 
-Dual Age Calculation: Calculates your exact age in Years, Months, and Days for both Gregorian and Hijri calendars simultaneously.
+### **2. Age Calculator (حساب العمر)**
 
-Date Difference: Computes the exact time difference between any two dates.
+* **Dual Age Calculation:** Compute exact age in *Years, Months, Days* for both Gregorian and Hijri simultaneously.
+* **Date Difference:** Calculate the precise difference between any two dates.
+* **Total Days:** Display the total number of days between the start and end dates.
 
-Total Days: Displays the total number of days elapsed between the start and end dates.
+---
 
-3. Unit Converter (تحويل الوحدات)
+### **3. Unit Converter (تحويل الوحدات)**
 
-Supports bidirectional conversion for the following categories:
+Supports bidirectional conversion in the following categories:
 
-Length: Millimeter, Centimeter, Meter, Kilometer, Inch, Foot, Yard, Mile.
+* **Length:** Millimeter, Centimeter, Meter, Kilometer, Inch, Foot, Yard, Mile.
+* **Weight:** Milligram, Gram, Kilogram, Ounce, Pound.
+* **Volume:** Milliliter, Liter, Gallon (US).
+* **Temperature:** Celsius, Fahrenheit, Kelvin.
 
-Weight: Milligram, Gram, Kilogram, Ounce, Pound.
+---
 
-Volume: Milliliter, Liter, Gallon (US).
+### **4. User Experience**
 
-Temperature: Celsius, Fahrenheit, Kelvin.
+* **Bilingual Interface:** Fully supports English and Arabic.
+* **RTL Support:** Automatically adjusts layout direction when Arabic is selected.
+* **Responsive Design:** Optimized for mobile, tablet, and desktop.
+* **Single-File Architecture:** Entire application in one HTML file—no installations, no external libraries.
 
-4. User Experience
+---
 
-Bilingual Interface: Complete support for English and Arabic.
+## 🚀 **How to Run**
 
-RTL Support: Automatically switches layout direction (Right-to-Left) when Arabic is selected.
+1. **Download:** Save the `universal_converter.html` file.
+2. **Open:** Double-click the file to open it in any modern browser (Chrome, Firefox, Safari, Edge).
+3. **Use:** No internet connection required for core functionality.
 
-Responsive Design: Fully adapted for mobile, tablet, and desktop screens.
+---
 
-Single-File Architecture: The entire app lives in one html file—no installation or external servers required.
+## 🛠️ **Technical Details**
 
-🚀 How to Run
+* **HTML5:** Semantic structure.
+* **CSS3:** Custom properties, Flexbox, Grid, and RTL logical properties.
+* **JavaScript (ES6+):**
 
-Download: Save the universal_converter.html file to your computer.
+  * `Intl.DateTimeFormat` for native localization
+  * Custom Hijri/Gregorian algorithms
+  * DOM manipulation for dynamic UI updates
 
-Open: Double-click the file to open it in any modern web browser (Chrome, Firefox, Safari, Edge).
+---
 
-Use: No internet connection is required for core functionality.
+## 📂 **Project Structure**
 
-🛠️ Technical Details
+Designed with a “Single File Component” philosophy:
 
-HTML5: Semantic structure.
+* **Styles:** Embedded in the `<head>`
+* **Markup:** Clean semantic HTML in the `<body>`
+* **Logic:** Scripts placed at the bottom of the `<body>`
 
-CSS3: Custom properties (variables), Flexbox, Grid, and logical properties for RTL support.
+---
 
-JavaScript (ES6+):
+## 📝 **License**
 
-Intl.DateTimeFormat for native localization.
-
-Custom algorithms for Hijri/Gregorian calculation.
-
-DOM manipulation for dynamic updates.
-
-📂 Project Structure
-
-This project follows the "Single File Component" philosophy for maximum portability.
-
-Styles: Embedded in the <head> section.
-
-Markup: Semantic HTML in the <body>.
-
-Logic: Scripts located at the bottom of the <body>.
-
-📝 License
-
-This project is open-source and free to use for personal or educational purposes.
+This project is open-source and free for personal or educational use.
