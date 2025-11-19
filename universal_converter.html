@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Converter | المحول الشامل</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-body: #f3f4f6;
+            --bg-card: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        /* Header & Nav */
+        header {
+            background: var(--bg-card);
+            box-shadow: var(--shadow);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-main);
+            transition: 0.2s;
+        }
+
+        .lang-btn:hover {
+            background: var(--bg-body);
+            border-color: var(--primary);
+        }
+
+        /* Main Layout */
+        main {
+            flex: 1;
+            width: 100%;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: var(--bg-card);
+            padding: 0.5rem;
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-muted);
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        /* Cards */
+        .tool-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .tool-card.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            color: var(--text-main);
+            border-bottom: 2px solid var(--bg-body);
+            padding-bottom: 0.5rem;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: #fff;
+            transition: border 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .row { grid-template-columns: 1fr; }
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 0.85rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .btn-action:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* Results */
+        .result-box {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .result-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .result-divider {
+            margin: 1.25rem 0;
+            border: 0;
+            border-top: 1px solid #bfdbfe;
+        }
+
+        /* Date Specifics */
+        .date-inputs {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .date-inputs select, .date-inputs input {
+            flex: 1;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* Accessibility Helpers */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+        
+        [dir="rtl"] .tab-btn:first-child { border-radius: 0 8px 8px 0; }
+        [dir="rtl"] .tab-btn:last-child { border-radius: 8px 0 0 8px; }
+        [dir="ltr"] .tab-btn:first-child { border-radius: 8px 0 0 8px; }
+        [dir="ltr"] .tab-btn:last-child { border-radius: 0 8px 8px 0; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <div class="brand">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 0 1 9-9"/></svg>
+                <span data-i18n="appTitle">UniConvert</span>
+            </div>
+            <button class="lang-btn" id="langToggle" aria-label="Switch Language">
+                English / العربية
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <nav class="tabs" role="tablist">
+            <button class="tab-btn active" data-tab="date-converter" role="tab" aria-selected="true" data-i18n="tabDate">Date Converter</button>
+            <button class="tab-btn" data-tab="age-calculator" role="tab" aria-selected="false" data-i18n="tabAge">Age Calculator</button>
+            <button class="tab-btn" data-tab="unit-converter" role="tab" aria-selected="false" data-i18n="tabUnits">Unit Converter</button>
+        </nav>
+
+        <!-- Date Converter Section -->
+        <section id="date-converter" class="tool-card active" role="tabpanel">
+            <h2 data-i18n="titleDateConv">Hijri / Gregorian Converter</h2>
+            
+            <div class="form-group">
+                <label data-i18n="lblConvType">Conversion Type</label>
+                <select id="dateConvType">
+                    <option value="g2h" data-i18n="optG2H">Gregorian to Hijri</option>
+                    <option value="h2g" data-i18n="optH2G">Hijri to Gregorian</option>
+                </select>
+            </div>
+
+            <!-- Gregorian Input -->
+            <div id="gregorianInputWrapper" class="form-group">
+                <label data-i18n="lblGregorian">Gregorian Date</label>
+                <input type="date" id="gregorianDateInput">
+            </div>
+
+            <!-- Hijri Input (Manual fields because type=date doesn't support hijri universally) -->
+            <div id="hijriInputWrapper" class="form-group" style="display:none;">
+                <label data-i18n="lblHijri">Hijri Date (D/M/Y)</label>
+                <div class="date-inputs">
+                    <input type="number" id="hDay" placeholder="Day" min="1" max="30">
+                    <select id="hMonth">
+                        <!-- Populated by JS -->
+                    </select>
+                    <input type="number" id="hYear" placeholder="Year" min="1300" max="1500" value="1445">
+                </div>
+            </div>
+
+            <button class="btn-action" id="btnConvertDate" data-i18n="btnConvert">Convert</button>
+
+            <div class="result-box" id="dateResultBox" style="display:none;">
+                <div class="result-value" id="dateResultValue"></div>
+                <div class="result-label" id="dateResultLabel"></div>
+            </div>
+        </section>
+
+        <!-- Age Calculator Section -->
+        <section id="age-calculator" class="tool-card" role="tabpanel">
+            <h2 data-i18n="titleAgeCalc">Age Calculator & Date Difference</h2>
+            
+            <div class="row">
+                <div class="form-group">
+                    <label data-i18n="lblStartDate">Start Date (Birth Date)</label>
+                    <input type="date" id="ageStart">
+                </div>
+                <div class="form-group">
+                    <label data-i18n="lblEndDate">End Date (Today)</label>
+                    <input type="date" id="ageEnd">
+                </div>
+            </div>
+
+            <button class="btn-action" id="btnCalcAge" data-i18n="btnCalculate">Calculate</button>
+
+            <div class="result-box" id="ageResultBox" style="display:none;">
+                <div class="result-label" data-i18n="lblGregAge">Gregorian Age</div>
+                <div class="result-value" id="ageResultValue"></div>
+                <div class="result-label" id="ageResultSummary" style="margin-bottom: 0.5rem; font-size: 0.8rem;"></div>
+                
+                <hr class="result-divider">
+                
+                <div class="result-label" data-i18n="lblHijriAge">Hijri Age</div>
+                <div class="result-value" id="ageHijriValue"></div>
+            </div>
+        </section>
+
+        <!-- Unit Converter Section -->
+        <section id="unit-converter" class="tool-card" role="tabpanel">
+            <h2 data-i18n="titleUnitConv">Unit Converter</h2>
+            
+            <div class="form-group">
+                <label data-i18n="lblCategory">Category</label>
+                <select id="unitCategory">
+                    <option value="length" data-i18n="catLength">Length</option>
+                    <option value="weight" data-i18n="catWeight">Weight</option>
+                    <option value="volume" data-i18n="catVolume">Volume</option>
+                    <option value="temperature" data-i18n="catTemp">Temperature</option>
+                </select>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label data-i18n="lblFrom">From</label>
+                    <input type="number" id="unitInput" placeholder="0" step="any">
+                    <select id="unitFrom" style="margin-top: 0.5rem;"></select>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="lblTo">To</label>
+                    <div style="padding: 0.75rem; background: #f3f4f6; border-radius: 8px; border: 1px solid var(--border); min-height: 45px; display: flex; align-items: center;" id="unitOutputDisplay">0</div>
+                    <select id="unitTo" style="margin-top: 0.5rem;"></select>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p data-i18n="footerText">&copy; 2023 Universal Converter. All rights reserved.</p>
+    </footer>
+
+<script>
+/**
+ * DATA & LOCALIZATION
+ */
+const translations = {
+    en: {
+        appTitle: "UniConvert",
+        tabDate: "Date Converter",
+        tabAge: "Age Calc",
+        tabUnits: "Unit Converter",
+        titleDateConv: "Hijri / Gregorian Converter",
+        titleAgeCalc: "Age Calculator",
+        titleUnitConv: "Unit Converter",
+        lblConvType: "Conversion Mode",
+        optG2H: "Gregorian to Hijri",
+        optH2G: "Hijri to Gregorian",
+        lblGregorian: "Gregorian Date",
+        lblHijri: "Hijri Date",
+        btnConvert: "Convert Date",
+        btnCalculate: "Calculate Difference",
+        lblStartDate: "Start Date / DOB",
+        lblEndDate: "End Date",
+        lblCategory: "Category",
+        catLength: "Length",
+        catWeight: "Weight",
+        catVolume: "Volume",
+        catTemp: "Temperature",
+        lblFrom: "From",
+        lblTo: "To",
+        footerText: "Designed with precision.",
+        resYears: "Years",
+        resMonths: "Months",
+        resDays: "Days",
+        lblGregAge: "Gregorian Age",
+        lblHijriAge: "Hijri Age",
+        hMonths: ["Muharram", "Safar", "Rabi Al-Awwal", "Rabi Al-Thani", "Jumada Al-Awwal", "Jumada Al-Thani", "Rajab", "Sha'ban", "Ramadan", "Shawwal", "Dhu Al-Qi'dah", "Dhu Al-Hijjah"]
+    },
+    ar: {
+        appTitle: "المحول الشامل",
+        tabDate: "تحويل التاريخ",
+        tabAge: "حساب العمر",
+        tabUnits: "تحويل الوحدات",
+        titleDateConv: "تحويل الهجري والميلادي",
+        titleAgeCalc: "حساب العمر والفرق",
+        titleUnitConv: "تحويل الوحدات",
+        lblConvType: "نوع التحويل",
+        optG2H: "ميلادي إلى هجري",
+        optH2G: "هجري إلى ميلادي",
+        lblGregorian: "التاريخ الميلادي",
+        lblHijri: "التاريخ الهجري",
+        btnConvert: "تحويل",
+        btnCalculate: "احسب",
+        lblStartDate: "تاريخ البداية / الميلاد",
+        lblEndDate: "تاريخ النهاية",
+        lblCategory: "التصنيف",
+        catLength: "الطول",
+        catWeight: "الوزن",
+        catVolume: "الحجم",
+        catTemp: "درجة الحرارة",
+        lblFrom: "من",
+        lblTo: "إلى",
+        footerText: "تم التصميم بدقة واحترافية.",
+        resYears: "سنة",
+        resMonths: "شهر",
+        resDays: "يوم",
+        lblGregAge: "العمر بالميلادي",
+        lblHijriAge: "العمر بالهجري",
+        hMonths: ["محرم", "صفر", "ربيع الأول", "ربيع الثاني", "جمادى الأولى", "جمادى الآخرة", "رجب", "شعبان", "رمضان", "شوال", "ذو القعدة", "ذو الحجة"]
+    }
+};
+
+const unitData = {
+    length: {
+        base: 'm',
+        units: {
+            mm: { factor: 0.001, en: 'Millimeter', ar: 'مليمتر' },
+            cm: { factor: 0.01, en: 'Centimeter', ar: 'سنتيمتر' },
+            m: { factor: 1, en: 'Meter', ar: 'متر' },
+            km: { factor: 1000, en: 'Kilometer', ar: 'كيلومتر' },
+            in: { factor: 0.0254, en: 'Inch', ar: 'بوصة' },
+            ft: { factor: 0.3048, en: 'Foot', ar: 'قدم' },
+            yd: { factor: 0.9144, en: 'Yard', ar: 'ياردة' },
+            mi: { factor: 1609.34, en: 'Mile', ar: 'ميل' }
+        }
+    },
+    weight: {
+        base: 'kg',
+        units: {
+            mg: { factor: 0.000001, en: 'Milligram', ar: 'مليجرام' },
+            g: { factor: 0.001, en: 'Gram', ar: 'جرام' },
+            kg: { factor: 1, en: 'Kilogram', ar: 'كيلوجرام' },
+            oz: { factor: 0.0283495, en: 'Ounce', ar: 'أونصة' },
+            lb: { factor: 0.453592, en: 'Pound', ar: 'باوند' }
+        }
+    },
+    volume: {
+        base: 'l',
+        units: {
+            ml: { factor: 0.001, en: 'Milliliter', ar: 'مليلتر' },
+            l: { factor: 1, en: 'Liter', ar: 'لتر' },
+            gal: { factor: 3.78541, en: 'Gallon (US)', ar: 'جالون' }
+        }
+    },
+    temperature: {
+        type: 'special',
+        units: {
+            c: { en: 'Celsius', ar: 'مئوية' },
+            f: { en: 'Fahrenheit', ar: 'فهرنهايت' },
+            k: { en: 'Kelvin', ar: 'كلفن' }
+        }
+    }
+};
+
+let currentLang = 'en';
+
+/**
+ * STATE & DOM HELPERS
+ */
+function setLanguage(lang) {
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+    // Update simple text
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if(translations[lang][key]) {
+            el.textContent = translations[lang][key];
+        }
+    });
+
+    // Populate Hijri Month Select
+    const hMonthSelect = document.getElementById('hMonth');
+    const selectedVal = hMonthSelect.value;
+    hMonthSelect.innerHTML = '';
+    translations[lang].hMonths.forEach((month, index) => {
+        const opt = document.createElement('option');
+        opt.value = index;
+        opt.textContent = `${index + 1} - ${month}`;
+        hMonthSelect.appendChild(opt);
+    });
+    if(selectedVal) hMonthSelect.value = selectedVal;
+
+    // Refresh Unit Dropdowns
+    populateUnitDropdowns();
+    convertUnit(); // recalc
+}
+
+function switchTab(tabId) {
+    // Hide all sections
+    document.querySelectorAll('.tool-card').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => {
+        el.classList.remove('active');
+        el.setAttribute('aria-selected', 'false');
+    });
+
+    // Show target
+    document.getElementById(tabId).classList.add('active');
+    const btn = document.querySelector(`button[data-tab="${tabId}"]`);
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected', 'true');
+}
+
+/**
+ * DATE LOGIC
+ * Using algorithmic approach for robustness without libraries.
+ */
+
+function g2h(date) {
+    // Intl API is best for Display G -> H
+    return new Intl.DateTimeFormat(currentLang + '-u-ca-islamic-umalqura', {
+        day: 'numeric', month: 'long', year: 'numeric'
+    }).format(date);
+}
+
+// Extracts explicit Hijri Parts (Year, Month, Day) from a Gregorian Date object
+// Using nu-latn to ensure we get 0-9 digits back for parsing
+function toHijriParts(date) {
+    const parts = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn', {
+        day: 'numeric', month: 'numeric', year: 'numeric'
+    }).formatToParts(date);
+    
+    const getPart = (type) => {
+        const part = parts.find(p => p.type === type);
+        return part ? parseInt(part.value) : 0;
+    };
+
+    return { 
+        y: getPart('year'), 
+        m: getPart('month'), 
+        d: getPart('day') 
+    };
+}
+
+// Mathematical approximation for Hijri to Gregorian (Kuwaiti Algorithm variant)
+function h2g(day, month, year) {
+    const intPart = (n) => Math.floor(n);
+    let z = year;
+    let m = month + 1; // 0-indexed input
+    let d = day;
+
+    let jd = intPart((11 * z + 3) / 30) + 354 * z + 30 * m - intPart((m - 1) / 2) + d + 1948440 - 385;
+    
+    // Convert JD to Gregorian
+    let l = jd + 68569;
+    let n = intPart((4 * l) / 146097);
+    l = l - intPart((146097 * n + 3) / 4);
+    let i = intPart((4000 * (l + 1)) / 1461001);
+    l = l - intPart((1461 * i) / 4) + 31;
+    let j = intPart((80 * l) / 2447);
+    d = l - intPart((2447 * j) / 80);
+    l = intPart(j / 11);
+    m = j + 2 - 12 * l;
+    let y = 100 * (n - 49) + i + l;
+
+    return new Date(y, m - 1, d);
+}
+
+/**
+ * UNIT LOGIC
+ */
+function populateUnitDropdowns() {
+    const cat = document.getElementById('unitCategory').value;
+    const fromSel = document.getElementById('unitFrom');
+    const toSel = document.getElementById('unitTo');
+    
+    // Save current selection if possible
+    const oldFrom = fromSel.value;
+    const oldTo = toSel.value;
+
+    fromSel.innerHTML = '';
+    toSel.innerHTML = '';
+
+    const data = unitData[cat].units;
+    Object.keys(data).forEach(key => {
+        const name = data[key][currentLang];
+        
+        const opt1 = document.createElement('option');
+        opt1.value = key;
+        opt1.textContent = name + ` (${key})`;
+        fromSel.appendChild(opt1);
+
+        const opt2 = document.createElement('option');
+        opt2.value = key;
+        opt2.textContent = name + ` (${key})`;
+        toSel.appendChild(opt2);
+    });
+
+    // Default selections
+    if(data[oldFrom]) fromSel.value = oldFrom;
+    if(data[oldTo]) toSel.value = oldTo;
+}
+
+function convertUnit() {
+    const cat = document.getElementById('unitCategory').value;
+    const val = parseFloat(document.getElementById('unitInput').value);
+    const from = document.getElementById('unitFrom').value;
+    const to = document.getElementById('unitTo').value;
+    const display = document.getElementById('unitOutputDisplay');
+
+    if(isNaN(val)) {
+        display.textContent = "---";
+        return;
+    }
+
+    let result;
+
+    if(cat === 'temperature') {
+        // Temp logic
+        let cVal;
+        // Convert to Celsius first
+        if(from === 'c') cVal = val;
+        else if(from === 'f') cVal = (val - 32) * 5/9;
+        else if(from === 'k') cVal = val - 273.15;
+
+        // Convert C to Target
+        if(to === 'c') result = cVal;
+        else if(to === 'f') result = (cVal * 9/5) + 32;
+        else if(to === 'k') result = cVal + 273.15;
+
+    } else {
+        // Standard Ratio logic
+        const baseFactorFrom = unitData[cat].units[from].factor;
+        const baseFactorTo = unitData[cat].units[to].factor;
+        
+        // Value * (BaseFactorFrom / BaseFactorTo)
+        const baseVal = val * baseFactorFrom;
+        result = baseVal / baseFactorTo;
+    }
+
+    // Format result (limit decimals if needed)
+    display.textContent = parseFloat(result.toFixed(4));
+}
+
+/**
+ * EVENT LISTENERS & INIT
+ */
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // 1. Language Toggle
+    document.getElementById('langToggle').addEventListener('click', () => {
+        setLanguage(currentLang === 'en' ? 'ar' : 'en');
+    });
+
+    // 2. Tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            switchTab(e.target.getAttribute('data-tab'));
+        });
+    });
+
+    // 3. Date Converter Logic
+    const dateConvType = document.getElementById('dateConvType');
+    const gregWrap = document.getElementById('gregorianInputWrapper');
+    const hijWrap = document.getElementById('hijriInputWrapper');
+
+    dateConvType.addEventListener('change', (e) => {
+        if(e.target.value === 'g2h') {
+            gregWrap.style.display = 'block';
+            hijWrap.style.display = 'none';
+        } else {
+            gregWrap.style.display = 'none';
+            hijWrap.style.display = 'block';
+        }
+        document.getElementById('dateResultBox').style.display = 'none';
+    });
+
+    document.getElementById('btnConvertDate').addEventListener('click', () => {
+        const mode = dateConvType.value;
+        const resBox = document.getElementById('dateResultBox');
+        const resVal = document.getElementById('dateResultValue');
+        const resLbl = document.getElementById('dateResultLabel');
+
+        if(mode === 'g2h') {
+            const input = document.getElementById('gregorianDateInput').value;
+            if(!input) return;
+            const d = new Date(input);
+            resVal.textContent = g2h(d);
+            resLbl.textContent = currentLang === 'en' ? "Hijri Date" : "التاريخ الهجري";
+        } else {
+            const d = parseInt(document.getElementById('hDay').value);
+            const m = parseInt(document.getElementById('hMonth').value);
+            const y = parseInt(document.getElementById('hYear').value);
+            if(!d || !y) return;
+            
+            const gDate = h2g(d, m, y);
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            resVal.textContent = gDate.toLocaleDateString(currentLang, options);
+            resLbl.textContent = currentLang === 'en' ? "Gregorian Date" : "التاريخ الميلادي";
+        }
+        resBox.style.display = 'block';
+    });
+
+    // 4. Age Calculator Logic
+    // Set default 'Today'
+    document.getElementById('ageEnd').valueAsDate = new Date();
+
+    document.getElementById('btnCalcAge').addEventListener('click', () => {
+        const startStr = document.getElementById('ageStart').value;
+        const endStr = document.getElementById('ageEnd').value;
+
+        if(!startStr || !endStr) return;
+
+        const start = new Date(startStr);
+        const end = new Date(endStr);
+        
+        if(start > end) {
+            alert(currentLang === 'en' ? "Start date must be before end date" : "تاريخ البداية يجب أن يكون قبل تاريخ النهاية");
+            return;
+        }
+
+        // --- Gregorian Calculation ---
+        let years = end.getFullYear() - start.getFullYear();
+        let months = end.getMonth() - start.getMonth();
+        let days = end.getDate() - start.getDate();
+
+        if (days < 0) {
+            months--;
+            const prevMonth = new Date(end.getFullYear(), end.getMonth(), 0);
+            days += prevMonth.getDate();
+        }
+        if (months < 0) {
+            years--;
+            months += 12;
+        }
+
+        // --- Hijri Calculation ---
+        // Convert both dates to Hijri Components
+        const hStart = toHijriParts(start);
+        const hEnd = toHijriParts(end);
+
+        let hYears = hEnd.y - hStart.y;
+        let hMonths = hEnd.m - hStart.m;
+        let hDays = hEnd.d - hStart.d;
+
+        // Borrow logic for Hijri
+        if (hDays < 0) {
+            hMonths--;
+            // Approximate days in previous Hijri month as 30 (standard for simple calc)
+            hDays += 30; 
+        }
+        if (hMonths < 0) {
+            hYears--;
+            hMonths += 12;
+        }
+
+        // --- Output ---
+        const t = translations[currentLang];
+        const resBox = document.getElementById('ageResultBox');
+        
+        // Gregorian Result
+        document.getElementById('ageResultValue').textContent = 
+            `${years} ${t.resYears}, ${months} ${t.resMonths}, ${days} ${t.resDays}`;
+        
+        // Hijri Result
+        document.getElementById('ageHijriValue').textContent = 
+            `${hYears} ${t.resYears}, ${hMonths} ${t.resMonths}, ${hDays} ${t.resDays}`;
+
+        // Total days diff
+        const oneDay = 24 * 60 * 60 * 1000;
+        const totalDays = Math.round(Math.abs((start - end) / oneDay));
+        
+        document.getElementById('ageResultSummary').textContent = 
+            (currentLang === 'en' ? `Total Days: ${totalDays}` : `مجموع الأيام: ${totalDays}`);
+        
+        resBox.style.display = 'block';
+    });
+
+    // 5. Unit Converter Init
+    document.getElementById('unitCategory').addEventListener('change', populateUnitDropdowns);
+    document.getElementById('unitInput').addEventListener('input', convertUnit);
+    document.getElementById('unitFrom').addEventListener('change', convertUnit);
+    document.getElementById('unitTo').addEventListener('change', convertUnit);
+
+    // Initialize
+    setLanguage('en');
+    populateUnitDropdowns();
+});
+
+</script>
+</body>
+</html>
