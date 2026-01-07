@@ -37,7 +37,11 @@ export const translations = {
         tabCountdown: "Countdown",
         tabStopwatch: "Stopwatch",
         tabWorldTime: "World Clock",
-        
+        tabCompound: "Compound Interest",
+        tabWordCount: "Word Counter",
+        tabTextConvert: "Text Converter",
+        tabPercentCalc: "Percentage Calculator",
+
         titleDateConv: "Hijri / Gregorian Converter",
         lblConvType: "Conversion Mode",
         optG2H: "Gregorian to Hijri",
@@ -189,8 +193,54 @@ export const translations = {
         resElapsed: "Elapsed Time",
         
         hMonths: ["Muharram", "Safar", "Rabi Al-Awwal", "Rabi Al-Thani", "Jumada Al-Awwal", "Jumada Al-Thani", "Rajab", "Sha'ban", "Ramadan", "Shawwal", "Dhu Al-Qi'dah", "Dhu Al-Hijjah"],
-        
-        totalDays: "Total Days"
+
+        totalDays: "Total Days",
+
+        tabCompound: "Compound Interest",
+        tabWordCount: "Word Counter",
+        tabTextConvert: "Text Converter",
+        tabPercentCalc: "Percentage Calculator",
+
+        titleCompound: "Compound Interest Calculator",
+        lblPrincipal: "Principal Amount",
+        lblRate: "Annual Interest Rate (%)",
+        lblTime: "Time Period (years)",
+        lblCompoundFrequency: "Compounding Frequency",
+        freqAnnually: "Annually",
+        freqSemiAnnually: "Semi-Annually",
+        freqQuarterly: "Quarterly",
+        freqMonthly: "Monthly",
+        resFutureValue: "Future Value",
+        resTotalInterest: "Total Interest",
+
+        titleWordCount: "Word & Character Counter",
+        lblEnterText: "Enter text here...",
+        resWords: "Words",
+        resCharacters: "Characters",
+        resCharactersNoSpaces: "Characters (no spaces)",
+        resSentences: "Sentences",
+        resParagraphs: "Paragraphs",
+
+        titleTextConvert: "Text Converter",
+        lblTextToConvert: "Text",
+        btnToUpperCase: "UPPERCASE",
+        btnToLowerCase: "lowercase",
+        btnToTitleCase: "Title Case",
+        btnToSentenceCase: "Sentence case",
+        btnRemoveSpaces: "Remove Extra Spaces",
+        btnRemoveLineBreaks: "Remove Line Breaks",
+
+        titlePercentCalc: "Percentage Calculator",
+        lblWhatIsPercentOf: "What is X% of Y?",
+        btnCalculatePercent: "Calculate",
+        lblWhatPercentIsOf: "What percent is X of Y?",
+        btnCalculateWhatPercent: "Calculate",
+        lblPercentageOfNumber: "Percentage of a number",
+        lblIncreaseByPercent: "Increase by",
+        btnCalculateIncrease: "Calculate Increase",
+        lblDecreaseByPercent: "Decrease by",
+        btnCalculateDecrease: "Calculate Decrease",
+        resResult: "Result"
     },
     ar: {
         appTitle: "المحول الشامل برو",
@@ -382,7 +432,53 @@ export const translations = {
         resElapsed: "الوقت المنقضي",
         
         hMonths: ["محرم", "صفر", "ربيع الأول", "ربيع الثاني", "جمادى الأولى", "جمادى الآخرة", "رجب", "شعبان", "رمضان", "شوال", "ذو القعدة", "ذو الحجة"],
-        
-        totalDays: "مجموع الأيام"
+
+        totalDays: "مجموع الأيام",
+
+        tabCompound: "الفائدة المركبة",
+        tabWordCount: "عداد الكلمات",
+        tabTextConvert: "تحويل النصوص",
+        tabPercentCalc: "النسبة المئوية",
+
+        titleCompound: "حاسبة الفائدة المركبة",
+        lblPrincipal: "المبلغ الأساسي",
+        lblRate: "معدل الفائدة السنوي (%)",
+        lblTime: "المدة (سنوات)",
+        lblCompoundFrequency: "تكرار التركيب",
+        freqAnnually: "سنوياً",
+        freqSemiAnnually: "نصف سنوياً",
+        freqQuarterly: "ربع سنوياً",
+        freqMonthly: "شهرياً",
+        resFutureValue: "القيمة المستقبلية",
+        resTotalInterest: "إجمالي الفائدة",
+
+        titleWordCount: "عداد الكلمات والحروف",
+        lblEnterText: "أدخل النص هنا...",
+        resWords: "الكلمات",
+        resCharacters: "الحروف",
+        resCharactersNoSpaces: "الحروف (بدون مسافات)",
+        resSentences: "الجمل",
+        resParagraphs: "الفقرات",
+
+        titleTextConvert: "محول النصوص",
+        lblTextToConvert: "النص",
+        btnToUpperCase: "حروف كبيرة",
+        btnToLowerCase: "حروف صغيرة",
+        btnToTitleCase: "أول حرف كبير",
+        btnToSentenceCase: "أول جملة كبيرة",
+        btnRemoveSpaces: "إزالة المسافات الزائدة",
+        btnRemoveLineBreaks: "إزالة فواصل الأسطر",
+
+        titlePercentCalc: "حاسبة النسبة المئوية",
+        lblWhatIsPercentOf: "ما هي النسبة المئوية؟",
+        btnCalculatePercent: "احسب النسبة المئوية",
+        lblWhatPercentIsOf: "ما هي النسبة المئوية من الرقم؟",
+        btnCalculateWhatPercent: "احسب",
+        lblPercentageOfNumber: "النسبة المئوية من الرقم",
+        lblIncreaseByPercent: "زيادة بنسبة",
+        btnCalculateIncrease: "احسب الزيادة",
+        lblDecreaseByPercent: "نقصان بنسبة",
+        btnCalculateDecrease: "احسب النقصان",
+        resResult: "النتيجة"
     }
 };

@@ -548,5 +548,212 @@ export const toolTemplates = {
             <button class="btn-action btn-secondary" id="btnLapStopwatch" data-i18n="btnLapStopwatch"></button>
         </div>
         <div id="lapTimes" style="margin-top: 1.5rem; max-height: 300px; overflow-y: auto;"></div>
+    `,
+
+    'compound-interest': `
+        <h2 data-i18n="titleCompound"></h2>
+        <div class="form-group">
+            <label data-i18n="lblPrincipal"></label>
+            <input type="number" id="compoundPrincipal" placeholder="10000" step="100">
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label data-i18n="lblRate"></label>
+                <input type="number" id="compoundRate" placeholder="5" step="0.1">
+            </div>
+            <div class="form-group">
+                <label data-i18n="lblTime"></label>
+                <input type="number" id="compoundTime" placeholder="10" min="1">
+            </div>
+        </div>
+        <div class="form-group">
+            <label data-i18n="lblCompoundFrequency"></label>
+            <select id="compoundFrequency">
+                <option value="1" data-i18n="freqAnnually"></option>
+                <option value="2" data-i18n="freqSemiAnnually"></option>
+                <option value="4" data-i18n="freqQuarterly"></option>
+                <option value="12" data-i18n="freqMonthly"></option>
+            </select>
+        </div>
+        <button class="btn-action" id="btnCalculateCompound" data-i18n="btnCalculate"></button>
+        <div class="result-box" id="compoundResultBox" style="display:none;">
+            <div class="result-label" data-i18n="resFutureValue"></div>
+            <div class="result-value-wrapper">
+                <div class="result-value" id="compoundFutureValue"></div>
+                <div class="copy-icon" onclick="copyResult('compoundFutureValue')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </div>
+            </div>
+            <div class="result-divider"></div>
+            <div class="result-label" data-i18n="resTotalInterest"></div>
+            <div class="result-value-wrapper">
+                <div class="result-value" id="compoundInterest"></div>
+                <div class="copy-icon" onclick="copyResult('compoundInterest')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </div>
+            </div>
+        </div>
+    `,
+
+    'word-counter': `
+        <h2 data-i18n="titleWordCount"></h2>
+        <div class="form-group">
+            <label data-i18n="lblEnterText"></label>
+            <textarea id="wordCountInput" rows="8" placeholder="Enter your text here..."></textarea>
+        </div>
+        <div class="result-box" id="wordCountResult">
+            <div class="row-3">
+                <div>
+                    <div class="result-label" data-i18n="resWords"></div>
+                    <div class="result-value-wrapper">
+                        <div class="result-value" id="wordCountWords">0</div>
+                        <div class="copy-icon" onclick="copyResult('wordCountWords')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="result-label" data-i18n="resCharacters"></div>
+                    <div class="result-value-wrapper">
+                        <div class="result-value" id="wordCountChars">0</div>
+                        <div class="copy-icon" onclick="copyResult('wordCountChars')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="result-label" data-i18n="resCharactersNoSpaces"></div>
+                    <div class="result-value-wrapper">
+                        <div class="result-value" id="wordCountCharsNoSpaces">0</div>
+                        <div class="copy-icon" onclick="copyResult('wordCountCharsNoSpaces')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div>
+                    <div class="result-label" data-i18n="resSentences"></div>
+                    <div class="result-value-wrapper">
+                        <div class="result-value" id="wordCountSentences">0</div>
+                        <div class="copy-icon" onclick="copyResult('wordCountSentences')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="result-label" data-i18n="resParagraphs"></div>
+                    <div class="result-value-wrapper">
+                        <div class="result-value" id="wordCountParagraphs">0</div>
+                        <div class="copy-icon" onclick="copyResult('wordCountParagraphs')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `,
+
+    'text-converter': `
+        <h2 data-i18n="titleTextConvert"></h2>
+        <div class="form-group">
+            <label data-i18n="lblTextToConvert"></label>
+            <textarea id="textConverterInput" rows="6" placeholder="Enter your text here..."></textarea>
+        </div>
+        <div class="row">
+            <button class="btn-action btn-secondary" id="btnToUpperCase" data-i18n="btnToUpperCase"></button>
+            <button class="btn-action btn-secondary" id="btnToLowerCase" data-i18n="btnToLowerCase"></button>
+        </div>
+        <div class="row">
+            <button class="btn-action btn-secondary" id="btnToTitleCase" data-i18n="btnToTitleCase"></button>
+            <button class="btn-action btn-secondary" id="btnToSentenceCase" data-i18n="btnToSentenceCase"></button>
+        </div>
+        <div class="row">
+            <button class="btn-action btn-secondary" id="btnRemoveSpaces" data-i18n="btnRemoveSpaces"></button>
+            <button class="btn-action btn-secondary" id="btnRemoveLineBreaks" data-i18n="btnRemoveLineBreaks"></button>
+        </div>
+        <div class="form-group" style="margin-top: 1.5rem;">
+            <label>Result</label>
+            <textarea id="textConverterOutput" rows="6" style="background: #f9fafb;"></textarea>
+        </div>
+    `,
+
+    'percentage-calculator': `
+        <h2 data-i18n="titlePercentCalc"></h2>
+        <div class="form-group">
+            <label data-i18n="lblWhatIsPercentOf"></label>
+            <div class="row">
+                <input type="number" id="percent1" placeholder="X" style="flex: 1;">
+                <span style="padding: 0.75rem; text-align: center;">% of</span>
+                <input type="number" id="percent2" placeholder="Y" style="flex: 1;">
+            </div>
+            <button class="btn-action" id="btnCalculatePercent" data-i18n="btnCalculatePercent"></button>
+            <div class="result-box" style="margin-top: 1rem;">
+                <div class="result-label" data-i18n="resResult"></div>
+                <div class="result-value-wrapper">
+                    <div class="result-value" id="percentResult1">---</div>
+                    <div class="copy-icon" onclick="copyResult('percentResult1')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr class="result-divider">
+        <div class="form-group">
+            <label data-i18n="lblWhatPercentIsOf"></label>
+            <div class="row">
+                <input type="number" id="whatPercent1" placeholder="X" style="flex: 1;">
+                <span style="padding: 0.75rem; text-align: center;">of</span>
+                <input type="number" id="whatPercent2" placeholder="Y" style="flex: 1;">
+            </div>
+            <button class="btn-action" id="btnCalculateWhatPercent" data-i18n="btnCalculateWhatPercent"></button>
+            <div class="result-box" style="margin-top: 1rem;">
+                <div class="result-label" data-i18n="resResult"></div>
+                <div class="result-value-wrapper">
+                    <div class="result-value" id="percentResult2">---</div>
+                    <div class="copy-icon" onclick="copyResult('percentResult2')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr class="result-divider">
+        <div class="form-group">
+            <label data-i18n="lblIncreaseByPercent"></label>
+            <div class="row">
+                <input type="number" id="increaseValue" placeholder="Value" style="flex: 1;">
+                <span style="padding: 0.75rem; text-align: center;">by</span>
+                <input type="number" id="increasePercent" placeholder="%" style="flex: 1;">
+            </div>
+            <button class="btn-action" id="btnCalculateIncrease" data-i18n="btnCalculateIncrease"></button>
+            <div class="result-box" style="margin-top: 1rem;">
+                <div class="result-label" data-i18n="resResult"></div>
+                <div class="result-value-wrapper">
+                    <div class="result-value" id="percentResult3">---</div>
+                    <div class="copy-icon" onclick="copyResult('percentResult3')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr class="result-divider">
+        <div class="form-group">
+            <label data-i18n="lblDecreaseByPercent"></label>
+            <div class="row">
+                <input type="number" id="decreaseValue" placeholder="Value" style="flex: 1;">
+                <span style="padding: 0.75rem; text-align: center;">by</span>
+                <input type="number" id="decreasePercent" placeholder="%" style="flex: 1;">
+            </div>
+            <button class="btn-action" id="btnCalculateDecrease" data-i18n="btnCalculateDecrease"></button>
+            <div class="result-box" style="margin-top: 1rem;">
+                <div class="result-label" data-i18n="resResult"></div>
+                <div class="result-value-wrapper">
+                    <div class="result-value" id="percentResult4">---</div>
+                    <div class="copy-icon" onclick="copyResult('percentResult4')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
     `
 };

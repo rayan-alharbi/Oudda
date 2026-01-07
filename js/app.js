@@ -28,6 +28,10 @@ const tabConfig = [
     { id: 'discount-calculator', label: 'tabDiscount', template: 'discount-calculator' },
     { id: 'salary-calculator', label: 'tabSalary', template: 'salary-calculator' },
     { id: 'gpa-calculator', label: 'tabGPA', template: 'gpa-calculator' },
+    { id: 'compound-interest', label: 'tabCompound', template: 'compound-interest' },
+    { id: 'word-counter', label: 'tabWordCount', template: 'word-counter' },
+    { id: 'text-converter', label: 'tabTextConvert', template: 'text-converter' },
+    { id: 'percentage-calculator', label: 'tabPercentCalc', template: 'percentage-calculator' },
     { id: 'random-generator', label: 'tabRandom', template: 'random-generator' },
     { id: 'password-generator', label: 'tabPassword', template: 'password-generator' },
     { id: 'hash-generator', label: 'tabHash', template: 'hash-generator' },
@@ -679,6 +683,119 @@ function initializeTimers() {
     });
 }
 
+function initializeCompoundInterest() {
+    document.getElementById('btnCalculateCompound').addEventListener('click', () => {
+        const principal = parseFloat(document.getElementById('compoundPrincipal').value);
+        const rate = parseFloat(document.getElementById('compoundRate').value) / 100;
+        const time = parseFloat(document.getElementById('compoundTime').value);
+        const frequency = parseInt(document.getElementById('compoundFrequency').value);
+
+        if (!principal || !rate || !time) return;
+
+        const amount = principal * Math.pow((1 + rate / frequency), frequency * time);
+        const interest = amount - principal;
+
+        document.getElementById('compoundFutureValue').textContent = amount.toFixed(2);
+        document.getElementById('compoundInterest').textContent = interest.toFixed(2);
+        document.getElementById('compoundResultBox').style.display = 'block';
+    });
+}
+
+function initializeWordCounter() {
+    const input = document.getElementById('wordCountInput');
+
+    const updateCounts = () => {
+        const text = input.value;
+
+        const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+        const chars = text.length;
+        const charsNoSpaces = text.replace(/\s/g, '').length;
+        const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
+        const paragraphs = text.split(/\n\n+/).filter(p => p.trim().length > 0).length;
+
+        document.getElementById('wordCountWords').textContent = words;
+        document.getElementById('wordCountChars').textContent = chars;
+        document.getElementById('wordCountCharsNoSpaces').textContent = charsNoSpaces;
+        document.getElementById('wordCountSentences').textContent = sentences;
+        document.getElementById('wordCountParagraphs').textContent = paragraphs;
+    };
+
+    input.addEventListener('input', updateCounts);
+}
+
+function initializeTextConverter() {
+    const input = document.getElementById('textConverterInput');
+    const output = document.getElementById('textConverterOutput');
+
+    document.getElementById('btnToUpperCase').addEventListener('click', () => {
+        output.value = input.value.toUpperCase();
+    });
+
+    document.getElementById('btnToLowerCase').addEventListener('click', () => {
+        output.value = input.value.toLowerCase();
+    });
+
+    document.getElementById('btnToTitleCase').addEventListener('click', () => {
+        output.value = input.value.replace(/\w\S*/g, txt =>
+            txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+        );
+    });
+
+    document.getElementById('btnToSentenceCase').addEventListener('click', () => {
+        output.value = input.value.toLowerCase().replace(/(^\s*\w|[.!?]\s*\w)/g, c => c.toUpperCase());
+    });
+
+    document.getElementById('btnRemoveSpaces').addEventListener('click', () => {
+        output.value = input.value.replace(/\s+/g, ' ').trim();
+    });
+
+    document.getElementById('btnRemoveLineBreaks').addEventListener('click', () => {
+        output.value = input.value.replace(/\n/g, ' ').trim();
+    });
+}
+
+function initializePercentageCalculator() {
+    document.getElementById('btnCalculatePercent').addEventListener('click', () => {
+        const x = parseFloat(document.getElementById('percent1').value);
+        const y = parseFloat(document.getElementById('percent2').value);
+
+        if (isNaN(x) || isNaN(y)) return;
+
+        const result = (x / 100) * y;
+        document.getElementById('percentResult1').textContent = result.toFixed(2);
+    });
+
+    document.getElementById('btnCalculateWhatPercent').addEventListener('click', () => {
+        const x = parseFloat(document.getElementById('whatPercent1').value);
+        const y = parseFloat(document.getElementById('whatPercent2').value);
+
+        if (isNaN(x) || isNaN(y) || y === 0) return;
+
+        const result = (x / y) * 100;
+        document.getElementById('percentResult2').textContent = result.toFixed(2) + '%';
+    });
+
+    document.getElementById('btnCalculateIncrease').addEventListener('click', () => {
+        const value = parseFloat(document.getElementById('increaseValue').value);
+        const percent = parseFloat(document.getElementById('increasePercent').value);
+
+        if (isNaN(value) || isNaN(percent)) return;
+
+        const result = value + (value * percent / 100);
+        document.getElementById('percentResult3').textContent = result.toFixed(2);
+    });
+
+    document.getElementById('btnCalculateDecrease').addEventListener('click', () => {
+        const value = parseFloat(document.getElementById('decreaseValue').value);
+        const percent = parseFloat(document.getElementById('decreasePercent').value);
+
+        if (isNaN(value) || isNaN(percent)) return;
+
+        const result = value - (value * percent / 100);
+        document.getElementById('percentResult4').textContent = result.toFixed(2);
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('langToggle').addEventListener('click', () => {
         setLanguage(currentLang === 'en' ? 'ar' : 'en');
@@ -686,7 +803,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     createTabs();
     createToolCards();
-    
+
     initializeDateConverter();
     initializeAgeCalculator();
     initializeTimeCalculator();
@@ -696,4 +813,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeGPACalculator();
     initializeUtilities();
     initializeTimers();
+    initializeCompoundInterest();
+    initializeWordCounter();
+    initializeTextConverter();
+    initializePercentageCalculator();
 });
