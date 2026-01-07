@@ -32,6 +32,11 @@ const tabConfig = [
     { id: 'word-counter', label: 'tabWordCount', template: 'word-counter' },
     { id: 'text-converter', label: 'tabTextConvert', template: 'text-converter' },
     { id: 'percentage-calculator', label: 'tabPercentCalc', template: 'percentage-calculator' },
+    { id: 'number-base-converter', label: 'tabNumberBase', template: 'number-base-converter' },
+    { id: 'speed-distance-time', label: 'tabSpeedCalc', template: 'speed-distance-time' },
+    { id: 'prime-checker', label: 'tabPrimeCheck', template: 'prime-checker' },
+    { id: 'roman-numeral', label: 'tabRomanNum', template: 'roman-numeral' },
+    { id: 'calorie-calculator', label: 'tabCalorieCalc', template: 'calorie-calculator' },
     { id: 'random-generator', label: 'tabRandom', template: 'random-generator' },
     { id: 'password-generator', label: 'tabPassword', template: 'password-generator' },
     { id: 'hash-generator', label: 'tabHash', template: 'hash-generator' },
@@ -754,47 +759,240 @@ function initializeTextConverter() {
     });
 }
 
-function initializePercentageCalculator() {
-    document.getElementById('btnCalculatePercent').addEventListener('click', () => {
-        const x = parseFloat(document.getElementById('percent1').value);
-        const y = parseFloat(document.getElementById('percent2').value);
+    function initializePercentageCalculator() {
+        document.getElementById('btnCalculatePercent').addEventListener('click', () => {
+            const x = parseFloat(document.getElementById('percent1').value);
+            const y = parseFloat(document.getElementById('percent2').value);
 
-        if (isNaN(x) || isNaN(y)) return;
+            if (isNaN(x) || isNaN(y)) return;
 
-        const result = (x / 100) * y;
-        document.getElementById('percentResult1').textContent = result.toFixed(2);
-    });
+            const result = (x / 100) * y;
+            document.getElementById('percentResult1').textContent = result.toFixed(2);
+        });
 
-    document.getElementById('btnCalculateWhatPercent').addEventListener('click', () => {
-        const x = parseFloat(document.getElementById('whatPercent1').value);
-        const y = parseFloat(document.getElementById('whatPercent2').value);
+        document.getElementById('btnCalculateWhatPercent').addEventListener('click', () => {
+            const x = parseFloat(document.getElementById('whatPercent1').value);
+            const y = parseFloat(document.getElementById('whatPercent2').value);
 
-        if (isNaN(x) || isNaN(y) || y === 0) return;
+            if (isNaN(x) || isNaN(y) || y === 0) return;
 
-        const result = (x / y) * 100;
-        document.getElementById('percentResult2').textContent = result.toFixed(2) + '%';
-    });
+            const result = (x / y) * 100;
+            document.getElementById('percentResult2').textContent = result.toFixed(2) + '%';
+        });
 
-    document.getElementById('btnCalculateIncrease').addEventListener('click', () => {
-        const value = parseFloat(document.getElementById('increaseValue').value);
-        const percent = parseFloat(document.getElementById('increasePercent').value);
+        document.getElementById('btnCalculateIncrease').addEventListener('click', () => {
+            const value = parseFloat(document.getElementById('increaseValue').value);
+            const percent = parseFloat(document.getElementById('increasePercent').value);
 
-        if (isNaN(value) || isNaN(percent)) return;
+            if (isNaN(value) || isNaN(percent)) return;
 
-        const result = value + (value * percent / 100);
-        document.getElementById('percentResult3').textContent = result.toFixed(2);
-    });
+            const result = value + (value * percent / 100);
+            document.getElementById('percentResult3').textContent = result.toFixed(2);
+        });
 
-    document.getElementById('btnCalculateDecrease').addEventListener('click', () => {
-        const value = parseFloat(document.getElementById('decreaseValue').value);
-        const percent = parseFloat(document.getElementById('decreasePercent').value);
+        document.getElementById('btnCalculateDecrease').addEventListener('click', () => {
+            const value = parseFloat(document.getElementById('decreaseValue').value);
+            const percent = parseFloat(document.getElementById('decreasePercent').value);
 
-        if (isNaN(value) || isNaN(percent)) return;
+            if (isNaN(value) || isNaN(percent)) return;
 
-        const result = value - (value * percent / 100);
-        document.getElementById('percentResult4').textContent = result.toFixed(2);
-    });
-}
+            const result = value - (value * percent / 100);
+            document.getElementById('percentResult4').textContent = result.toFixed(2);
+        });
+    }
+
+    function initializeNumberBaseConverter() {
+        document.getElementById('btnConvertBase').addEventListener('click', () => {
+            const input = document.getElementById('baseInput').value.trim();
+            const inputBase = parseInt(document.getElementById('inputBase').value);
+            const outputBase = parseInt(document.getElementById('outputBase').value);
+
+            if (!input) return;
+
+            try {
+                const decimal = parseInt(input, inputBase);
+                if (isNaN(decimal)) throw new Error('Invalid input');
+
+                const converted = decimal.toString(outputBase).toUpperCase();
+                document.getElementById('baseResult').textContent = converted;
+                document.getElementById('baseResultBox').style.display = 'block';
+            } catch (e) {
+                alert(currentLang === 'en' ? 'Invalid input for the selected base!' : 'إدخال غير صحيح للنظام المختار!');
+            }
+        });
+    }
+
+    function initializeSpeedDistanceTime() {
+        document.getElementById('btnCalculateSpeed').addEventListener('click', () => {
+            const distance = parseFloat(document.getElementById('distanceValue').value);
+            const time = parseFloat(document.getElementById('timeValue').value);
+
+            if (isNaN(distance) || isNaN(time) || time === 0) return;
+
+            const speed = distance / time;
+            document.getElementById('speedResult').textContent = speed.toFixed(2) + ' km/h';
+            document.getElementById('speedResultBox').style.display = 'block';
+        });
+
+        document.getElementById('btnCalculateDistance').addEventListener('click', () => {
+            const speed = parseFloat(document.getElementById('speedValue').value);
+            const time = parseFloat(document.getElementById('timeValue').value);
+
+            if (isNaN(speed) || isNaN(time)) return;
+
+            const distance = speed * time;
+            document.getElementById('speedResult').textContent = distance.toFixed(2) + ' km';
+            document.getElementById('speedResultBox').style.display = 'block';
+        });
+
+        document.getElementById('btnCalculateTime').addEventListener('click', () => {
+            const speed = parseFloat(document.getElementById('speedValue').value);
+            const distance = parseFloat(document.getElementById('distanceValue').value);
+
+            if (isNaN(speed) || isNaN(distance) || speed === 0) return;
+
+            const time = distance / speed;
+            document.getElementById('speedResult').textContent = time.toFixed(2) + ' hours';
+            document.getElementById('speedResultBox').style.display = 'block';
+        });
+    }
+
+    function initializePrimeChecker() {
+        const isPrime = (num) => {
+            if (num < 2) return false;
+            if (num === 2) return true;
+            if (num % 2 === 0) return false;
+            for (let i = 3; i <= Math.sqrt(num); i += 2) {
+                if (num % i === 0) return false;
+            }
+            return true;
+        };
+
+        const getFactors = (num) => {
+            const factors = [];
+            for (let i = 1; i <= num; i++) {
+                if (num % i === 0) factors.push(i);
+            }
+            return factors;
+        };
+
+        const getNextPrime = (num) => {
+            let next = num + 1;
+            while (!isPrime(next)) next++;
+            return next;
+        };
+
+        const getPrevPrime = (num) => {
+            let prev = num - 1;
+            while (prev > 1 && !isPrime(prev)) prev--;
+            return prev > 1 ? prev : null;
+        };
+
+        document.getElementById('btnCheckPrime').addEventListener('click', () => {
+            const num = parseInt(document.getElementById('primeInput').value);
+
+            if (isNaN(num) || num < 1) return;
+
+            const prime = isPrime(num);
+            const factors = getFactors(num);
+            const nextPrime = getNextPrime(num);
+            const prevPrime = getPrevPrime(num);
+
+            document.getElementById('primeIsPrime').textContent =
+                `${num} ${currentLang === 'en' ? (prime ? translations.en.resIsPrime : translations.en.resNotPrime) : (prime ? translations.ar.resIsPrime : translations.ar.resNotPrime)}`;
+
+            document.getElementById('primeFactors').textContent = factors.join(', ');
+            document.getElementById('primeNext').textContent = nextPrime;
+            document.getElementById('primePrev').textContent = prevPrime || '---';
+
+            document.getElementById('primeResultBox').style.display = 'block';
+        });
+    }
+
+    function initializeRomanNumeral() {
+        const toRoman = (num) => {
+            const lookup = {M:1000,CM:900,D:500,CD:400,C:100,XC:90,L:50,XL:40,X:10,IX:9,V:5,IV:4,I:1};
+            let roman = '';
+            for (let i in lookup) {
+                while (num >= lookup[i]) {
+                    roman += i;
+                    num -= lookup[i];
+                }
+            }
+            return roman;
+        };
+
+        const fromRoman = (roman) => {
+            const lookup = {I:1,V:5,X:10,L:50,C:100,D:500,M:1000};
+            roman = roman.toUpperCase();
+            let num = 0;
+            for (let i = 0; i < roman.length; i++) {
+                if (!lookup[roman[i]]) return null;
+                const curr = lookup[roman[i]];
+                const next = lookup[roman[i + 1]];
+                if (next && curr < next) {
+                    num += next - curr;
+                    i++;
+                } else {
+                    num += curr;
+                }
+            }
+            return num;
+        };
+
+        document.getElementById('btnConvertToRoman').addEventListener('click', () => {
+            const num = parseInt(document.getElementById('decimalInput').value);
+
+            if (isNaN(num) || num < 1 || num > 3999) return;
+
+            document.getElementById('romanResult').textContent = toRoman(num);
+            document.getElementById('romanResultBox').style.display = 'block';
+        });
+
+        document.getElementById('btnConvertToDecimal').addEventListener('click', () => {
+            const roman = document.getElementById('romanInput').value.trim();
+
+            if (!roman) return;
+
+            const num = fromRoman(roman);
+            if (num === null) {
+                alert(currentLang === 'en' ? 'Invalid Roman numeral!' : 'رقم روماني غير صحيح!');
+                return;
+            }
+
+            document.getElementById('decimalResult').textContent = num;
+            document.getElementById('decimalResultBox').style.display = 'block';
+        });
+    }
+
+    function initializeCalorieCalculator() {
+        document.getElementById('btnCalculateCalories').addEventListener('click', () => {
+            const gender = document.getElementById('calorieGender').value;
+            const age = parseFloat(document.getElementById('calorieAge').value);
+            const weight = parseFloat(document.getElementById('calorieWeight').value);
+            const height = parseFloat(document.getElementById('calorieHeight').value);
+            const activity = parseFloat(document.getElementById('calorieActivity').value);
+
+            if (!age || !weight || !height) return;
+
+            let bmr;
+            if (gender === 'male') {
+                bmr = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
+            } else {
+                bmr = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
+            }
+
+            const tdee = bmr * activity;
+
+            document.getElementById('calorieBMR').textContent = Math.round(bmr) + ' kcal';
+            document.getElementById('calorieTDEE').textContent = Math.round(tdee) + ' kcal';
+            document.getElementById('calorieMaintain').textContent = Math.round(tdee) + ' kcal';
+            document.getElementById('calorieLose').textContent = Math.round(tdee - 500) + ' kcal';
+            document.getElementById('calorieGain').textContent = Math.round(tdee + 500) + ' kcal';
+
+            document.getElementById('calorieResultBox').style.display = 'block';
+        });
+    }
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('langToggle').addEventListener('click', () => {
@@ -817,4 +1015,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeWordCounter();
     initializeTextConverter();
     initializePercentageCalculator();
+    initializeNumberBaseConverter();
+    initializeSpeedDistanceTime();
+    initializePrimeChecker();
+    initializeRomanNumeral();
+    initializeCalorieCalculator();
 });

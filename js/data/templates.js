@@ -755,5 +755,229 @@ export const toolTemplates = {
                 </div>
             </div>
         </div>
+    `,
+
+    'number-base-converter': `
+        <h2 data-i18n="titleNumberBase"></h2>
+        <div class="form-group">
+            <label data-i18n="lblInputNumber"></label>
+            <input type="text" id="baseInput" placeholder="Enter number...">
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label data-i18n="lblInputBase"></label>
+                <select id="inputBase">
+                    <option value="2">Binary (2)</option>
+                    <option value="8">Octal (8)</option>
+                    <option value="10" selected>Decimal (10)</option>
+                    <option value="16">Hexadecimal (16)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label data-i18n="lblOutputBase"></label>
+                <select id="outputBase">
+                    <option value="2">Binary (2)</option>
+                    <option value="8">Octal (8)</option>
+                    <option value="10">Decimal (10)</option>
+                    <option value="16" selected>Hexadecimal (16)</option>
+                </select>
+            </div>
+        </div>
+        <button class="btn-action" id="btnConvertBase" data-i18n="btnConvertBase"></button>
+        <div class="result-box" id="baseResultBox" style="display:none;">
+            <div class="result-label" data-i18n="resConverted"></div>
+            <div class="result-value-wrapper">
+                <div class="result-value" id="baseResult"></div>
+                <div class="copy-icon" onclick="copyResult('baseResult')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </div>
+            </div>
+        </div>
+    `,
+
+    'speed-distance-time': `
+        <h2 data-i18n="titleSpeedCalc"></h2>
+        <div class="row">
+            <div class="form-group">
+                <label data-i18n="lblSpeed"></label>
+                <input type="number" id="speedValue" placeholder="60" step="0.1">
+            </div>
+            <div class="form-group">
+                <label data-i18n="lblDistance"></label>
+                <input type="number" id="distanceValue" placeholder="100" step="0.1">
+            </div>
+        </div>
+        <div class="form-group">
+            <label data-i18n="lblTime"></label>
+            <input type="number" id="timeValue" placeholder="1.5" step="0.01">
+        </div>
+        <div class="row">
+            <button class="btn-action" id="btnCalculateSpeed" data-i18n="btnCalculateSpeed"></button>
+            <button class="btn-action btn-secondary" id="btnCalculateDistance" data-i18n="btnCalculateDistance"></button>
+            <button class="btn-action btn-secondary" id="btnCalculateTime" data-i18n="btnCalculateTime"></button>
+        </div>
+        <div class="result-box" id="speedResultBox" style="display:none;">
+            <div class="result-label" data-i18n="resResult"></div>
+            <div class="result-value-wrapper">
+                <div class="result-value" id="speedResult"></div>
+                <div class="copy-icon" onclick="copyResult('speedResult')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </div>
+            </div>
+        </div>
+    `,
+
+    'prime-checker': `
+        <h2 data-i18n="titlePrimeCheck"></h2>
+        <div class="form-group">
+            <label data-i18n="lblCheckNumber"></label>
+            <input type="number" id="primeInput" placeholder="Enter a number..." min="1">
+        </div>
+        <button class="btn-action" id="btnCheckPrime" data-i18n="btnCheckPrime"></button>
+        <div class="result-box" id="primeResultBox" style="display:none;">
+            <div class="result-value-wrapper">
+                <div class="result-value" id="primeIsPrime"></div>
+            </div>
+            <div class="result-label" id="primeFactorsLabel" data-i18n="resFactors" style="margin-top: 1rem;"></div>
+            <div class="result-value-wrapper" style="margin-top: 0.5rem;">
+                <div class="result-value" id="primeFactors" style="font-size: 1.25rem;"></div>
+                <div class="copy-icon" onclick="copyResult('primeFactors')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </div>
+            </div>
+            <div class="result-divider"></div>
+            <div class="row">
+                <div>
+                    <div class="result-label" data-i18n="resPrevPrime"></div>
+                    <div class="result-value-wrapper">
+                        <div class="result-value" id="primePrev"></div>
+                        <div class="copy-icon" onclick="copyResult('primePrev')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="result-label" data-i18n="resNextPrime"></div>
+                    <div class="result-value-wrapper">
+                        <div class="result-value" id="primeNext"></div>
+                        <div class="copy-icon" onclick="copyResult('primeNext')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `,
+
+    'roman-numeral': `
+        <h2 data-i18n="titleRomanNum"></h2>
+        <div class="form-group">
+            <label data-i18n="lblDecimalToRoman"></label>
+            <div class="row">
+                <input type="number" id="decimalInput" placeholder="Enter decimal number..." min="1" max="3999">
+                <button class="btn-action" id="btnConvertToRoman" style="margin-top: 0;" data-i18n="btnConvertToRoman"></button>
+            </div>
+            <div class="result-box" id="romanResultBox" style="margin-top: 1rem; display:none;">
+                <div class="result-value-wrapper">
+                    <div class="result-value" id="romanResult"></div>
+                    <div class="copy-icon" onclick="copyResult('romanResult')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr class="result-divider">
+        <div class="form-group">
+            <label data-i18n="lblRomanToDecimal"></label>
+            <div class="row">
+                <input type="text" id="romanInput" placeholder="Enter Roman numeral...">
+                <button class="btn-action" id="btnConvertToDecimal" style="margin-top: 0;" data-i18n="btnConvertToDecimal"></button>
+            </div>
+            <div class="result-box" id="decimalResultBox" style="margin-top: 1rem; display:none;">
+                <div class="result-value-wrapper">
+                    <div class="result-value" id="decimalResult"></div>
+                    <div class="copy-icon" onclick="copyResult('decimalResult')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `,
+
+    'calorie-calculator': `
+        <h2 data-i18n="titleCalorieCalc"></h2>
+        <div class="form-group">
+            <label data-i18n="lblGender"></label>
+            <select id="calorieGender">
+                <option value="male" data-i18n="genderMale"></option>
+                <option value="female" data-i18n="genderFemale"></option>
+            </select>
+        </div>
+        <div class="row-3">
+            <div class="form-group">
+                <label data-i18n="lblAgeYears"></label>
+                <input type="number" id="calorieAge" placeholder="30" min="1" max="120">
+            </div>
+            <div class="form-group">
+                <label data-i18n="lblWeightKg"></label>
+                <input type="number" id="calorieWeight" placeholder="70" min="1" max="300">
+            </div>
+            <div class="form-group">
+                <label data-i18n="lblHeightCm"></label>
+                <input type="number" id="calorieHeight" placeholder="175" min="1" max="250">
+            </div>
+        </div>
+        <div class="form-group">
+            <label data-i18n="lblActivityLevel"></label>
+            <select id="calorieActivity">
+                <option value="1.2" data-i18n="activitySedentary"></option>
+                <option value="1.375" data-i18n="activityLight"></option>
+                <option value="1.55" data-i18n="activityModerate"></option>
+                <option value="1.725" data-i18n="activityActive"></option>
+                <option value="1.9" data-i18n="activityExtra"></option>
+            </select>
+        </div>
+        <button class="btn-action" id="btnCalculateCalories" data-i18n="btnCalculateCalories"></button>
+        <div class="result-box" id="calorieResultBox" style="display:none;">
+            <div class="result-label" data-i18n="resBMR"></div>
+            <div class="result-value-wrapper">
+                <div class="result-value" id="calorieBMR"></div>
+                <div class="copy-icon" onclick="copyResult('calorieBMR')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </div>
+            </div>
+            <div class="result-divider"></div>
+            <div class="result-label" data-i18n="resTDEE"></div>
+            <div class="result-value-wrapper">
+                <div class="result-value" id="calorieTDEE"></div>
+                <div class="copy-icon" onclick="copyResult('calorieTDEE')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </div>
+            </div>
+            <div class="result-divider"></div>
+            <div class="result-label" data-i18n="resToMaintain"></div>
+            <div class="result-value-wrapper">
+                <div class="result-value" id="calorieMaintain"></div>
+                <div class="copy-icon" onclick="copyResult('calorieMaintain')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </div>
+            </div>
+            <div class="result-divider"></div>
+            <div class="result-label" data-i18n="resToLose"></div>
+            <div class="result-value-wrapper">
+                <div class="result-value" id="calorieLose"></div>
+                <div class="copy-icon" onclick="copyResult('calorieLose')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </div>
+            </div>
+            <div class="result-divider"></div>
+            <div class="result-label" data-i18n="resToGain"></div>
+            <div class="result-value-wrapper">
+                <div class="result-value" id="calorieGain"></div>
+                <div class="copy-icon" onclick="copyResult('calorieGain')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </div>
+            </div>
+        </div>
     `
 };
