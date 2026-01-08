@@ -1,0 +1,161 @@
+---
+
+---
+
+<div class="qr-generator">
+    <div class="input-section">
+        <label for="qr-text">النص أو الرابط</label>
+        <textarea
+            id="qr-text"
+            class="form-input"
+            placeholder="https://example.com أو أي نص هنا..."></textarea>
+
+        <div class="options">
+            <label>
+                <input type="checkbox" id="high-quality" checked /> دقة عالية
+            </label>
+        </div>
+
+        <button id="gen-btn" class="btn-primary">توليد الرمز</button>
+    </div>
+
+    <div id="result-area" class="result-area hidden">
+        <div class="qr-wrapper">
+            <img id="qr-image" alt="QR Code" />
+        </div>
+
+        <a id="download-link" class="btn-secondary" download="qrcode.png">
+            ⬇ تحميل الرمز
+        </a>
+    </div>
+</div>
+
+<script>
+    import QRCode from "qrcode";
+
+    const cleanInput = document.getElementById(
+        "qr-text",
+    ) as HTMLTextAreaElement;
+    const btn = document.getElementById("gen-btn");
+    const resultArea = document.getElementById("result-area");
+    const qrImage = document.getElementById("qr-image") as HTMLImageElement;
+    const downloadLink = document.getElementById(
+        "download-link",
+    ) as HTMLAnchorElement;
+    const qualityCheck = document.getElementById(
+        "high-quality",
+    ) as HTMLInputElement;
+
+    async function generateQR() {
+        const text = cleanInput.value.trim();
+        if (!text) return;
+
+        try {
+            const scale = qualityCheck.checked ? 10 : 4;
+            const url = await QRCode.toDataURL(text, {
+                width: qualityCheck.checked ? 1080 : 300,
+                margin: 2,
+                color: {
+                    dark: "#000000",
+                    light: "#ffffff",
+                },
+            });
+
+            qrImage.src = url;
+            downloadLink.href = url; // Data URL acts as href for download
+
+            resultArea.classList.remove("hidden");
+        } catch (err) {
+            console.error(err);
+            alert("حدث خطأ أثناء توليد الرمز");
+        }
+    }
+
+    btn.addEventListener("click", generateQR);
+    cleanInput.addEventListener("keydown", (e) => {
+        if (e.ctrlKey && e.key === "Enter") generateQR();
+    });
+</script>
+
+<style>
+    .qr-generator {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .input-section {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+
+    textarea.form-input {
+        width: 100%;
+        padding: var(--space-sm);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        min-height: 100px;
+        resize: vertical;
+        font-family: inherit;
+    }
+
+    .btn-primary {
+        padding: var(--space-sm);
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius-md);
+        font-size: 1.1rem;
+        cursor: pointer;
+    }
+
+    .btn-secondary {
+        display: inline-block;
+        padding: var(--space-sm) var(--space-md);
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        color: var(--c-text-main);
+        border-radius: var(--radius-md);
+        text-decoration: none;
+        cursor: pointer;
+        margin-top: var(--space-md);
+        transition: background 0.2s;
+    }
+
+    .btn-secondary:hover {
+        background: var(--c-background);
+    }
+
+    .result-area {
+        margin-top: var(--space-xl);
+        text-align: center;
+        animation: fadeIn 0.5s ease;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .qr-wrapper {
+        background: white;
+        padding: var(--space-md);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-sm);
+        display: inline-block;
+    }
+
+    .qr-wrapper img {
+        max-width: 300px;
+        height: auto;
+        display: block;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+</style>

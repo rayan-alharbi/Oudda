@@ -1,0 +1,181 @@
+---
+
+---
+
+<div class="json-formatter">
+    <div class="controls">
+        <button id="format-btn" class="btn-primary">تنسيق (Beautify)</button>
+        <button id="minify-btn" class="btn-secondary">ضغط (Minify)</button>
+        <button id="clear-btn" class="btn-danger">مسح</button>
+    </div>
+
+    <div class="editor-area">
+        <div class="input-pane">
+            <label>JSON المدخل:</label>
+            <textarea id="json-input" placeholder='{"key": "value"}'></textarea>
+        </div>
+        <div class="output-pane">
+            <label>النتيجة:</label>
+            <textarea id="json-output" readonly></textarea>
+            <button id="copy-btn" class="copy-float" title="نسخ">📋</button>
+        </div>
+    </div>
+
+    <div id="status-msg" class="status"></div>
+</div>
+
+<script>
+    const input = document.getElementById("json-input") as HTMLTextAreaElement;
+    const output = document.getElementById(
+        "json-output",
+    ) as HTMLTextAreaElement;
+    const status = document.getElementById("status-msg");
+
+    function formatJSON() {
+        try {
+            const raw = input.value;
+            if (!raw.trim()) return;
+            const obj = JSON.parse(raw);
+            output.value = JSON.stringify(obj, null, 4);
+            status.textContent = "✅ تم التنسيق بنجاح";
+            status.className = "status success";
+        } catch (e) {
+            output.value = "";
+            status.textContent = "❌ خطأ في صيغة JSON: " + e.message;
+            status.className = "status error";
+        }
+    }
+
+    function minifyJSON() {
+        try {
+            const raw = input.value;
+            if (!raw.trim()) return;
+            const obj = JSON.parse(raw);
+            output.value = JSON.stringify(obj);
+            status.textContent = "✅ تم الضغط بنجاح";
+            status.className = "status success";
+        } catch (e) {
+            status.textContent = "❌ خطأ في صيغة JSON";
+            status.className = "status error";
+        }
+    }
+
+    document.getElementById("format-btn").addEventListener("click", formatJSON);
+    document.getElementById("minify-btn").addEventListener("click", minifyJSON);
+    document.getElementById("clear-btn").addEventListener("click", () => {
+        input.value = "";
+        output.value = "";
+        status.textContent = "";
+    });
+
+    document.getElementById("copy-btn").addEventListener("click", () => {
+        if (output.value) {
+            navigator.clipboard.writeText(output.value);
+            status.textContent = "تم النسخ";
+        }
+    });
+</script>
+
+<style>
+    .json-formatter {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .controls {
+        display: flex;
+        gap: var(--space-sm);
+        margin-bottom: var(--space-md);
+        flex-wrap: wrap;
+    }
+
+    .editor-area {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-md);
+        height: 500px;
+    }
+
+    @media (max-width: 768px) {
+        .editor-area {
+            grid-template-columns: 1fr;
+            height: auto;
+        }
+    }
+
+    .input-pane,
+    .output-pane {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+    label {
+        margin-bottom: var(--space-xs);
+        font-weight: bold;
+        color: var(--c-text-muted);
+    }
+
+    textarea {
+        flex: 1;
+        padding: var(--space-sm);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        font-family: monospace;
+        font-size: 0.9rem;
+        resize: vertical;
+        min-height: 200px;
+        background: var(--c-surface);
+    }
+
+    #json-output {
+        background: #f1f5f9;
+        color: #334155;
+    }
+
+    .btn-primary,
+    .btn-secondary,
+    .btn-danger {
+        padding: var(--space-sm) var(--space-md);
+        border: none;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    .btn-primary {
+        background: var(--c-primary);
+        color: white;
+    }
+    .btn-secondary {
+        background: var(--c-text-muted);
+        color: white;
+    }
+    .btn-danger {
+        background: #ef4444;
+        color: white;
+    }
+
+    .status {
+        margin-top: var(--space-sm);
+        font-weight: bold;
+        min-height: 24px;
+    }
+    .success {
+        color: #10b981;
+    }
+    .error {
+        color: #ef4444;
+    }
+
+    .copy-float {
+        position: absolute;
+        top: 35px;
+        left: 10px; /* RTL */
+        background: white;
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        padding: 4px;
+    }
+</style>

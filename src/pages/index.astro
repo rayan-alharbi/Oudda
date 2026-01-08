@@ -1,0 +1,104 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { tools } from "../config/tools";
+---
+
+<Layout title="الرئيسية">
+	<div class="container">
+		<div class="hero">
+			<h1>أدواتك اليومية في مكان واحد</h1>
+			<p>
+				مجموعة متكاملة من الأدوات الذكية لتحويل الوحدات، التواريخ،
+				والمزيد.
+			</p>
+		</div>
+
+		<div class="tools-grid">
+			{
+				tools.map((tool) => (
+					<a href={`/tool/${tool.id}`} class="tool-card">
+						<div class="card-icon">
+							{tool.icon === "scale"
+								? "⚖️"
+								: tool.icon === "calendar"
+									? "📅"
+									: tool.icon === "cake"
+										? "🎂"
+										: "📱"}
+						</div>
+						<h2>{tool.title}</h2>
+						<p>{tool.description}</p>
+					</a>
+				))
+			}
+		</div>
+	</div>
+</Layout>
+
+<style>
+	.hero {
+		text-align: center;
+		margin-bottom: var(--space-xl);
+		padding-block: var(--space-lg);
+	}
+
+	.hero h1 {
+		font-size: 2.5rem;
+		margin-bottom: var(--space-sm);
+		color: var(--c-text-main);
+	}
+
+	.hero p {
+		font-size: 1.125rem;
+		color: var(--c-text-muted);
+	}
+
+	.tools-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+		gap: var(--space-md);
+	}
+
+	.tool-card {
+		background: var(--c-surface);
+		padding: var(--space-lg);
+		border-radius: var(--radius-lg);
+		border: 1px solid var(--c-border);
+		transition:
+			transform 0.2s,
+			box-shadow 0.2s;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		color: inherit;
+	}
+
+	.tool-card:hover {
+		transform: translateY(-4px);
+		box-shadow: var(--shadow-md);
+		border-color: var(--c-primary);
+	}
+
+	.card-icon {
+		font-size: 3rem;
+		margin-bottom: var(--space-md);
+		background: var(--c-background);
+		width: 80px;
+		height: 80px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50%;
+	}
+
+	.tool-card h2 {
+		font-size: 1.25rem;
+		margin-bottom: var(--space-xs);
+	}
+
+	.tool-card p {
+		font-size: 0.875rem;
+		color: var(--c-text-muted);
+	}
+</style>

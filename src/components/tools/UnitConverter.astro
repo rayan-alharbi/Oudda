@@ -1,0 +1,275 @@
+---
+
+---
+
+<div class="unit-converter">
+    <div class="converter-controls">
+        <div class="control-group">
+            <label for="measure-select">نوع القياس</label>
+            <select id="measure-select" class="form-select">
+                <option value="length">📏 الطول</option>
+                <option value="weight">⚖️ الوزن</option>
+                <option value="temperature">🌡️ درجة الحرارة</option>
+                <option value="time">⏱️ الوقت</option>
+                <option value="area">📐 المساحة</option>
+                <option value="digital">💾 التخزين الرقمي</option>
+            </select>
+        </div>
+
+        <div class="conversion-row">
+            <div class="input-group">
+                <label for="from-value">القيمة</label>
+                <input
+                    type="number"
+                    id="from-value"
+                    value="1"
+                    class="form-input"
+                />
+            </div>
+
+            <div class="input-group">
+                <label for="from-unit">من</label>
+                <select id="from-unit" class="form-select unit-select"></select>
+            </div>
+        </div>
+
+        <div class="divider">
+            <span class="arrow">⬇</span>
+        </div>
+
+        <div class="conversion-row result-row">
+            <div class="input-group">
+                <label for="to-value">النتيجة</label>
+                <input
+                    type="text"
+                    id="to-value"
+                    readonly
+                    class="form-input result-input"
+                />
+            </div>
+
+            <div class="input-group">
+                <label for="to-unit">إلى</label>
+                <select id="to-unit" class="form-select unit-select"></select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Robust, zero-dependency conversion factors
+    // All base units are: Meter, Gram, Celsius, Second, Square Meter, Byte
+    const conversions = {
+        length: {
+            base: "m",
+            units: {
+                mm: { name: "مليمتر", factor: 0.001 },
+                cm: { name: "سنتيمتر", factor: 0.01 },
+                m: { name: "متر", factor: 1 },
+                km: { name: "كيلومتر", factor: 1000 },
+                in: { name: "بوصة", factor: 0.0254 },
+                ft: { name: "قدم", factor: 0.3048 },
+                yd: { name: "ياردة", factor: 0.9144 },
+                mi: { name: "ميل", factor: 1609.344 },
+            },
+        },
+        weight: {
+            base: "g",
+            units: {
+                mg: { name: "مليجرام", factor: 0.001 },
+                g: { name: "جرام", factor: 1 },
+                kg: { name: "كيلوجرام", factor: 1000 },
+                oz: { name: "أونصة", factor: 28.3495 },
+                lb: { name: "باوند", factor: 453.592 },
+                ton: { name: "طن", factor: 1000000 },
+            },
+        },
+        time: {
+            base: "s",
+            units: {
+                ms: { name: "ملي ثانية", factor: 0.001 },
+                s: { name: "ثانية", factor: 1 },
+                min: { name: "دقيقة", factor: 60 },
+                h: { name: "ساعة", factor: 3600 },
+                d: { name: "يوم", factor: 86400 },
+                wk: { name: "أسبوع", factor: 604800 },
+                mo: { name: "شهر (تقريبي)", factor: 2628000 },
+                y: { name: "سنة (تقريبي)", factor: 31536000 },
+            },
+        },
+        temperature: {
+            base: "C", // Special handling needed
+            units: {
+                C: { name: "درجة مئوية" },
+                F: { name: "فهرنهايت" },
+                K: { name: "كلفن" },
+            },
+        },
+        area: {
+            base: "m2",
+            units: {
+                cm2: { name: "سنتيمتر مربع", factor: 0.0001 },
+                m2: { name: "متر مربع", factor: 1 },
+                ha: { name: "هكتار", factor: 10000 },
+                km2: { name: "كيلومتر مربع", factor: 1000000 },
+                ft2: { name: "قدم مربع", factor: 0.092903 },
+                ac: { name: "فدان (Acre)", factor: 4046.86 },
+            },
+        },
+        digital: {
+            base: "B",
+            units: {
+                b: { name: "بت (Bit)", factor: 0.125 },
+                B: { name: "بايت (Byte)", factor: 1 },
+                KB: { name: "كيلوبايت", factor: 1024 },
+                MB: { name: "ميجابايت", factor: 1048576 },
+                GB: { name: "جيجابايت", factor: 1073741824 },
+                TB: { name: "تيرابايت", factor: 1099511627776 },
+            },
+        },
+    };
+
+    const measureSelect = document.getElementById(
+        "measure-select",
+    ) as HTMLSelectElement;
+    const fromUnitSelect = document.getElementById(
+        "from-unit",
+    ) as HTMLSelectElement;
+    const toUnitSelect = document.getElementById(
+        "to-unit",
+    ) as HTMLSelectElement;
+    const fromValueInput = document.getElementById(
+        "from-value",
+    ) as HTMLInputElement;
+    const toValueInput = document.getElementById(
+        "to-value",
+    ) as HTMLInputElement;
+
+    function populateUnits() {
+        const type = measureSelect.value;
+        const data = conversions[type];
+
+        fromUnitSelect.innerHTML = "";
+        toUnitSelect.innerHTML = "";
+
+        Object.keys(data.units).forEach((key) => {
+            const unit = data.units[key];
+            const option1 = new Option(unit.name, key);
+            const option2 = new Option(unit.name, key);
+            fromUnitSelect.add(option1);
+            toUnitSelect.add(option2);
+        });
+
+        // Set defaults
+        toUnitSelect.selectedIndex = 1;
+        calculate();
+    }
+
+    function convertTemperature(value, from, to) {
+        if (from === to) return value;
+
+        // Convert input to Kelvin first
+        let kelvin;
+        if (from === "C") kelvin = value + 273.15;
+        else if (from === "F") kelvin = ((value - 32) * 5) / 9 + 273.15;
+        else kelvin = value;
+
+        // Convert Kelvin to target
+        if (to === "C") return kelvin - 273.15;
+        if (to === "F") return ((kelvin - 273.15) * 9) / 5 + 32;
+        return kelvin;
+    }
+
+    function calculate() {
+        const type = measureSelect.value;
+        const from = fromUnitSelect.value;
+        const to = toUnitSelect.value;
+        const value = parseFloat(fromValueInput.value);
+
+        if (isNaN(value)) {
+            toValueInput.value = "";
+            return;
+        }
+
+        let result;
+        if (type === "temperature") {
+            result = convertTemperature(value, from, to);
+        } else {
+            const data = conversions[type];
+            const baseValue = value * data.units[from].factor;
+            result = baseValue / data.units[to].factor;
+        }
+
+        // Smart formatting
+        if (Math.abs(result) < 0.0001 && result !== 0) {
+            toValueInput.value = result.toExponential(4);
+        } else {
+            toValueInput.value = parseFloat(result.toFixed(6)).toString(); // Strip trailing zeros
+        }
+    }
+
+    measureSelect.addEventListener("change", populateUnits);
+    fromUnitSelect.addEventListener("change", calculate);
+    toUnitSelect.addEventListener("change", calculate);
+    fromValueInput.addEventListener("input", calculate);
+
+    // Init
+    populateUnits();
+</script>
+
+<style>
+    .unit-converter {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .converter-controls {
+        background: var(--c-surface);
+        padding: var(--space-md);
+        border-radius: var(--radius-lg);
+    }
+
+    .control-group {
+        margin-bottom: var(--space-md);
+    }
+
+    .conversion-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-sm);
+    }
+
+    .result-row {
+        margin-top: var(--space-sm);
+    }
+
+    .form-input,
+    .form-select {
+        width: 100%;
+        padding: var(--space-sm);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        font-size: 1.1rem;
+        background: var(--c-background);
+    }
+
+    .result-input {
+        font-weight: bold;
+        color: var(--c-primary);
+        background: var(--c-background);
+        border-color: var(--c-primary);
+    }
+
+    label {
+        display: block;
+        margin-bottom: var(--space-xs);
+        font-size: 0.9rem;
+        color: var(--c-text-muted);
+    }
+
+    .divider {
+        text-align: center;
+        margin-block: var(--space-xs);
+        color: var(--c-text-muted);
+    }
+</style>

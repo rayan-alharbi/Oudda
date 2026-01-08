@@ -1,0 +1,84 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { tools } from "../../config/tools";
+
+export async function getStaticPaths() {
+    return tools.map((tool) => ({
+        params: { id: tool.id },
+        props: { tool },
+    }));
+}
+
+const { tool } = Astro.props;
+const ToolComponent = tool.component;
+---
+
+<Layout title={tool.title} description={tool.description}>
+    <div class="container">
+        <div class="tool-header">
+            <a href="/" class="back-link"> ← العودة للأدوات </a>
+            <h1>
+                <span class="icon"
+                    >{
+                        tool.icon === "scale"
+                            ? "⚖️"
+                            : tool.icon === "calendar"
+                              ? "📅"
+                              : tool.icon === "cake"
+                                ? "🎂"
+                                : "📱"
+                    }</span
+                >
+                {tool.title}
+            </h1>
+            <p class="description">{tool.description}</p>
+        </div>
+
+        <div class="tool-wrapper">
+            <ToolComponent />
+        </div>
+    </div>
+</Layout>
+
+<style>
+    .tool-header {
+        margin-bottom: var(--space-lg);
+        text-align: center;
+    }
+
+    .back-link {
+        display: inline-block;
+        margin-bottom: var(--space-sm);
+        color: var(--c-primary);
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+    }
+
+    h1 {
+        font-size: 2rem;
+        margin-bottom: var(--space-xs);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-xs);
+    }
+
+    .description {
+        color: var(--c-text-muted);
+        max-width: 600px;
+        margin-inline: auto;
+    }
+
+    .tool-wrapper {
+        background: var(--c-surface);
+        padding: var(--space-lg);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--c-border);
+        min-height: 400px;
+    }
+</style>
