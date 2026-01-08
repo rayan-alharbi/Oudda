@@ -1,0 +1,64 @@
+---
+
+---
+
+<div class="sql-tool">
+    <div class="pane">
+        <label>SQL غير منسق</label>
+        <textarea id="sql-in" placeholder="SELECT * FROM table WHERE id = 1"
+        ></textarea>
+    </div>
+    <div class="actions">
+        <button id="fmt-btn" class="btn-primary">تنسيق SQL ⬇</button>
+    </div>
+    <div class="pane">
+        <label>SQL منسق</label>
+        <textarea id="sql-out" readonly></textarea>
+    </div>
+</div>
+
+<script>
+    import { format } from "sql-formatter";
+
+    const inp = document.getElementById("sql-in") as HTMLTextAreaElement;
+    const out = document.getElementById("sql-out") as HTMLTextAreaElement;
+
+    document.getElementById("fmt-btn").addEventListener("click", () => {
+        try {
+            out.value = format(inp.value, { language: "sql", tabWidth: 2 });
+        } catch (e) {
+            out.value = "Error: " + e.message;
+        }
+    });
+</script>
+
+<style>
+    .sql-tool {
+        max-width: 800px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .pane {
+        display: flex;
+        flex-direction: column;
+    }
+    textarea {
+        height: 200px;
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        font-family: monospace;
+        resize: vertical;
+        margin-top: 5px;
+    }
+    .btn-primary {
+        padding: 10px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>

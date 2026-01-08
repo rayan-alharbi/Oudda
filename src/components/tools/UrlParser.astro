@@ -1,0 +1,151 @@
+---
+
+---
+
+<div class="url-parser">
+    <div class="input-grp">
+        <input
+            type="text"
+            id="url-in"
+            placeholder="https://www.example.com:8080/path?query=1#hash"
+        />
+        <button id="parse-btn" class="btn-primary">تحليل</button>
+    </div>
+
+    <div class="results hidden" id="results">
+        <div class="item">
+            <label>Protocol:</label>
+            <span id="r-proto"></span>
+        </div>
+        <div class="item"><label>Host:</label> <span id="r-host"></span></div>
+        <div class="item">
+            <label>Hostname:</label>
+            <span id="r-hname"></span>
+        </div>
+        <div class="item"><label>Port:</label> <span id="r-port"></span></div>
+        <div class="item"><label>Path:</label> <span id="r-path"></span></div>
+        <div class="item">
+            <label>Search:</label>
+            <span id="r-search"></span>
+        </div>
+        <div class="item"><label>Hash:</label> <span id="r-hash"></span></div>
+        <div class="item">
+            <label>Origin:</label>
+            <span id="r-origin"></span>
+        </div>
+
+        <div class="params-box hidden" id="params-box">
+            <h4>Parameters</h4>
+            <ul id="params-list"></ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    const inp = document.getElementById("url-in") as HTMLInputElement;
+    const res = document.getElementById("results");
+    const pList = document.getElementById("params-list");
+    const pBox = document.getElementById("params-box");
+
+    document.getElementById("parse-btn").addEventListener("click", () => {
+        try {
+            const url = new URL(inp.value);
+            res.classList.remove("hidden");
+
+            document.getElementById("r-proto").textContent = url.protocol;
+            document.getElementById("r-host").textContent = url.host;
+            document.getElementById("r-hname").textContent = url.hostname;
+            document.getElementById("r-port").textContent = url.port || "-";
+            document.getElementById("r-path").textContent = url.pathname;
+            document.getElementById("r-search").textContent = url.search;
+            document.getElementById("r-hash").textContent = url.hash;
+            document.getElementById("r-origin").textContent = url.origin;
+
+            // Params
+            pList.innerHTML = "";
+            let hasParams = false;
+            url.searchParams.forEach((val, key) => {
+                hasParams = true;
+                const li = document.createElement("li");
+                li.textContent = `${key}: ${val}`;
+                pList.appendChild(li);
+            });
+
+            if (hasParams) pBox.classList.remove("hidden");
+            else pBox.classList.add("hidden");
+        } catch (e) {
+            alert("رابط غير صحيح (Invalid URL)");
+        }
+    });
+</script>
+
+<style>
+    .url-parser {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .input-grp {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 4px;
+    }
+    .btn-primary {
+        padding: 10px 20px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .results {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        background: var(--c-surface);
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid var(--c-border);
+    }
+    .item {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
+    }
+    .item label {
+        font-weight: bold;
+        color: var(--c-text-muted);
+    }
+    .item span {
+        font-family: monospace;
+        color: var(--c-primary);
+        word-break: break-all;
+    }
+
+    .params-box {
+        margin-top: 10px;
+        border-top: 2px solid var(--c-border);
+        padding-top: 10px;
+    }
+    .params-box ul {
+        list-style: none;
+        padding: 0;
+    }
+    .params-box li {
+        font-family: monospace;
+        background: var(--c-background);
+        padding: 5px;
+        margin-bottom: 2px;
+        border-radius: 4px;
+    }
+    .hidden {
+        display: none;
+    }
+</style>

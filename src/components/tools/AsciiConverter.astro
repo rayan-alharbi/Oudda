@@ -1,0 +1,61 @@
+---
+
+---
+
+<div class="ascii-tool">
+    <div class="row">
+        <input type="text" id="char-in" placeholder="أ" maxlength="1" />
+        <span>⬅➡</span>
+        <input type="number" id="code-in" placeholder="1571" />
+    </div>
+    <div class="info">أدخل حرفاً أو كود ASCII/Unicode للتحويل المباشر.</div>
+</div>
+
+<script>
+    const char = document.getElementById("char-in") as HTMLInputElement;
+    const code = document.getElementById("code-in") as HTMLInputElement;
+
+    char.addEventListener("input", () => {
+        if (char.value.length > 0) {
+            code.value = char.value.charCodeAt(0).toString();
+        } else {
+            code.value = "";
+        }
+    });
+
+    code.addEventListener("input", () => {
+        const val = parseInt(code.value);
+        if (!isNaN(val)) {
+            char.value = String.fromCharCode(val);
+        } else {
+            char.value = "";
+        }
+    });
+</script>
+
+<style>
+    .ascii-tool {
+        max-width: 400px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+    input {
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        font-size: 1.5rem;
+        text-align: center;
+        width: 100px;
+    }
+    .info {
+        color: var(--c-text-muted);
+        font-size: 0.9rem;
+    }
+</style>

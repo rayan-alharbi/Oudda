@@ -1,0 +1,118 @@
+---
+
+---
+
+<div class="loan-tool">
+    <div class="form">
+        <label>مبلغ القرض (Principal)</label>
+        <input type="number" id="amount" placeholder="100000" value="50000" />
+
+        <label>الفائدة السنوية % (Rate)</label>
+        <input type="number" id="rate" placeholder="5.5" value="5" step="0.1" />
+
+        <label>مدة القرض بالسنوات (Term)</label>
+        <input type="number" id="years" placeholder="5" value="5" />
+
+        <button id="calc-btn" class="btn-primary">احسب</button>
+    </div>
+
+    <div class="result-box">
+        <div class="res-item">
+            <span>القسط الشهري</span>
+            <strong id="monthly">0</strong>
+        </div>
+        <div class="res-item">
+            <span>إجمالي الفائدة</span>
+            <strong id="total-int">0</strong>
+        </div>
+        <div class="res-item">
+            <span>الإجمالي المدفوع</span>
+            <strong id="total-pay">0</strong>
+        </div>
+    </div>
+</div>
+
+<script>
+    const amount = document.getElementById("amount") as HTMLInputElement;
+    const rate = document.getElementById("rate") as HTMLInputElement;
+    const years = document.getElementById("years") as HTMLInputElement;
+
+    function format(num) {
+        return num.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        });
+    }
+
+    document.getElementById("calc-btn").addEventListener("click", () => {
+        const p = parseFloat(amount.value);
+        const r = parseFloat(rate.value) / 100 / 12;
+        const n = parseFloat(years.value) * 12;
+
+        if (p > 0 && r > 0 && n > 0) {
+            // PMT = P * r * (1 + r)^n / ((1 + r)^n - 1)
+            const pmt = (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+            const total = pmt * n;
+            const interest = total - p;
+
+            document.getElementById("monthly").textContent = format(pmt);
+            document.getElementById("total-pay").textContent = format(total);
+            document.getElementById("total-int").textContent = format(interest);
+        }
+    });
+
+    document.getElementById("calc-btn").click();
+</script>
+
+<style>
+    .loan-tool {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    input {
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 4px;
+    }
+    .btn-primary {
+        padding: 12px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .result-box {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: 8px;
+        padding: 20px;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+        text-align: center;
+    }
+    @media (max-width: 500px) {
+        .result-box {
+            grid-template-columns: 1fr;
+        }
+    }
+    .res-item span {
+        display: block;
+        font-size: 0.9rem;
+        color: var(--c-text-muted);
+        margin-bottom: 5px;
+    }
+    .res-item strong {
+        color: var(--c-primary);
+        font-size: 1.2rem;
+    }
+</style>

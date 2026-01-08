@@ -1,0 +1,72 @@
+---
+
+---
+
+<div class="binary-tool">
+    <div class="col">
+        <label>نص (Text)</label>
+        <textarea id="text-in" placeholder="Hello"></textarea>
+    </div>
+    <div class="actions">
+        <button id="to-bin">إلى ثنائي ⬇</button>
+        <button id="to-txt">إلى نص ⬆</button>
+    </div>
+    <div class="col">
+        <label>ثنائي (Binary)</label>
+        <textarea id="bin-in" placeholder="01001000 01100101..."></textarea>
+    </div>
+</div>
+
+<script>
+    const txt = document.getElementById("text-in") as HTMLTextAreaElement;
+    const bin = document.getElementById("bin-in") as HTMLTextAreaElement;
+
+    document.getElementById("to-bin").addEventListener("click", () => {
+        bin.value = txt.value
+            .split("")
+            .map((c) => c.charCodeAt(0).toString(2).padStart(8, "0"))
+            .join(" ");
+    });
+
+    document.getElementById("to-txt").addEventListener("click", () => {
+        try {
+            txt.value = bin.value
+                .split(" ")
+                .map((b) => String.fromCharCode(parseInt(b, 2)))
+                .join("");
+        } catch (e) {
+            txt.value = "Error";
+        }
+    });
+</script>
+
+<style>
+    .binary-tool {
+        max-width: 600px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    textarea {
+        height: 150px;
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        font-family: monospace;
+        resize: vertical;
+    }
+    .actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+    button {
+        padding: 8px 16px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>

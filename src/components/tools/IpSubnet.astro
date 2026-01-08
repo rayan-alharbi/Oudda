@@ -1,0 +1,184 @@
+---
+
+---
+
+<div class="ip-tool">
+    <div class="row">
+        <div class="grp">
+            <label>IP Address</label>
+            <input type="text" id="ip" value="192.168.1.1" />
+        </div>
+        <div class="grp">
+            <label>CIDR / Mask</label>
+            <select id="cidr">
+                <option value="24">/24 (255.255.255.0)</option>
+                <option value="16">/16 (255.255.0.0)</option>
+                <option value="8">/8 (255.0.0.0)</option>
+                <!-- Add more as needed -->
+                {
+                    Array.from({ length: 32 }, (_, i) => i + 1).map(
+                        (n) => `<option value="${n}">/${n}</option>`,
+                    )
+                }
+            </select>
+        </div>
+        <button id="calc-btn" class="btn-primary">احسب</button>
+    </div>
+
+    <div class="results hidden" id="res">
+        <div class="item">
+            <label>Network Address:</label>
+            <span id="r-net">-</span>
+        </div>
+        <div class="item">
+            <label>Broadcast Address:</label>
+            <span id="r-broad">-</span>
+        </div>
+        <div class="item">
+            <label>First Usable:</label>
+            <span id="r-first">-</span>
+        </div>
+        <div class="item">
+            <label>Last Usable:</label>
+            <span id="r-last">-</span>
+        </div>
+        <div class="item">
+            <label>Total Hosts:</label>
+            <span id="r-hosts">-</span>
+        </div>
+        <div class="item">
+            <label>Usable Hosts:</label>
+            <span id="r-usable">-</span>
+        </div>
+        <div class="item">
+            <label>Subnet Mask:</label>
+            <span id="r-mask">-</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    const ipIn = document.getElementById("ip") as HTMLInputElement;
+    const cidrIn = document.getElementById("cidr") as HTMLSelectElement;
+    const res = document.getElementById("res");
+
+    function long2ip(long) {
+        return (
+            (long >>> 24) +
+            "." +
+            ((long >> 16) & 255) +
+            "." +
+            ((long >> 8) & 255) +
+            "." +
+            (long & 255)
+        );
+    }
+
+    function ip2long(ip) {
+        return (
+            ip
+                .split(".")
+                .reduce((acc, octet) => (acc << 8) + parseInt(octet, 10), 0) >>>
+            0
+        );
+    }
+
+    document.getElementById("calc-btn").addEventListener("click", () => {
+        try {
+            const ip = ip2long(ipIn.value);
+            const maskBits = parseInt(cidrIn.value);
+
+            const mask = ~((1 << (32 - maskBits)) - 1);
+            const net = ip & mask;
+            const broad = net | (~mask >>> 0);
+
+            res.classList.remove("hidden");
+            document.getElementById("r-net").textContent = long2ip(net);
+            document.getElementById("r-broad").textContent = long2ip(broad);
+            document.getElementById("r-first").textContent = long2ip(net + 1);
+            document.getElementById("r-last").textContent = long2ip(broad - 1);
+
+            const total = Math.pow(2, 32 - maskBits);
+            document.getElementById("r-hosts").textContent =
+                total.toLocaleString();
+            document.getElementById("r-usable").textContent = (
+                total - 2 > 0 ? total - 2 : 0
+            ).toLocaleString();
+            document.getElementById("r-mask").textContent = long2ip(mask);
+        } catch (e) {
+            alert("عنوان IP غير صحيح");
+        }
+    });
+
+    // Populate Select Options properly via JS to avoid Astro syntax issues inside string template
+    const sel = document.getElementById("cidr");
+    sel.innerHTML = "";
+    for (let i = 1; i <= 32; i++) {
+        const opt = document.createElement("option");
+        opt.value = i.toString();
+        opt.textContent = `/${i}`;
+        if (i === 24) opt.selected = true;
+        sel.appendChild(opt);
+    }
+</script>
+
+<style>
+    .ip-tool {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .row {
+        display: flex;
+        gap: 10px;
+        align-items: flex-end;
+        margin-bottom: 20px;
+    }
+    .grp {
+        flex: 1;
+    }
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    input,
+    select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 4px;
+    }
+    .btn-primary {
+        padding: 10px 20px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        height: 42px;
+    }
+
+    .results {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: 8px;
+        padding: 20px;
+    }
+    .item {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #eee;
+        padding: 8px 0;
+    }
+    .item label {
+        color: var(--c-text-muted);
+    }
+    .item span {
+        font-family: monospace;
+        font-weight: bold;
+        color: var(--c-text-main);
+    }
+    .hidden {
+        display: none;
+    }
+</style>

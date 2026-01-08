@@ -1,0 +1,120 @@
+---
+
+---
+
+<div class="barcode-tool">
+    <div class="inputs">
+        <input
+            type="text"
+            id="text-in"
+            value="123456789"
+            placeholder="Code Content"
+        />
+        <select id="fmt">
+            <option value="CODE128">CODE128</option>
+            <option value="EAN13">EAN13</option>
+            <option value="EAN8">EAN8</option>
+            <option value="UPC">UPC</option>
+            <option value="CODE39">CODE39</option>
+            <option value="ITF14">ITF14</option>
+            <option value="MSI">MSI</option>
+            <option value="pharmacode">Pharmacode</option>
+        </select>
+        <button id="gen-btn" class="btn-primary">توليد</button>
+    </div>
+
+    <div class="output">
+        <svg id="barcode"></svg>
+    </div>
+
+    <button id="dl-btn" class="btn-sec">تحميل (SVG)</button>
+</div>
+
+<script>
+    import JsBarcode from "jsbarcode";
+
+    const inp = document.getElementById("text-in") as HTMLInputElement;
+    const fmt = document.getElementById("fmt") as HTMLSelectElement;
+
+    function gen() {
+        try {
+            JsBarcode("#barcode", inp.value, {
+                format: fmt.value,
+                lineColor: "#000",
+                width: 2,
+                height: 100,
+                displayValue: true,
+            });
+        } catch (e) {
+            // alert("Invalid input for this format");
+        }
+    }
+
+    document.getElementById("gen-btn").addEventListener("click", gen);
+
+    document.getElementById("dl-btn").addEventListener("click", () => {
+        const svg = document.querySelector("#barcode");
+        const data = new XMLSerializer().serializeToString(svg);
+        const blob = new Blob([data], { type: "image/svg+xml;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "barcode.svg";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    });
+
+    // Init
+    gen();
+</script>
+
+<style>
+    .barcode-tool {
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .inputs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    input {
+        flex: 2;
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 4px;
+    }
+    select {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 4px;
+    }
+    .btn-primary {
+        padding: 10px 20px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .output {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        margin-bottom: 20px;
+        display: inline-block;
+        min-width: 300px;
+    }
+    .btn-sec {
+        padding: 8px 16px;
+        background: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>

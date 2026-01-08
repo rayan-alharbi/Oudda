@@ -1,0 +1,121 @@
+---
+
+---
+
+<div class="device-info">
+    <div class="info-card">
+        <h3>معلومات جهازك</h3>
+        <div class="grid">
+            <div class="row">
+                <label>Browser:</label>
+                <span id="d-browser">-</span>
+            </div>
+            <div class="row">
+                <label>OS:</label>
+                <span id="d-os">-</span>
+            </div>
+            <div class="row">
+                <label>Language:</label>
+                <span id="d-lang">-</span>
+            </div>
+            <div class="row">
+                <label>Touch Screen:</label>
+                <span id="d-touch">-</span>
+            </div>
+            <div class="row">
+                <label>Cookies Enabled:</label>
+                <span id="d-cookie">-</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="raw-box">
+        <label>User Agent String:</label>
+        <code id="d-ua"></code>
+    </div>
+</div>
+
+<script>
+    const ua = navigator.userAgent;
+    document.getElementById("d-ua").textContent = ua;
+    document.getElementById("d-lang").textContent = navigator.language;
+    document.getElementById("d-cookie").textContent = navigator.cookieEnabled
+        ? "Yes"
+        : "No";
+    document.getElementById("d-touch").textContent =
+        navigator.maxTouchPoints > 0 ? "Yes" : "No";
+
+    // Simple parser
+    let browser = "Unknown";
+    if (ua.indexOf("Firefox") > -1) browser = "Firefox";
+    else if (ua.indexOf("SamsungBrowser") > -1) browser = "Samsung Internet";
+    else if (ua.indexOf("Opera") > -1 || ua.indexOf("OPR") > -1)
+        browser = "Opera";
+    else if (ua.indexOf("Trident") > -1) browser = "Internet Explorer";
+    else if (ua.indexOf("Edge") > -1) browser = "Edge";
+    else if (ua.indexOf("Chrome") > -1) browser = "Chrome";
+    else if (ua.indexOf("Safari") > -1) browser = "Safari";
+    document.getElementById("d-browser").textContent = browser;
+
+    let os = "Unknown";
+    if (ua.indexOf("Win") != -1) os = "Windows";
+    if (ua.indexOf("Mac") != -1) os = "MacOS";
+    if (ua.indexOf("Linux") != -1) os = "Linux";
+    if (ua.indexOf("Android") != -1) os = "Android";
+    if (ua.indexOf("like Mac") != -1) os = "iOS";
+    document.getElementById("d-os").textContent = os;
+</script>
+
+<style>
+    .device-info {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .info-card {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    h3 {
+        margin-top: 0;
+        border-bottom: 1px solid var(--c-border);
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+    }
+    .row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .row:last-child {
+        border-bottom: none;
+    }
+    label {
+        font-weight: bold;
+        color: var(--c-text-muted);
+    }
+    span {
+        font-weight: bold;
+        color: var(--c-primary);
+    }
+
+    .raw-box {
+        padding: 15px;
+        background: #1e293b;
+        color: #fff;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        word-break: break-all;
+    }
+    .raw-box label {
+        display: block;
+        margin-bottom: 5px;
+        color: #94a3b8;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+    }
+</style>

@@ -35,6 +35,26 @@ import GradientGenerator from '../components/tools/GradientGenerator.astro';
 import SignaturePad from '../components/tools/SignaturePad.astro';
 import PrimeChecker from '../components/tools/PrimeChecker.astro';
 import Scratchpad from '../components/tools/Scratchpad.astro';
+import BinaryConverter from '../components/tools/BinaryConverter.astro';
+import HexConverter from '../components/tools/HexConverter.astro';
+import AsciiConverter from '../components/tools/AsciiConverter.astro';
+import RomanConverter from '../components/tools/RomanConverter.astro';
+import MorseConverter from '../components/tools/MorseConverter.astro';
+import Rot13Cipher from '../components/tools/Rot13Cipher.astro';
+import HtmlEntityEncoder from '../components/tools/HtmlEntityEncoder.astro';
+import UrlParser from '../components/tools/UrlParser.astro';
+import DeviceInfo from '../components/tools/DeviceInfo.astro';
+import ScreenInfo from '../components/tools/ScreenInfo.astro';
+import LoanCalculator from '../components/tools/LoanCalculator.astro';
+import SalaryConverter from '../components/tools/SalaryConverter.astro';
+import VatCalculator from '../components/tools/VatCalculator.astro';
+import DiscountCalculator from '../components/tools/DiscountCalculator.astro';
+import InterestCalculator from '../components/tools/InterestCalculator.astro';
+import CssMinifier from '../components/tools/CssMinifier.astro';
+import SqlFormatter from '../components/tools/SqlFormatter.astro';
+import CsvJsonConverter from '../components/tools/CsvJsonConverter.astro';
+import IpSubnet from '../components/tools/IpSubnet.astro';
+import BarcodeGenerator from '../components/tools/BarcodeGenerator.astro';
 
 export interface ToolConfig {
     id: string;
@@ -91,4 +111,28 @@ export const tools: ToolConfig[] = [
     { id: 'signature-pad', title: 'لوحة التوقيع', description: 'رسم وحفظ التواقيع.', icon: 'draw', component: SignaturePad },
     { id: 'prime-checker', title: 'فحص الأعداد الأولية', description: 'هل الرقم أولي؟', icon: 'functions', component: PrimeChecker },
     { id: 'memo-pad', title: 'مذكرتي', description: 'تدوين ملاحظات سريعة.', icon: 'note', component: Scratchpad },
+
+    // Mega Expansion 4 (Batch 5 - 10 Tools)
+    { id: 'binary-tool', title: 'محول ثنائي', description: 'نص <-> ثنائي.', icon: 'memory', component: BinaryConverter },
+    { id: 'hex-tool', title: 'محول سداسي عشر', description: 'نص <-> Hex.', icon: 'tag', component: HexConverter },
+    { id: 'ascii-tool', title: 'جدول ASCII', description: 'أكواد الأحرف.', icon: 'abc', component: AsciiConverter },
+    { id: 'roman-tool', title: 'أرقام رومانية', description: 'تحويل للأرقام الرومانية.', icon: 'museum', component: RomanConverter },
+    { id: 'morse-tool', title: 'مترجم مورس', description: 'شفرة مورس.', icon: 'graphic_eq', component: MorseConverter },
+    { id: 'rot13', title: 'شفرة ROT13', description: 'تشفير بسيط.', icon: 'lock_open', component: Rot13Cipher },
+    { id: 'html-enc', title: 'تشفير HTML', description: 'تحويل الرموز لـ Entities.', icon: 'code_off', component: HtmlEntityEncoder },
+    { id: 'url-parser', title: 'محلل الروابط', description: 'تفصيل أجزاء URL.', icon: 'link_off', component: UrlParser },
+    { id: 'device-info', title: 'معلومات الجهاز', description: 'المتصفح والنظام.', icon: 'devices', component: DeviceInfo },
+    { id: 'screen-info', title: 'معلومات الشاشة', description: 'الدقة والأبعاد.', icon: 'screenshot_monitor', component: ScreenInfo },
+
+    // Mega Expansion 5 (Batch 6 - 10 Tools)
+    { id: 'loan-calc', title: 'حاسبة القروض', description: 'حساب الأقساط والفوائد.', icon: 'account_balance', component: LoanCalculator },
+    { id: 'salary-calc', title: 'حاسبة الراتب', description: 'تحويل الساعة لراتب سنوي.', icon: 'attach_money', component: SalaryConverter },
+    { id: 'vat-calc', title: 'حاسبة الضريبة', description: 'حساب ضريبة القيمة المضافة.', icon: 'price_check', component: VatCalculator },
+    { id: 'discount-calc', title: 'حاسبة الخصم', description: 'حساب السعر بعد التخفيض.', icon: 'local_offer', component: DiscountCalculator },
+    { id: 'interest-calc', title: 'الفائدة المركبة', description: 'حساب عائد الاستثمار.', icon: 'trending_up', component: InterestCalculator },
+    { id: 'css-min', title: 'ضغط CSS', description: 'تصغير ملفات CSS.', icon: 'compress', component: CssMinifier },
+    { id: 'sql-fmt', title: 'تنسيق SQL', description: 'تحسين قراءة كود SQL.', icon: 'storage', component: SqlFormatter },
+    { id: 'csv-json', title: 'محول CSV/JSON', description: 'تحويل جداول البيانات.', icon: 'table_view', component: CsvJsonConverter },
+    { id: 'ip-subnet', title: 'الشبكات الفرعية', description: 'حساب Subnet و CIDR.', icon: 'router', component: IpSubnet },
+    { id: 'barcode-gen', title: 'توليد الباركود', description: 'إنشاء باركود للمنتجات.', icon: 'qr_code_2', component: BarcodeGenerator },
 ];

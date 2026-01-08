@@ -1,0 +1,76 @@
+---
+
+---
+
+<div class="css-min">
+    <label>CSS Code</label>
+    <textarea id="css-in" placeholder="body { color: red; }"></textarea>
+
+    <div class="actions">
+        <button id="min-btn" class="btn-primary">ضغط (Minify)</button>
+        <button id="fmt-btn" class="btn-sec">تنسيق (Format)</button>
+    </div>
+
+    <label>Result</label>
+    <textarea id="css-out" readonly></textarea>
+</div>
+
+<script>
+    const inp = document.getElementById("css-in") as HTMLTextAreaElement;
+    const out = document.getElementById("css-out") as HTMLTextAreaElement;
+
+    document.getElementById("min-btn").addEventListener("click", () => {
+        let css = inp.value;
+        css = css.replace(/\/\*[\s\S]*?\*\//g, ""); // comments
+        css = css.replace(/\s+/g, " "); // spaces
+        css = css.replace(/\s*([{}:;,])\s*/g, "$1"); // around punctuations
+        css = css.replace(/;}/g, "}"); // last semicolon
+        out.value = css.trim();
+    });
+
+    document.getElementById("fmt-btn").addEventListener("click", () => {
+        let css = inp.value;
+        css = css.replace(/\s+/g, " ");
+        css = css.replace(/{\s*/g, " {\n  ");
+        css = css.replace(/;\s*/g, ";\n  ");
+        css = css.replace(/\s*}/g, "\n}\n");
+        out.value = css.trim();
+    });
+</script>
+
+<style>
+    .css-min {
+        max-width: 800px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    textarea {
+        height: 200px;
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        font-family: monospace;
+        resize: vertical;
+    }
+    .actions {
+        display: flex;
+        gap: 10px;
+    }
+    button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        flex: 1;
+    }
+    .btn-primary {
+        background: var(--c-primary);
+        color: white;
+    }
+    .btn-sec {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+    }
+</style>

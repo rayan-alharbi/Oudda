@@ -1,0 +1,91 @@
+---
+
+---
+
+<div class="discount-tool">
+    <div class="row">
+        <div class="grp">
+            <label>السعر الأصلي</label>
+            <input type="number" id="price" value="1000" />
+        </div>
+        <div class="grp">
+            <label>نسبة الخصم %</label>
+            <input type="number" id="disc" value="20" />
+        </div>
+    </div>
+
+    <div class="res">
+        <div class="tag">
+            <span>السعر الجديد</span>
+            <strong id="new-price">800</strong>
+        </div>
+        <div class="tag sec">
+            <span>مقدار التوفير</span>
+            <strong id="savings">200</strong>
+        </div>
+    </div>
+</div>
+
+<script>
+    const price = document.getElementById("price") as HTMLInputElement;
+    const disc = document.getElementById("disc") as HTMLInputElement;
+
+    function update() {
+        const p = parseFloat(price.value) || 0;
+        const d = parseFloat(disc.value) || 0;
+
+        const save = p * (d / 100);
+        const final = p - save;
+
+        document.getElementById("new-price").textContent = final.toFixed(2);
+        document.getElementById("savings").textContent = save.toFixed(2);
+    }
+
+    [price, disc].forEach((el) => el.addEventListener("input", update));
+    update();
+</script>
+
+<style>
+    .discount-tool {
+        max-width: 500px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    .grp {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        text-align: right;
+    }
+    input {
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 4px;
+    }
+
+    .res {
+        display: flex;
+        gap: 10px;
+    }
+    .tag {
+        flex: 1;
+        background: var(--c-primary);
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    .tag.sec {
+        background: #10b981;
+    }
+    strong {
+        font-size: 1.5rem;
+    }
+</style>

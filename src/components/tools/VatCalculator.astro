@@ -1,0 +1,124 @@
+---
+
+---
+
+<div class="vat-tool">
+    <div class="controls">
+        <label>المبلغ (Amount)</label>
+        <input type="number" id="amount" value="100" />
+
+        <label>نسبة الضريبة % (Tax Rate)</label>
+        <input type="number" id="rate" value="15" />
+    </div>
+
+    <div class="grid">
+        <div class="box add">
+            <h4>إضافة الضريبة (+ Tax)</h4>
+            <div class="line">صافي: <span id="add-net">100</span></div>
+            <div class="line">الضريبة: <span id="add-tax">15</span></div>
+            <div class="line total">
+                الإجمالي: <span id="add-total">115</span>
+            </div>
+        </div>
+
+        <div class="box sub">
+            <h4>خصم الضريبة (- Tax)</h4>
+            <div class="line">الإجمالي: <span id="sub-total">100</span></div>
+            <div class="line">الضريبة: <span id="sub-tax">13.04</span></div>
+            <div class="line total">صافي: <span id="sub-net">86.96</span></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const amt = document.getElementById("amount") as HTMLInputElement;
+    const rate = document.getElementById("rate") as HTMLInputElement;
+
+    function fmt(n) {
+        return n.toFixed(2);
+    }
+
+    function update() {
+        const a = parseFloat(amt.value) || 0;
+        const r = parseFloat(rate.value) || 0;
+
+        // Add Tax
+        const tax1 = a * (r / 100);
+        document.getElementById("add-net").textContent = fmt(a);
+        document.getElementById("add-tax").textContent = fmt(tax1);
+        document.getElementById("add-total").textContent = fmt(a + tax1);
+
+        // Remove Tax (Reverse)
+        // Total = Net * (1 + r) => Net = Total / (1+r)
+        const net2 = a / (1 + r / 100);
+        const tax2 = a - net2;
+        document.getElementById("sub-total").textContent = fmt(a);
+        document.getElementById("sub-tax").textContent = fmt(tax2);
+        document.getElementById("sub-net").textContent = fmt(net2);
+    }
+
+    [amt, rate].forEach((el) => el.addEventListener("input", update));
+    update();
+</script>
+
+<style>
+    .vat-tool {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    input {
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 4px;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+    @media (max-width: 500px) {
+        .grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .box {
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid var(--c-border);
+    }
+    .box.add {
+        background: #f0fdf4;
+        border-color: #bbf7d0;
+    }
+    .box.sub {
+        background: #eff6ff;
+        border-color: #bfdbfe;
+    }
+
+    h4 {
+        margin-top: 0;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+    .line {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+        color: var(--c-text-muted);
+    }
+    .line.total {
+        border-top: 1px solid #ccc;
+        padding-top: 5px;
+        font-weight: bold;
+        color: var(--c-text-main);
+        font-size: 1.1rem;
+    }
+</style>

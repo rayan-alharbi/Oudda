@@ -1,0 +1,101 @@
+---
+
+---
+
+<div class="csv-tool">
+    <div class="pane">
+        <label>CSV</label>
+        <textarea id="csv-in" placeholder="id,name\n1,John"></textarea>
+    </div>
+    <div class="mid">
+        <button id="to-json">إلى JSON ➡</button>
+        <button id="to-csv">⬅ إلى CSV</button>
+    </div>
+    <div class="pane">
+        <label>JSON</label>
+        <textarea id="json-in" placeholder='[{"id": "1", "name": "John"}]'
+        ></textarea>
+    </div>
+</div>
+
+<script>
+    import Papa from "papaparse";
+
+    const cin = document.getElementById("csv-in") as HTMLTextAreaElement;
+    const jin = document.getElementById("json-in") as HTMLTextAreaElement;
+
+    document.getElementById("to-json").addEventListener("click", () => {
+        Papa.parse(cin.value, {
+            header: true,
+            skipEmptyLines: true,
+            complete: function (results) {
+                jin.value = JSON.stringify(results.data, null, 2);
+            },
+            error: function (err) {
+                jin.value = "Error: " + err;
+            },
+        });
+    });
+
+    document.getElementById("to-csv").addEventListener("click", () => {
+        try {
+            const data = JSON.parse(jin.value);
+            const csv = Papa.unparse(data);
+            cin.value = csv;
+        } catch (e) {
+            cin.value = "Invalid JSON: " + e.message;
+        }
+    });
+</script>
+
+<style>
+    .csv-tool {
+        display: flex;
+        gap: 10px;
+        max-width: 1000px;
+        margin: 0 auto;
+        height: 500px;
+    }
+    @media (max-width: 600px) {
+        .csv-tool {
+            flex-direction: column;
+            height: auto;
+        }
+    }
+
+    .pane {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    textarea {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        font-family: monospace;
+        resize: none;
+        min-height: 200px;
+    }
+
+    .mid {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 10px;
+    }
+    @media (max-width: 600px) {
+        .mid {
+            flex-direction: row;
+        }
+    }
+
+    button {
+        padding: 10px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>

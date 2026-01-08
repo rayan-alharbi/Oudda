@@ -1,0 +1,121 @@
+---
+
+---
+
+<div class="roman-tool">
+    <div class="group">
+        <label>رقم (Number)</label>
+        <input type="number" id="num-in" placeholder="2023" />
+    </div>
+
+    <div class="arrow">⬇⬆</div>
+
+    <div class="group">
+        <label>روماني (Roman)</label>
+        <input
+            type="text"
+            id="rom-in"
+            placeholder="MMXXIII"
+            style="text-transform: uppercase;"
+        />
+    </div>
+</div>
+
+<script>
+    const nIn = document.getElementById("num-in") as HTMLInputElement;
+    const rIn = document.getElementById("rom-in") as HTMLInputElement;
+
+    function toRoman(num) {
+        const lookup = {
+            M: 1000,
+            CM: 900,
+            D: 500,
+            CD: 400,
+            C: 100,
+            XC: 90,
+            L: 50,
+            XL: 40,
+            X: 10,
+            IX: 9,
+            V: 5,
+            IV: 4,
+            I: 1,
+        };
+        let roman = "";
+        for (let i in lookup) {
+            while (num >= lookup[i]) {
+                roman += i;
+                num -= lookup[i];
+            }
+        }
+        return roman;
+    }
+
+    function fromRoman(roman) {
+        const lookup = {
+            M: 1000,
+            CM: 900,
+            D: 500,
+            CD: 400,
+            C: 100,
+            XC: 90,
+            L: 50,
+            XL: 40,
+            X: 10,
+            IX: 9,
+            V: 5,
+            IV: 4,
+            I: 1,
+        };
+        roman = roman.toUpperCase();
+        let num = 0;
+        for (let i in lookup) {
+            while (roman.indexOf(i) === 0) {
+                num += lookup[i];
+                roman = roman.replace(i, "");
+            }
+        }
+        return num;
+    }
+
+    nIn.addEventListener("input", () => {
+        const val = parseInt(nIn.value);
+        if (!isNaN(val) && val > 0 && val < 4000) {
+            rIn.value = toRoman(val);
+        } else {
+            rIn.value = "";
+        }
+    });
+
+    rIn.addEventListener("input", () => {
+        const val = fromRoman(rIn.value);
+        if (val > 0) nIn.value = val.toString();
+        else nIn.value = "";
+    });
+</script>
+
+<style>
+    .roman-tool {
+        max-width: 400px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+    .group {
+        width: 100%;
+    }
+    input {
+        width: 100%;
+        padding: 12px;
+        font-size: 1.2rem;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        text-align: center;
+    }
+    .arrow {
+        font-size: 1.5rem;
+        color: var(--c-primary);
+    }
+</style>

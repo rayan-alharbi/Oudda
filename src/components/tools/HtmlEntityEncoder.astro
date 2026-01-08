@@ -1,0 +1,75 @@
+---
+
+---
+
+<div class="html-enc-tool">
+    <div class="col">
+        <label>نص عادي</label>
+        <textarea id="raw-in" placeholder="<div class='test'>©</div>"
+        ></textarea>
+    </div>
+    <div class="actions">
+        <button id="enc-btn">تشفير (Encode) ⬇</button>
+        <button id="dec-btn">فك (Decode) ⬆</button>
+    </div>
+    <div class="col">
+        <label>مخرجات HTML</label>
+        <textarea id="html-out" placeholder="<div class='test'>&copy;</div>"
+        ></textarea>
+    </div>
+</div>
+
+<script>
+    const raw = document.getElementById("raw-in") as HTMLTextAreaElement;
+    const html = document.getElementById("html-out") as HTMLTextAreaElement;
+
+    function encode(str) {
+        return str.replace(/[\u00A0-\u9999<>&]/g, function (i) {
+            return "&#" + i.charCodeAt(0) + ";";
+        });
+    }
+
+    function decode(str) {
+        const txt = document.createElement("textarea");
+        txt.innerHTML = str;
+        return txt.value;
+    }
+
+    document.getElementById("enc-btn").addEventListener("click", () => {
+        html.value = encode(raw.value);
+    });
+
+    document.getElementById("dec-btn").addEventListener("click", () => {
+        raw.value = decode(html.value);
+    });
+</script>
+
+<style>
+    .html-enc-tool {
+        max-width: 600px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    textarea {
+        height: 150px;
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        font-family: monospace;
+    }
+    .actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+    button {
+        padding: 8px 16px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>

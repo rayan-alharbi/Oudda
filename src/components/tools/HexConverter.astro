@@ -1,0 +1,74 @@
+---
+
+---
+
+<div class="hex-tool">
+    <div class="col">
+        <label>نص (Text)</label>
+        <textarea id="text-in" placeholder="Hello"></textarea>
+    </div>
+    <div class="actions">
+        <button id="to-hex">إلى Hex ⬇</button>
+        <button id="to-txt">إلى نص ⬆</button>
+    </div>
+    <div class="col">
+        <label>سداسي عشر (Hex)</label>
+        <textarea id="hex-in" placeholder="48 65 6c 6c 6f"></textarea>
+    </div>
+</div>
+
+<script>
+    const txt = document.getElementById("text-in") as HTMLTextAreaElement;
+    const hex = document.getElementById("hex-in") as HTMLTextAreaElement;
+
+    document.getElementById("to-hex").addEventListener("click", () => {
+        hex.value = txt.value
+            .split("")
+            .map((c) => c.charCodeAt(0).toString(16).padStart(2, "0"))
+            .join(" ");
+    });
+
+    document.getElementById("to-txt").addEventListener("click", () => {
+        try {
+            const h = hex.value.replace(/\s+/g, "");
+            let str = "";
+            for (let i = 0; i < h.length; i += 2) {
+                str += String.fromCharCode(parseInt(h.substr(i, 2), 16));
+            }
+            txt.value = str;
+        } catch (e) {
+            txt.value = "Error";
+        }
+    });
+</script>
+
+<style>
+    .hex-tool {
+        max-width: 600px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    textarea {
+        height: 150px;
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        font-family: monospace;
+        resize: vertical;
+    }
+    .actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+    button {
+        padding: 8px 16px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>

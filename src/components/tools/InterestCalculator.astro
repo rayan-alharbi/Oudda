@@ -1,0 +1,132 @@
+---
+
+---
+
+<div class="interest-tool">
+    <div class="form">
+        <label>المبلغ الأولي (Principal)</label>
+        <input type="number" id="p-val" value="5000" />
+
+        <label>الفائدة السنوية % (Rate)</label>
+        <input type="number" id="r-val" value="5" />
+
+        <label>السنوات (Years)</label>
+        <input type="number" id="t-val" value="10" />
+
+        <label>إيداع سنوي إضافي (اختياري)</label>
+        <input type="number" id="c-val" value="0" />
+
+        <button id="calc-int" class="btn-primary">احسب</button>
+    </div>
+
+    <div class="result">
+        <h3>المبلغ المستقبلي</h3>
+        <div class="big-num" id="future-val">0</div>
+
+        <div class="breakdown">
+            <div>إجمالي الإيداع: <span id="total-princ">0</span></div>
+            <div>إجمالي الفائدة: <span id="total-interest">0</span></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const P = document.getElementById("p-val") as HTMLInputElement;
+    const r = document.getElementById("r-val") as HTMLInputElement;
+    const t = document.getElementById("t-val") as HTMLInputElement;
+    const c = document.getElementById("c-val") as HTMLInputElement;
+
+    const fv = document.getElementById("future-val");
+    const tp = document.getElementById("total-princ");
+    const ti = document.getElementById("total-interest");
+
+    function fmt(n) {
+        return n.toLocaleString(undefined, { maximumFractionDigits: 2 });
+    }
+
+    document.getElementById("calc-int").addEventListener("click", () => {
+        const principal = parseFloat(P.value) || 0;
+        const rate = (parseFloat(r.value) || 0) / 100;
+        const years = parseFloat(t.value) || 0;
+        const contrib = parseFloat(c.value) || 0;
+
+        // Compound Interest with Annual Contribution (End of year)
+        // FV = P * (1+r)^t + c * [ ((1+r)^t - 1) / r ]
+
+        let amount = principal * Math.pow(1 + rate, years);
+        if (rate > 0 && contrib > 0) {
+            amount += contrib * ((Math.pow(1 + rate, years) - 1) / rate);
+        } else if (rate === 0) {
+            amount += contrib * years;
+        }
+
+        const totalInvested = principal + contrib * years;
+        const interestEarned = amount - totalInvested;
+
+        fv.textContent = fmt(amount);
+        tp.textContent = fmt(totalInvested);
+        ti.textContent = fmt(interestEarned);
+    });
+</script>
+
+<style>
+    .interest-tool {
+        max-width: 600px;
+        margin: 0 auto;
+        display: flex;
+        gap: 20px;
+    }
+    @media (max-width: 600px) {
+        .interest-tool {
+            flex-direction: column;
+        }
+    }
+
+    .form {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    input {
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 4px;
+    }
+    .btn-primary {
+        padding: 10px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .result {
+        flex: 1;
+        background: var(--c-surface);
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid var(--c-border);
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .big-num {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--c-primary);
+        margin: 10px 0;
+    }
+    .breakdown {
+        font-size: 0.9rem;
+        color: var(--c-text-muted);
+        text-align: right;
+    }
+    .breakdown span {
+        float: left;
+        font-weight: bold;
+        color: var(--c-text-main);
+    }
+</style>

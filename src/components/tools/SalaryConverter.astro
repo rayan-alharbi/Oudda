@@ -1,0 +1,115 @@
+---
+
+---
+
+<div class="salary-tool">
+    <div class="inputs">
+        <label>السعر بالساعة (Hourly Rate)</label>
+        <input type="number" id="hourly" value="20" />
+
+        <label>ساعات العمل أسبوعياً</label>
+        <input type="number" id="hours" value="40" />
+
+        <label>أسابيع العمل سنوياً</label>
+        <input type="number" id="weeks" value="52" />
+    </div>
+
+    <div class="results">
+        <div class="row">
+            <strong>سنوياً:</strong>
+            <span id="r-year">0</span>
+        </div>
+        <div class="row">
+            <strong>شهرياً:</strong>
+            <span id="r-month">0</span>
+        </div>
+        <div class="row">
+            <strong>أسبوعياً:</strong>
+            <span id="r-week">0</span>
+        </div>
+        <div class="row">
+            <strong>يومياً:</strong>
+            <span id="r-day">0</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    const hRate = document.getElementById("hourly") as HTMLInputElement;
+    const hWeek = document.getElementById("hours") as HTMLInputElement;
+    const wYear = document.getElementById("weeks") as HTMLInputElement;
+
+    function format(num) {
+        return num.toLocaleString();
+    }
+
+    function update() {
+        const rate = parseFloat(hRate.value) || 0;
+        const hours = parseFloat(hWeek.value) || 0;
+        const weeks = parseFloat(wYear.value) || 0;
+
+        const weekly = rate * hours;
+        const annual = weekly * weeks;
+        const monthly = annual / 12;
+        const daily = weekly / 5; // Assuming 5 days
+
+        document.getElementById("r-year").textContent = format(annual);
+        document.getElementById("r-month").textContent = format(monthly);
+        document.getElementById("r-week").textContent = format(weekly);
+        document.getElementById("r-day").textContent = format(daily);
+    }
+
+    [hRate, hWeek, wYear].forEach((el) => el.addEventListener("input", update));
+    update();
+</script>
+
+<style>
+    .salary-tool {
+        max-width: 600px;
+        margin: 0 auto;
+        display: flex;
+        gap: 20px;
+    }
+    @media (max-width: 600px) {
+        .salary-tool {
+            flex-direction: column;
+        }
+    }
+
+    .inputs {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    input {
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 4px;
+    }
+
+    .results {
+        flex: 1;
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: 8px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 10px;
+    }
+    .row {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #f1f5f9;
+        padding-bottom: 5px;
+    }
+    .row strong {
+        color: var(--c-text-muted);
+    }
+    .row span {
+        color: var(--c-primary);
+        font-weight: bold;
+    }
+</style>

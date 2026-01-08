@@ -1,0 +1,148 @@
+---
+
+---
+
+<div class="morse-tool">
+    <div class="col">
+        <label>نص (Text)</label>
+        <textarea id="text-in" placeholder="SOS"></textarea>
+    </div>
+    <div class="actions">
+        <button id="to-morse">إلى مورس ⬇</button>
+        <button id="to-txt">إلى نص ⬆</button>
+    </div>
+    <div class="col">
+        <label>مورس (Morse)</label>
+        <textarea id="morse-in" placeholder="... --- ..."></textarea>
+    </div>
+    <div class="legend">يقبل العربية والإنجليزية (أساسيات).</div>
+</div>
+
+<script>
+    const txt = document.getElementById("text-in") as HTMLTextAreaElement;
+    const morse = document.getElementById("morse-in") as HTMLTextAreaElement;
+
+    const MORSE_CODE = {
+        A: ".-",
+        B: "-...",
+        C: "-.-.",
+        D: "-..",
+        E: ".",
+        F: "..-.",
+        G: "--.",
+        H: "....",
+        I: "..",
+        J: ".---",
+        K: "-.-",
+        L: ".-..",
+        M: "--",
+        N: "-.",
+        O: "---",
+        P: ".--.",
+        Q: "--.-",
+        R: ".-.",
+        S: "...",
+        T: "-",
+        U: "..-",
+        V: "...-",
+        W: ".--",
+        X: "-..-",
+        Y: "-.--",
+        Z: "--..",
+        "1": ".----",
+        "2": "..---",
+        "3": "...--",
+        "4": "....-",
+        "5": ".....",
+        "6": "-....",
+        "7": "--...",
+        "8": "---..",
+        "9": "----.",
+        "0": "-----",
+        " ": "/",
+        ا: ".-",
+        ب: "-...",
+        ت: "-",
+        ث: "-.-.",
+        ج: ".---",
+        ح: "....",
+        خ: "---",
+        د: "-..",
+        ذ: "--..",
+        ر: ".-.",
+        ز: "---.",
+        س: "...",
+        ش: "----",
+        ص: "-..-",
+        ض: "...-",
+        ط: "..-",
+        ظ: "-.--",
+        ع: ".-.-",
+        غ: "--.",
+        ف: "..-.",
+        ق: "--.-",
+        ك: "-.-",
+        ل: ".-..",
+        م: "--",
+        ن: "-.",
+        ه: "..-..",
+        و: ".--",
+        ي: "..",
+        ة: ".-", // Common Arabic mappings
+    };
+
+    const REVERSE_MORSE = Object.fromEntries(
+        Object.entries(MORSE_CODE).map(([k, v]) => [v, k]),
+    );
+
+    document.getElementById("to-morse").addEventListener("click", () => {
+        morse.value = txt.value
+            .toUpperCase()
+            .split("")
+            .map((c) => MORSE_CODE[c] || c)
+            .join(" ");
+    });
+
+    document.getElementById("to-txt").addEventListener("click", () => {
+        txt.value = morse.value
+            .split(" ")
+            .map((m) => REVERSE_MORSE[m] || m)
+            .join("");
+    });
+</script>
+
+<style>
+    .morse-tool {
+        max-width: 600px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    textarea {
+        height: 120px;
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        font-family: monospace;
+        resize: vertical;
+    }
+    .actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+    button {
+        padding: 8px 16px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .legend {
+        text-align: center;
+        color: var(--c-text-muted);
+        font-size: 0.8rem;
+    }
+</style>
