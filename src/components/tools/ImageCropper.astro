@@ -2,6 +2,7 @@
 
 ---
 
+<!-- Load CropperJS CSS v1.5.13 -->
 <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"
@@ -9,129 +10,248 @@
 
 <div class="crop-tool">
     <div class="toolbar">
-        <input type="file" id="img-in" accept="image/*" />
-        <button id="crop-btn" class="btn-primary" disabled>قص (Crop)</button>
-        <button id="dl-btn" class="btn-sec" disabled>تحميل</button>
+        <label for="img-in" class="file-btn">
+            <span class="icon">📂</span> اختر صورة
+        </label>
+        <input type="file" id="img-in" accept="image/*" class="hidden-input" />
+
+        <button id="crop-btn" class="btn-primary" disabled>
+            <span class="icon">✂️</span> قص (Crop)
+        </button>
+
+        <button id="reset-btn" class="btn-sec" disabled>
+            <span class="icon">🔄</span> إعادة تعيين
+        </button>
     </div>
 
     <div class="workspace">
-        <div class="editor">
-            <img id="image" src="" />
+        <div class="editor-container">
+            <div class="editor-wrapper">
+                <img id="image" src="" alt="Source" />
+            </div>
         </div>
-        <div class="preview-box">
-            <h4>معاينة</h4>
-            <div id="res-view"></div>
+
+        <div class="preview-container">
+            <h4>النتيجة (Result)</h4>
+            <div id="res-view" class="res-view"></div>
+            <button id="dl-btn" class="btn-action hidden">
+                <span class="icon">⬇️</span> تحميل الصورة
+            </button>
         </div>
     </div>
 </div>
 
+<!-- Load CropperJS JS v1.5.13 explicitly to match CSS -->
+<script
+    is:inline
+    src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"
+></script>
+
 <script>
-    import Cropper from "cropperjs";
+    // Define Cropper type for TS check bypass in global scope if needed, or just use window.Cropper
+    declare const Cropper: any;
 
     const inp = document.getElementById("img-in") as HTMLInputElement;
     const image = document.getElementById("image") as HTMLImageElement;
     const resView = document.getElementById("res-view");
-    let cropper;
+    const cropBtn = document.getElementById("crop-btn") as HTMLButtonElement;
+    const resetBtn = document.getElementById("reset-btn") as HTMLButtonElement;
+    const dlBtn = document.getElementById("dl-btn") as HTMLButtonElement;
+
+    let cropper = null;
 
     inp.addEventListener("change", () => {
         const file = inp.files[0];
         if (file) {
-            image.src = URL.createObjectURL(file);
-            if (cropper) cropper.destroy();
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
 
+            const url = URL.createObjectURL(file);
+            image.src = url;
+
+            // Clean UI
+            resView.innerHTML = "";
+            dlBtn.classList.add("hidden");
+
+            // Wait for image to load in DOM
             image.onload = () => {
+                // @ts-ignore
                 cropper = new Cropper(image, {
                     aspectRatio: NaN,
                     viewMode: 1,
-                    preview: ".preview-not-working-here-needed-css", // simple manual preview
+                    autoCropArea: 0.8,
+                    responsive: true,
+                    background: false, // Cleaner look
                 });
-                document.getElementById("crop-btn").disabled = false;
+
+                cropBtn.disabled = false;
+                resetBtn.disabled = false;
             };
         }
     });
 
-    document.getElementById("crop-btn").addEventListener("click", () => {
+    cropBtn.addEventListener("click", () => {
         if (!cropper) return;
 
         const canvas = cropper.getCroppedCanvas();
+        if (!canvas) return;
+
         resView.innerHTML = "";
         const img = document.createElement("img");
         img.src = canvas.toDataURL();
-        img.style.maxWidth = "100%";
         resView.appendChild(img);
 
-        const dlBtn = document.getElementById("dl-btn") as HTMLButtonElement;
-        dlBtn.disabled = false;
+        dlBtn.classList.remove("hidden");
         dlBtn.onclick = () => {
-            const a = document.createElement("a");
-            a.href = canvas.toDataURL("image/png");
-            a.download = "cropped.png";
-            a.click();
+            const link = document.createElement("a");
+            link.download = "cropped-image.png";
+            link.href = canvas.toDataURL("image/png");
+            link.click();
         };
+    });
+
+    resetBtn.addEventListener("click", () => {
+        if (cropper) cropper.reset();
     });
 </script>
 
 <style>
     .crop-tool {
-        max-width: 900px;
+        max-width: 1000px;
         margin: 0 auto;
     }
+
     .toolbar {
-        margin-bottom: 20px;
         display: flex;
-        gap: 10px;
+        gap: 15px;
+        margin-bottom: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
     }
-    .btn-primary {
+
+    .file-btn {
+        background: #334155;
+        color: white;
         padding: 10px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: background 0.2s;
+    }
+    .file-btn:hover {
+        background: #475569;
+    }
+
+    .hidden-input {
+        display: none;
+    }
+
+    .btn-primary,
+    .btn-sec,
+    .btn-action {
+        padding: 10px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1rem;
+    }
+
+    .btn-primary {
         background: var(--c-primary);
         color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
     }
+    .btn-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
     .btn-sec {
-        padding: 10px 20px;
-        background: white;
+        background: var(--c-surface);
         border: 1px solid var(--c-border);
         color: var(--c-text);
-        border-radius: 4px;
-        cursor: pointer;
     }
-    .btn-primary:disabled,
     .btn-sec:disabled {
         opacity: 0.5;
         cursor: not-allowed;
     }
 
-    .workspace {
-        display: flex;
-        gap: 20px;
-        flex-direction: column;
+    .btn-action {
+        background: #16a34a;
+        color: white;
+        margin-top: 15px;
+        width: 100%;
+        justify-content: center;
     }
-    @media (min-width: 768px) {
+
+    .workspace {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    @media (min-width: 900px) {
         .workspace {
-            flex-direction: row;
+            grid-template-columns: 2fr 1fr;
         }
     }
 
-    .editor {
-        flex: 2;
-        height: 400px;
-        background: #333;
+    .editor-container {
+        background: #0f172a;
+        border-radius: 8px;
+        padding: 20px;
+        border: 1px solid var(--c-border);
+        min-height: 400px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
-    .editor img {
+
+    .editor-wrapper {
+        max-width: 100%;
+        max-height: 600px;
+    }
+
+    /* Ensure image doesn't overflow before cropper inits */
+    #image {
         max-width: 100%;
         display: block;
     }
 
-    .preview-box {
-        flex: 1;
-        border: 1px solid var(--c-border);
-        padding: 10px;
+    .preview-container {
+        background: var(--c-surface);
+        padding: 20px;
         border-radius: 8px;
-        min-height: 200px;
+        border: 1px solid var(--c-border);
         display: flex;
         flex-direction: column;
         align-items: center;
+    }
+
+    .res-view {
+        width: 100%;
+        min-height: 200px;
+        border: 2px dashed var(--c-border);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--c-background);
+        overflow: hidden;
+    }
+
+    .res-view img {
+        max-width: 100%;
+        max-height: 400px;
+        object-fit: contain;
+    }
+
+    .hidden {
+        display: none;
     }
 </style>

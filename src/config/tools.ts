@@ -55,8 +55,6 @@ import SqlFormatter from '../components/tools/SqlFormatter.astro';
 import CsvJsonConverter from '../components/tools/CsvJsonConverter.astro';
 import IpSubnet from '../components/tools/IpSubnet.astro';
 import BarcodeGenerator from '../components/tools/BarcodeGenerator.astro';
-
-// Batch 7 & 8 Imports
 import HashGenerator from '../components/tools/HashGenerator.astro';
 import HmacGenerator from '../components/tools/HmacGenerator.astro';
 import Bip39Generator from '../components/tools/Bip39Generator.astro';
@@ -86,99 +84,100 @@ export interface ToolConfig {
     component: any;
 }
 
+// Icons are from Material Symbols Rounded
 export const tools: ToolConfig[] = [
-    // Core (Original)
-    { id: 'unit-converter', title: 'تحويل الوحدات', description: 'طول، وزن، حرارة، ووحدات أخرى.', icon: 'scale', component: UnitConverter },
-    { id: 'date-converter', title: 'تحويل التواريخ', description: 'هجري <-> ميلادي.', icon: 'calendar', component: DateConverter },
-    { id: 'age-calculator', title: 'حاسبة العمر', description: 'حساب العمر بدقة بالميلادي والهجري.', icon: 'cake', component: AgeCalculator },
-    { id: 'qr-generator', title: 'توليد QR', description: 'إنشاء رموز QR.', icon: 'qr_code', component: QRCodeGenerator },
+    // --- Core Tools ---
+    { id: 'unit-converter', title: 'تحويل الوحدات', description: 'طول، وزن، حرارة.', icon: 'scale', component: UnitConverter },
+    { id: 'date-converter', title: 'تحويل التواريخ', description: 'هجري وميلادي.', icon: 'edit_calendar', component: DateConverter },
+    { id: 'age-calculator', title: 'حاسبة العمر', description: 'حساب العمر الدقيق.', icon: 'cake', component: AgeCalculator },
+    { id: 'qr-generator', title: 'توليد QR', description: 'إنشاء رموز سريعة.', icon: 'qr_code_2', component: QRCodeGenerator },
 
-    // Batch 1 (3 Tools)
-    { id: 'password-generator', title: 'مولد كلمات المرور', description: 'كلمات مرور آمنة.', icon: 'key', component: PasswordGenerator },
-    { id: 'json-formatter', title: 'منسق JSON', description: 'تنسيق والتحقق من JSON.', icon: 'code', component: JsonFormatter },
-    { id: 'word-counter', title: 'عداد الكلمات', description: 'تحليل النصوص.', icon: 'text_fields', component: WordCounter },
+    // --- Text & Security ---
+    { id: 'password-generator', title: 'كلمات المرور', description: 'توليد كلمات قوية.', icon: 'password', component: PasswordGenerator },
+    { id: 'pwd-strength', title: 'فحص القوة', description: 'اختبار كلمات المرور.', icon: 'shield_lock', component: PasswordStrength },
+    { id: 'hash-gen', title: 'تشفير Hash', description: 'MD5, SHA-256.', icon: 'fingerprint', component: HashGenerator },
+    { id: 'hmac-gen', title: 'مولد HMAC', description: 'توقيع مشفر.', icon: 'key', component: HmacGenerator },
+    { id: 'bip39-gen', title: 'عبارات BIP39', description: 'كلمات المحافظ.', icon: 'lock_reset', component: Bip39Generator },
 
-    // Mega Expansion 1 (10 Tools)
-    { id: 'stopwatch', title: 'ساعة إيقاف', description: 'ساعة إيقاف مع جولات.', icon: 'timer', component: Stopwatch },
-    { id: 'pomodoro-timer', title: 'مؤقت بومودورو', description: 'مؤقت تركيز قابل للتخصيص.', icon: 'hourglass_top', component: PomodoroTimer },
-    { id: 'markdown-preview', title: 'معاين Markdown', description: 'محرر مع تصدير PDF/HTML.', icon: 'article', component: MarkdownPreview },
-    { id: 'color-converter', title: 'محول الألوان', description: 'Hex, RGB, HSL مع لاقط ألوان.', icon: 'palette', component: ColorConverter },
-    { id: 'lorem-generator', title: 'مولد نص عشوائي', description: 'نصوص عربية للاختبار.', icon: 'format_align_justify', component: LoremGenerator },
-    { id: 'bmi-calculator', title: 'حاسبة كتلة الجسم', description: 'مؤشر كتلة الجسم (BMI).', icon: 'health_and_safety', component: BmiCalculator },
-    { id: 'number-converter', title: 'محول الأنظمة', description: 'ثنائي، عشري، سداسي.', icon: 'onetwothree', component: NumberConverter },
-    { id: 'percentage-calculator', title: 'حاسبة النسبة', description: 'حساب النسب والخصومات.', icon: 'percent', component: PercentageCalculator },
-    { id: 'aspect-ratio', title: 'حاسبة الأبعاد', description: 'حساب أبعاد الشاشة.', icon: 'aspect_ratio', component: AspectRatioCalculator },
-    { id: 'text-case', title: 'محول حالة النص', description: 'أحرف كبيرة/صغيرة.', icon: 'text_format', component: TextCaseConverter },
+    // --- Developer Utilities ---
+    { id: 'json-formatter', title: 'منسق JSON', description: 'تجميل كود JSON.', icon: 'data_object', component: JsonFormatter },
+    { id: 'xml-json', title: 'XML <-> JSON', description: 'تحويل صيغ.', icon: 'swap_horiz', component: XmlJsonConverter },
+    { id: 'yaml-json', title: 'YAML <-> JSON', description: 'تحويل ملفات الإعدادات.', icon: 'topic', component: YamlJsonConverter },
+    { id: 'csv-json', title: 'CSV <-> JSON', description: 'جداول البيانات.', icon: 'table_view', component: CsvJsonConverter },
+    { id: 'sql-fmt', title: 'تنسيق SQL', description: 'تحسين استعلامات DB.', icon: 'database', component: SqlFormatter },
+    { id: 'cron-gen', title: 'Cron Job', description: 'مواعيد المهام.', icon: 'schedule_send', component: CronGenerator },
+    { id: 'regex-tester', title: 'فاحص Regex', description: 'التعابير النمطية.', icon: 'regular_expression', component: RegexTester },
+    { id: 'jwt-decoder', title: 'فك JWT', description: 'قراءة التوكن.', icon: 'token', component: JwtDecoder },
 
-    // Mega Expansion 2 (10 Tools)
-    { id: 'pwd-strength', title: 'فحص كلمة المرور', description: 'تحليل قوة كلمة المرور.', icon: 'shield', component: PasswordStrength },
-    { id: 'unix-timestamp', title: 'وقت Unix', description: 'تحويل الطوابع الزمنية.', icon: 'schedule', component: UnixTimestamp },
-    { id: 'base64-tool', title: 'محول Base64', description: 'تشفير وفك تشفير Base64.', icon: 'enhanced_encryption', component: Base64Converter },
-    { id: 'url-encoder', title: 'تشفير الروابط', description: 'تشفير وفك تشفير URL.', icon: 'link', component: UrlConverter },
-    { id: 'diff-checker', title: 'مقارنة النصوص', description: 'إيجاد الفروقات بين نصين.', icon: 'difference', component: DiffChecker },
-    { id: 'uuid-generator', title: 'توليد UUID', description: 'معرفات فريدة v4.', icon: 'fingerprint', component: UuidGenerator },
-    { id: 'box-shadow', title: 'مولد الظل', description: 'إنشاء كود CSS Box Shadow.', icon: 'layers', component: BoxShadowGenerator },
-    { id: 'meta-tag', title: 'مولد Meta Tags', description: 'أكواد SEO للمواقع.', icon: 'search', component: MetaTagGenerator },
-    { id: 'img-base64', title: 'صورة إلى Base64', description: 'تحويل الصور لنصوص.', icon: 'image', component: ImageToBase64 },
-    { id: 'regex-tester', title: 'فاحص Regex', description: 'اختبار التعابير النمطية.', icon: 'rule', component: RegexTester },
+    // --- Encoders & Decoders ---
+    { id: 'base64-tool', title: 'Base64', description: 'تشفير النصوص.', icon: 'code', component: Base64Converter },
+    { id: 'url-encoder', title: 'URL Encode', description: 'تشفير الروابط.', icon: 'link', component: UrlConverter },
+    { id: 'html-enc', title: 'HTML Entities', description: 'رموز الويب.', icon: 'html', component: HtmlEntityEncoder },
+    { id: 'binary-tool', title: 'نص <-> ثنائي', description: 'الأصفار والواحدات.', icon: 'memory', component: BinaryConverter },
+    { id: 'hex-tool', title: 'نص <-> Hex', description: 'النظام السداسي.', icon: 'numbers', component: HexConverter },
+    { id: 'rot13', title: 'ROT13 & Cipher', description: 'تشفير بسيط.', icon: 'enhanced_encryption', component: Rot13Cipher },
+    { id: 'morse-tool', title: 'شفرة مورس', description: 'إشارات صوتية.', icon: 'graphic_eq', component: MorseConverter },
 
-    // Mega Expansion 3 (10 Tools)
-    { id: 'yaml-json', title: 'محول YAML/JSON', description: 'تحويل بين YAML ولاJSON.', icon: 'data_object', component: YamlJsonConverter },
-    { id: 'jwt-decoder', title: 'فك تشفير JWT', description: 'قراءة محتوى توكن JWT.', icon: 'vpn_key', component: JwtDecoder },
-    { id: 'text-repeater', title: 'مكرر النصوص', description: 'تكرار النص عدة مرات.', icon: 'replay', component: TextRepeater },
-    { id: 'slug-generator', title: 'مولد Slug', description: 'تحويل العناوين لروابط.', icon: 'link', component: SlugGenerator },
-    { id: 'random-number', title: 'أرقام عشوائية', description: 'توليد رقم ضمن نطاق.', icon: 'casino', component: RandomNumber },
-    { id: 'key-code', title: 'معلومات المفاتيح', description: 'إظهار أكواد أزرار الكيبورد.', icon: 'keyboard', component: KeyCodeInfo },
-    { id: 'gradient-gen', title: 'مولد التدرج', description: 'صنع تدرجات لونية CSS.', icon: 'gradient', component: GradientGenerator },
-    { id: 'signature-pad', title: 'لوحة التوقيع', description: 'رسم وحفظ التواقيع.', icon: 'draw', component: SignaturePad },
-    { id: 'prime-checker', title: 'فحص الأعداد الأولية', description: 'هل الرقم أولي؟', icon: 'functions', component: PrimeChecker },
-    { id: 'memo-pad', title: 'مذكرتي', description: 'تدوين ملاحظات سريعة.', icon: 'note', component: Scratchpad },
+    // --- Formatting & Content ---
+    { id: 'word-counter', title: 'عداد الكلمات', description: 'إحصائيات النص.', icon: 'article', component: WordCounter },
+    { id: 'text-case', title: 'حالة الأحرف', description: 'كبيرة/صغيرة.', icon: 'text_fields', component: TextCaseConverter },
+    { id: 'text-repeater', title: 'مكرر النصوص', description: 'نسخ متكرر.', icon: 'repeat', component: TextRepeater },
+    { id: 'lorem-generator', title: 'نص عشوائي', description: 'لوريم إيبسوم عربي.', icon: 'format_quote', component: LoremGenerator },
+    { id: 'slug-generator', title: 'Slugify', description: 'روابط نظيفة.', icon: 'link_off', component: SlugGenerator },
+    { id: 'diff-checker', title: 'مقارنة نصوص', description: 'كشف الاختلافات.', icon: 'difference', component: DiffChecker },
+    { id: 'markdown-preview', title: 'Markdown', description: 'محرر مباشر.', icon: 'markdown', component: MarkdownPreview },
 
-    // Mega Expansion 4 (Batch 5 - 10 Tools)
-    { id: 'binary-tool', title: 'محول ثنائي', description: 'نص <-> ثنائي.', icon: 'memory', component: BinaryConverter },
-    { id: 'hex-tool', title: 'محول سداسي عشر', description: 'نص <-> Hex.', icon: 'tag', component: HexConverter },
-    { id: 'ascii-tool', title: 'جدول ASCII', description: 'أكواد الأحرف.', icon: 'abc', component: AsciiConverter },
-    { id: 'roman-tool', title: 'أرقام رومانية', description: 'تحويل للأرقام الرومانية.', icon: 'museum', component: RomanConverter },
-    { id: 'morse-tool', title: 'مترجم مورس', description: 'شفرة مورس.', icon: 'graphic_eq', component: MorseConverter },
-    { id: 'rot13', title: 'شفرة ROT13', description: 'تشفير بسيط.', icon: 'lock_open', component: Rot13Cipher },
-    { id: 'html-enc', title: 'تشفير HTML', description: 'تحويل الرموز لـ Entities.', icon: 'code_off', component: HtmlEntityEncoder },
-    { id: 'url-parser', title: 'محلل الروابط', description: 'تفصيل أجزاء URL.', icon: 'link_off', component: UrlParser },
-    { id: 'device-info', title: 'معلومات الجهاز', description: 'المتصفح والنظام.', icon: 'devices', component: DeviceInfo },
-    { id: 'screen-info', title: 'معلومات الشاشة', description: 'الدقة والأبعاد.', icon: 'screenshot_monitor', component: ScreenInfo },
+    // --- Network & Device ---
+    { id: 'ip-subnet', title: 'الشبكات الفرعية', description: 'Subnet Calc.', icon: 'router', component: IpSubnet },
+    { id: 'url-parser', title: 'محلل الروابط', description: 'أجزاء URL.', icon: 'http', component: UrlParser },
+    { id: 'device-info', title: 'جهازي', description: 'معلومات المتصفح.', icon: 'devices', component: DeviceInfo },
+    { id: 'screen-info', title: 'دقة الشاشة', description: 'الأبعاد والبيكسل.', icon: 'screenshot_monitor', component: ScreenInfo },
 
-    // Mega Expansion 5 (Batch 6 - 10 Tools)
-    { id: 'loan-calc', title: 'حاسبة القروض', description: 'حساب الأقساط والفوائد.', icon: 'account_balance', component: LoanCalculator },
-    { id: 'salary-calc', title: 'حاسبة الراتب', description: 'تحويل الساعة لراتب سنوي.', icon: 'attach_money', component: SalaryConverter },
-    { id: 'vat-calc', title: 'حاسبة الضريبة', description: 'حساب ضريبة القيمة المضافة.', icon: 'price_check', component: VatCalculator },
-    { id: 'discount-calc', title: 'حاسبة الخصم', description: 'حساب السعر بعد التخفيض.', icon: 'local_offer', component: DiscountCalculator },
-    { id: 'interest-calc', title: 'الفائدة المركبة', description: 'حساب عائد الاستثمار.', icon: 'trending_up', component: InterestCalculator },
-    { id: 'css-min', title: 'ضغط CSS', description: 'تصغير ملفات CSS.', icon: 'compress', component: CssMinifier },
-    { id: 'sql-fmt', title: 'تنسيق SQL', description: 'تحسين قراءة كود SQL.', icon: 'storage', component: SqlFormatter },
-    { id: 'csv-json', title: 'محول CSV/JSON', description: 'تحويل جداول البيانات.', icon: 'table_view', component: CsvJsonConverter },
-    { id: 'ip-subnet', title: 'الشبكات الفرعية', description: 'حساب Subnet و CIDR.', icon: 'router', component: IpSubnet },
-    { id: 'barcode-gen', title: 'توليد الباركود', description: 'إنشاء باركود للمنتجات.', icon: 'qr_code_2', component: BarcodeGenerator },
+    // --- Finance & Math ---
+    { id: 'loan-calc', title: 'القروض', description: 'الأقساط والفوائد.', icon: 'account_balance', component: LoanCalculator },
+    { id: 'salary-calc', title: 'الراتب', description: 'ساعة/شهر/سنة.', icon: 'payments', component: SalaryConverter },
+    { id: 'vat-calc', title: 'الضريبة', description: 'قيمة مضافة VAT.', icon: 'percent', component: VatCalculator },
+    { id: 'discount-calc', title: 'الخصومات', description: 'أسعار التخفيض.', icon: 'local_offer', component: DiscountCalculator },
+    { id: 'interest-calc', title: 'الاستثمار', description: 'الفائدة المركبة.', icon: 'savings', component: InterestCalculator },
+    { id: 'percentage-calculator', title: 'النسبة المئوية', description: 'حسابات متنوعة.', icon: 'pie_chart', component: PercentageCalculator },
+    { id: 'sci-calc', title: 'حاسبة علمية', description: 'جذور ومثلثات.', icon: 'calculate', component: ScientificCalculator },
+    { id: 'stat-calc', title: 'الإحصاء', description: 'متوسط وتباين.', icon: 'bar_chart', component: StatisticsCalculator },
+    { id: 'matrix-calc', title: 'المصفوفات', description: 'Matrix Ops.', icon: 'grid_on', component: MatrixCalculator },
+    { id: 'prime-checker', title: 'الأرقام الأولية', description: 'فحص الأعداد.', icon: 'looks_one', component: PrimeChecker },
+    { id: 'number-converter', title: 'أنظمة العد', description: 'Base Converter.', icon: 'dialpad', component: NumberConverter },
+    { id: 'random-number', title: 'رقم عشوائي', description: 'RNG.', icon: 'shuffle', component: RandomNumber },
 
-    // Mega Expansion 6 (Batch 7 - 10 Tools)
-    { id: 'hash-gen', title: 'مولد Hash', description: 'تشفير النصوص (MD5/SHA).', icon: 'fingerprint', component: HashGenerator },
-    { id: 'hmac-gen', title: 'مولد HMAC', description: 'توقيع الرسائل (HMAC).', icon: 'verified_user', component: HmacGenerator },
-    { id: 'bip39-gen', title: 'BIP39 Mnemonic', description: 'كلمات استرجاع المحافظ.', icon: 'lock', component: Bip39Generator },
-    { id: 'iban-check', title: 'فاحص IBAN', description: 'التحقق من رقم الآيبان.', icon: 'account_balance_wallet', component: IbanValidator },
-    { id: 'cc-check', title: 'فاحص البطاقات', description: 'التحقق من صحة البطاقة.', icon: 'credit_card', component: CreditCardValidator },
-    { id: 'xml-json', title: 'محول XML/JSON', description: 'تحويل صيغ البيانات.', icon: 'integration_instructions', component: XmlJsonConverter },
-    { id: 'cron-gen', title: 'مولد Cron', description: 'صياغة مواعيد المهام.', icon: 'schedule_send', component: CronGenerator },
-    { id: 'exif-read', title: 'قارئ Exif', description: 'بيانات الصور المخفية.', icon: 'photo_camera', component: ExifReader },
-    { id: 'file-size', title: 'محول الأحجام', description: 'بايت، ميجا، جيجا.', icon: 'sd_storage', component: FileSizeConverter },
-    { id: 'timezone', title: 'مناطق زمنية', description: 'تحويل الوقت عالمياً.', icon: 'public', component: TimeZoneConverter },
+    // --- Images & Colors ---
+    { id: 'color-converter', title: 'الألوان', description: 'RGB, HEX, HSL.', icon: 'palette', component: ColorConverter },
+    { id: 'color-mix', title: 'دمج الألوان', description: 'خلط الألوان.', icon: 'invert_colors', component: ColorMixer },
+    { id: 'cb-sim', title: 'عمى الألوان', description: 'محاكي الرؤية.', icon: 'eye_tracking', component: ColorBlindnessSim },
+    { id: 'gradient-gen', title: 'تدرجات CSS', description: 'خلفيات ملونة.', icon: 'gradient', component: GradientGenerator },
+    { id: 'img-crop', title: 'قص الصور', description: 'تعديل الأبعاد.', icon: 'crop', component: ImageCropper },
+    { id: 'img-filter', title: 'فلاتر', description: 'تأثيرات بصرية.', icon: 'filter_b_and_w', component: ImageFilters },
+    { id: 'svg-png', title: 'SVG to PNG', description: 'تحويل فيكتور.', icon: 'image', component: SvgToPng },
+    { id: 'ico-conv', title: 'أيقونات ICO', description: 'Favicon.', icon: 'app_shortcut', component: IcoConverter },
+    { id: 'img-base64', title: 'صورة لـ نص', description: 'Base64 Image.', icon: 'image_aspect_ratio', component: ImageToBase64 },
+    { id: 'exif-read', title: 'بيانات الصورة', description: 'EXIF Metadata.', icon: 'info', component: ExifReader },
 
-    // Mega Expansion 7 (Batch 8 - 10 Tools)
-    { id: 'sci-calc', title: 'آلة حاسبة علمية', description: 'وظائف رياضية متقدمة.', icon: 'calculate', component: ScientificCalculator },
-    { id: 'stat-calc', title: 'الإحصاء', description: 'المعدل، الوسيط، الانحراف.', icon: 'analytics', component: StatisticsCalculator },
-    { id: 'matrix-calc', title: 'المصفوفات', description: 'عمليات المصفوفات البسيطة.', icon: 'grid_on', component: MatrixCalculator },
-    { id: 'phone-parser', title: 'محلل الهواتف', description: 'معرفة بيانات الخطوط.', icon: 'call', component: PhoneNumberParser },
-    { id: 'color-mix', title: 'دامح الألوان', description: 'مزج لونين معاً.', icon: 'invert_colors', component: ColorMixer },
-    { id: 'cb-sim', title: 'محاكي عمى الألوان', description: 'رؤية الصور بعيون مختلفة.', icon: 'visibility_off', component: ColorBlindnessSim },
-    { id: 'img-crop', title: 'قص الصور', description: 'تصغير وقص الصور.', icon: 'crop', component: ImageCropper },
-    { id: 'img-filter', title: 'فلاتر الصور', description: 'تعديل ألوان الصور.', icon: 'photo_filter', component: ImageFilters },
-    { id: 'svg-png', title: 'تحويل SVG لـ PNG', description: 'تصدير المتجهات لصور.', icon: 'image_aspect_ratio', component: SvgToPng },
-    { id: 'ico-conv', title: 'محول الأيقونات', description: 'صنع أيقونات المواقع.', icon: 'app_shortcut', component: IcoConverter },
+    // --- Utilities & Misc ---
+    { id: 'stopwatch', title: 'ساعة إيقاف', description: 'مؤقت رياضي.', icon: 'timer', component: Stopwatch },
+    { id: 'pomodoro-timer', title: 'بومودورو', description: 'تركيز وإنتاجية.', icon: 'hourglass_top', component: PomodoroTimer },
+    { id: 'bmi-calculator', title: 'كتلة الجسم', description: 'الصحة والوزن.', icon: 'monitor_weight', component: BmiCalculator },
+    { id: 'uuid-generator', title: 'UUID', description: 'معرفات فريدة.', icon: 'fingerprint', component: UuidGenerator },
+    { id: 'barcode-gen', title: 'باركود', description: 'للمنتجات.', icon: 'qr_code_scanner', component: BarcodeGenerator },
+    { id: 'iban-check', title: 'فاحص IBAN', description: 'حسابات بنكية.', icon: 'account_balance_wallet', component: IbanValidator },
+    { id: 'cc-check', title: 'فاحص بطاقات', description: 'Luhn Check.', icon: 'credit_card', component: CreditCardValidator },
+    { id: 'phone-parser', title: 'فاحص أرقام', description: 'بيانات الهاتف.', icon: 'call', component: PhoneNumberParser },
+    { id: 'file-size', title: 'أحجام الملفات', description: 'تحويل بايت.', icon: 'folder_open', component: FileSizeConverter },
+    { id: 'timezone', title: 'المناطق الزمنية', description: 'توقيت عالمي.', icon: 'public', component: TimeZoneConverter },
+    { id: 'unix-timestamp', title: 'Unix Time', description: 'طابع زمني.', icon: 'history', component: UnixTimestamp },
+    { id: 'ascii-tool', title: 'جدول ASCII', description: 'رموز.', icon: 'abc', component: AsciiConverter },
+    { id: 'roman-tool', title: 'أرقام رومانية', description: 'I, V, X.', icon: 'museum', component: RomanConverter },
+    { id: 'box-shadow', title: 'ظل الصندوق', description: 'CSS Shadow.', icon: 'layers', component: BoxShadowGenerator },
+    { id: 'css-min', title: 'ضغط CSS', description: 'Minifier.', icon: 'compress', component: CssMinifier },
+    { id: 'meta-tag', title: 'SEO Meta', description: 'وسوم الموقع.', icon: 'search', component: MetaTagGenerator },
+    { id: 'signature-pad', title: 'توقيع', description: 'رسم يدوي.', icon: 'draw', component: SignaturePad },
+    { id: 'memo-pad', title: 'مذكرتي', description: 'ملاحظات.', icon: 'edit_note', component: Scratchpad },
+    { id: 'key-code', title: 'أزرار الكيبورد', description: 'Key Codes.', icon: 'keyboard', component: KeyCodeInfo },
+    { id: 'aspect-ratio', title: 'أبعاد الشاشة', description: '16:9, 4:3.', icon: 'aspect_ratio', component: AspectRatioCalculator },
 ];

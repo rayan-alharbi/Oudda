@@ -8,13 +8,25 @@
         <input type="datetime-local" id="local-time" />
     </div>
 
+    <div class="custom-zone">
+        <h3>تحويل إلى منطقة محددة</h3>
+        <!-- Improved Select with Groups -->
+        <select id="tz-select">
+            <option value="UTC">UTC (Coordinated Universal Time)</option>
+        </select>
+
+        <div class="result-box">
+            <span id="custom-res">--</span>
+        </div>
+    </div>
+
     <div class="zones-grid">
         <div class="zone-card">
             <h4>London (UTC)</h4>
             <div id="t-utc" class="time"></div>
         </div>
         <div class="zone-card">
-            <h4>New York (EST)</h4>
+            <h4>New York (ET)</h4>
             <div id="t-ny" class="time"></div>
         </div>
         <div class="zone-card">
@@ -25,28 +37,70 @@
             <h4>Dubai (GST)</h4>
             <div id="t-dubai" class="time"></div>
         </div>
+        <div class="zone-card">
+            <h4>Makkah (KSA)</h4>
+            <div id="t-ksa" class="time"></div>
+        </div>
+        <div class="zone-card">
+            <h4>Cairo (EET)</h4>
+            <div id="t-cairo" class="time"></div>
+        </div>
     </div>
 </div>
 
 <script>
     const localIn = document.getElementById("local-time") as HTMLInputElement;
+    const tzSelect = document.getElementById("tz-select") as HTMLSelectElement;
+    const customRes = document.getElementById("custom-res");
 
-    // Set default to current time
+    // Init time
     const now = new Date();
-    // Adjust to local ISO string for input
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
     localIn.value = now.toISOString().slice(0, 16);
 
+    // Grouping Zones
+    function populateZones() {
+        // @ts-ignore
+        if (typeof Intl.supportedValuesOf !== "function") return;
+
+        // @ts-ignore
+        const zones = Intl.supportedValuesOf("timeZone");
+        const groups = {};
+
+        zones.forEach((z) => {
+            const parts = z.split("/");
+            const region = parts[0];
+            const city = parts.slice(1).join("/").replace(/_/g, " ");
+
+            if (!groups[region]) groups[region] = [];
+            groups[region].push({ val: z, label: city });
+        });
+
+        // Sort and Render Groups
+        Object.keys(groups)
+            .sort()
+            .forEach((region) => {
+                const optgroup = document.createElement("optgroup");
+                optgroup.label = region;
+
+                groups[region].forEach((item) => {
+                    const opt = document.createElement("option");
+                    opt.value = item.val;
+                    opt.textContent = item.label; // Only city name for simpler view
+                    if (item.val === "Asia/Riyadh") opt.selected = true;
+                    optgroup.appendChild(opt);
+                });
+
+                tzSelect.appendChild(optgroup);
+            });
+    }
+
+    populateZones();
+
     function update() {
-        const d = new Date(localIn.value);
-        if (isNaN(d.getTime())) return;
-
-        const date = new Date(d.getTime() + d.getTimezoneOffset() * 60000); // Back to UTC actual? No, input is local
-
-        // Correct approach: Treat input as Local Time
-        // HTML input datetime-local gives YYYY-MM-DDTHH:mm
-        // const d = new Date(val) creates a date object assuming local system time if no offset Z provided?
-        // Actually `new Date('2023-01-01T12:00')` creates date at 12:00 local time.
+        const val = localIn.value;
+        if (!val) return;
+        const d = new Date(val);
 
         const opts = {
             hour: "numeric",
@@ -72,19 +126,38 @@
             "en-US",
             { ...opts, timeZone: "Asia/Dubai" },
         );
+        document.getElementById("t-ksa").textContent = d.toLocaleString(
+            "en-US",
+            { ...opts, timeZone: "Asia/Riyadh" },
+        );
+        document.getElementById("t-cairo").textContent = d.toLocaleString(
+            "en-US",
+            { ...opts, timeZone: "Africa/Cairo" },
+        );
+
+        // Custom
+        const selZone = tzSelect.value;
+        try {
+            customRes.textContent =
+                d.toLocaleString("en-US", { ...opts, timeZone: selZone }) +
+                ` (${selZone})`;
+        } catch (e) {
+            customRes.textContent = "Invalid Zone";
+        }
     }
 
     localIn.addEventListener("input", update);
+    tzSelect.addEventListener("change", update);
     update();
 </script>
 
 <style>
     .tz-tool {
-        max-width: 700px;
+        max-width: 800px;
         margin: 0 auto;
     }
     .input-grp {
-        margin-bottom: 30px;
+        margin-bottom: 20px;
         text-align: center;
     }
     input {
@@ -92,17 +165,47 @@
         font-size: 1.2rem;
         border-radius: 6px;
         border: 1px solid var(--c-border);
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .custom-zone {
+        background: #1e293b;
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    .custom-zone h3 {
+        margin-top: 0;
+        color: #94a3b8;
+    }
+
+    select {
+        padding: 12px;
+        border-radius: 6px;
+        font-size: 1rem;
+        width: 100%;
+        max-width: 400px;
+        margin-bottom: 15px;
+        background: #334155;
+        color: white;
+        border: 1px solid #475569;
+    }
+
+    .result-box {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #4ade80;
+        margin-top: 10px;
+        min-height: 40px;
     }
 
     .zones-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         gap: 15px;
-    }
-    @media (max-width: 500px) {
-        .zones-grid {
-            grid-template-columns: 1fr;
-        }
     }
 
     .zone-card {
