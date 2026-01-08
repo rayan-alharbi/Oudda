@@ -1,0 +1,93 @@
+---
+
+---
+
+<div class="exif-tool">
+    <input type="file" id="file-in" accept="image/*" />
+
+    <div class="info-table hidden" id="info-table">
+        <h3>بيانات الصورة (Metadata)</h3>
+        <div id="data-list"></div>
+    </div>
+</div>
+
+<script>
+    import Exif from "exif-js";
+
+    const inp = document.getElementById("file-in") as HTMLInputElement;
+    const table = document.getElementById("info-table");
+    const list = document.getElementById("data-list");
+
+    inp.addEventListener("change", () => {
+        const file = inp.files[0];
+        if (!file) return;
+
+        Exif.getData(file, function () {
+            const all = Exif.getAllTags(this);
+            list.innerHTML = "";
+            table.classList.remove("hidden");
+
+            if (Object.keys(all).length === 0) {
+                list.innerHTML =
+                    '<div class="empty">لا توجد بيانات Exif متاحة لهذه الصورة.</div>';
+                return;
+            }
+
+            for (let tag in all) {
+                if (typeof all[tag] === "object") continue; // Skip complex obj for simplicity
+
+                const row = document.createElement("div");
+                row.className = "row";
+                row.innerHTML = `<span class="label">${tag}</span> <span class="val">${all[tag]}</span>`;
+                list.appendChild(row);
+            }
+        });
+    });
+</script>
+
+<style>
+    .exif-tool {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    input {
+        margin-bottom: 20px;
+    }
+
+    .info-table {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: 8px;
+        padding: 20px;
+    }
+    h3 {
+        margin-top: 0;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+    .row {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #f8f8f8;
+        padding: 8px 0;
+    }
+    .label {
+        font-weight: bold;
+        color: var(--c-text-muted);
+    }
+    .val {
+        color: var(--c-primary);
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .hidden {
+        display: none;
+    }
+    .empty {
+        padding: 20px;
+        text-align: center;
+        color: var(--c-text-muted);
+    }
+</style>

@@ -1,0 +1,95 @@
+---
+
+---
+
+<div class="cb-tool">
+    <div class="controls">
+        <input type="file" id="img-in" accept="image/*" />
+        <select id="type-sel">
+            <option value="normal">عادي (Normal)</option>
+            <option value="protanopia">عمى الأحمر (Protanopia)</option>
+            <option value="deuteranopia">عمى الأخضر (Deuteranopia)</option>
+            <option value="tritanopia">عمى الأزرق (Tritanopia)</option>
+            <option value="achromatopsia">عمى كلي (Achromatopsia)</option>
+        </select>
+    </div>
+
+    <div class="view-box">
+        <img id="preview" src="" alt="Preview" />
+    </div>
+
+    <!-- SVG Filters for Color Blindness -->
+    <svg style="display: none;">
+        <defs>
+            <filter id="protanopia">
+                <feColorMatrix
+                    type="matrix"
+                    values="0.567, 0.433, 0, 0, 0 0.558, 0.442, 0, 0, 0 0, 0.242, 0.758, 0, 0 0, 0, 0, 1, 0"
+                ></feColorMatrix>
+            </filter>
+            <filter id="deuteranopia">
+                <feColorMatrix
+                    type="matrix"
+                    values="0.625, 0.375, 0, 0, 0 0.7, 0.3, 0, 0, 0 0, 0.3, 0.7, 0, 0 0, 0, 0, 1, 0"
+                ></feColorMatrix>
+            </filter>
+            <filter id="tritanopia">
+                <feColorMatrix
+                    type="matrix"
+                    values="0.95, 0.05, 0, 0, 0 0, 0.433, 0.567, 0, 0 0, 0.475, 0.525, 0, 0 0, 0, 0, 1, 0"
+                ></feColorMatrix>
+            </filter>
+            <filter id="achromatopsia">
+                <feColorMatrix
+                    type="matrix"
+                    values="0.299, 0.587, 0.114, 0, 0 0.299, 0.587, 0.114, 0, 0 0.299, 0.587, 0.114, 0, 0 0, 0, 0, 1, 0"
+                ></feColorMatrix>
+            </filter>
+        </defs>
+    </svg>
+</div>
+
+<script>
+    const inp = document.getElementById("img-in") as HTMLInputElement;
+    const img = document.getElementById("preview") as HTMLImageElement;
+    const type = document.getElementById("type-sel") as HTMLSelectElement;
+
+    inp.addEventListener("change", () => {
+        const file = inp.files[0];
+        if (file) {
+            img.src = URL.createObjectURL(file);
+        }
+    });
+
+    type.addEventListener("change", () => {
+        const val = type.value;
+        if (val === "normal") img.style.filter = "none";
+        else img.style.filter = `url(#${val})`;
+    });
+</script>
+
+<style>
+    .cb-tool {
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .controls {
+        margin-bottom: 20px;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+    .view-box {
+        min-height: 200px;
+        border: 2px dashed var(--c-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    img {
+        max-width: 100%;
+        max-height: 500px;
+    }
+</style>

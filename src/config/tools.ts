@@ -56,6 +56,28 @@ import CsvJsonConverter from '../components/tools/CsvJsonConverter.astro';
 import IpSubnet from '../components/tools/IpSubnet.astro';
 import BarcodeGenerator from '../components/tools/BarcodeGenerator.astro';
 
+// Batch 7 & 8 Imports
+import HashGenerator from '../components/tools/HashGenerator.astro';
+import HmacGenerator from '../components/tools/HmacGenerator.astro';
+import Bip39Generator from '../components/tools/Bip39Generator.astro';
+import IbanValidator from '../components/tools/IbanValidator.astro';
+import CreditCardValidator from '../components/tools/CreditCardValidator.astro';
+import XmlJsonConverter from '../components/tools/XmlJsonConverter.astro';
+import CronGenerator from '../components/tools/CronGenerator.astro';
+import ExifReader from '../components/tools/ExifReader.astro';
+import FileSizeConverter from '../components/tools/FileSizeConverter.astro';
+import TimeZoneConverter from '../components/tools/TimeZoneConverter.astro';
+import ScientificCalculator from '../components/tools/ScientificCalculator.astro';
+import StatisticsCalculator from '../components/tools/StatisticsCalculator.astro';
+import MatrixCalculator from '../components/tools/MatrixCalculator.astro';
+import PhoneNumberParser from '../components/tools/PhoneNumberParser.astro';
+import ColorMixer from '../components/tools/ColorMixer.astro';
+import ColorBlindnessSim from '../components/tools/ColorBlindnessSim.astro';
+import ImageCropper from '../components/tools/ImageCropper.astro';
+import ImageFilters from '../components/tools/ImageFilters.astro';
+import SvgToPng from '../components/tools/SvgToPng.astro';
+import IcoConverter from '../components/tools/IcoConverter.astro';
+
 export interface ToolConfig {
     id: string;
     title: string;
@@ -135,4 +157,28 @@ export const tools: ToolConfig[] = [
     { id: 'csv-json', title: 'محول CSV/JSON', description: 'تحويل جداول البيانات.', icon: 'table_view', component: CsvJsonConverter },
     { id: 'ip-subnet', title: 'الشبكات الفرعية', description: 'حساب Subnet و CIDR.', icon: 'router', component: IpSubnet },
     { id: 'barcode-gen', title: 'توليد الباركود', description: 'إنشاء باركود للمنتجات.', icon: 'qr_code_2', component: BarcodeGenerator },
+
+    // Mega Expansion 6 (Batch 7 - 10 Tools)
+    { id: 'hash-gen', title: 'مولد Hash', description: 'تشفير النصوص (MD5/SHA).', icon: 'fingerprint', component: HashGenerator },
+    { id: 'hmac-gen', title: 'مولد HMAC', description: 'توقيع الرسائل (HMAC).', icon: 'verified_user', component: HmacGenerator },
+    { id: 'bip39-gen', title: 'BIP39 Mnemonic', description: 'كلمات استرجاع المحافظ.', icon: 'lock', component: Bip39Generator },
+    { id: 'iban-check', title: 'فاحص IBAN', description: 'التحقق من رقم الآيبان.', icon: 'account_balance_wallet', component: IbanValidator },
+    { id: 'cc-check', title: 'فاحص البطاقات', description: 'التحقق من صحة البطاقة.', icon: 'credit_card', component: CreditCardValidator },
+    { id: 'xml-json', title: 'محول XML/JSON', description: 'تحويل صيغ البيانات.', icon: 'integration_instructions', component: XmlJsonConverter },
+    { id: 'cron-gen', title: 'مولد Cron', description: 'صياغة مواعيد المهام.', icon: 'schedule_send', component: CronGenerator },
+    { id: 'exif-read', title: 'قارئ Exif', description: 'بيانات الصور المخفية.', icon: 'photo_camera', component: ExifReader },
+    { id: 'file-size', title: 'محول الأحجام', description: 'بايت، ميجا، جيجا.', icon: 'sd_storage', component: FileSizeConverter },
+    { id: 'timezone', title: 'مناطق زمنية', description: 'تحويل الوقت عالمياً.', icon: 'public', component: TimeZoneConverter },
+
+    // Mega Expansion 7 (Batch 8 - 10 Tools)
+    { id: 'sci-calc', title: 'آلة حاسبة علمية', description: 'وظائف رياضية متقدمة.', icon: 'calculate', component: ScientificCalculator },
+    { id: 'stat-calc', title: 'الإحصاء', description: 'المعدل، الوسيط، الانحراف.', icon: 'analytics', component: StatisticsCalculator },
+    { id: 'matrix-calc', title: 'المصفوفات', description: 'عمليات المصفوفات البسيطة.', icon: 'grid_on', component: MatrixCalculator },
+    { id: 'phone-parser', title: 'محلل الهواتف', description: 'معرفة بيانات الخطوط.', icon: 'call', component: PhoneNumberParser },
+    { id: 'color-mix', title: 'دامح الألوان', description: 'مزج لونين معاً.', icon: 'invert_colors', component: ColorMixer },
+    { id: 'cb-sim', title: 'محاكي عمى الألوان', description: 'رؤية الصور بعيون مختلفة.', icon: 'visibility_off', component: ColorBlindnessSim },
+    { id: 'img-crop', title: 'قص الصور', description: 'تصغير وقص الصور.', icon: 'crop', component: ImageCropper },
+    { id: 'img-filter', title: 'فلاتر الصور', description: 'تعديل ألوان الصور.', icon: 'photo_filter', component: ImageFilters },
+    { id: 'svg-png', title: 'تحويل SVG لـ PNG', description: 'تصدير المتجهات لصور.', icon: 'image_aspect_ratio', component: SvgToPng },
+    { id: 'ico-conv', title: 'محول الأيقونات', description: 'صنع أيقونات المواقع.', icon: 'app_shortcut', component: IcoConverter },
 ];

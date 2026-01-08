@@ -1,0 +1,109 @@
+---
+
+---
+
+<div class="hash-tool">
+    <div class="input-grp">
+        <label>Input Text</label>
+        <textarea id="txt-in" placeholder="Enter text to hash..."></textarea>
+    </div>
+
+    <div class="hashes">
+        <div class="hash-row">
+            <label>MD5</label>
+            <div class="field">
+                <input type="text" id="md5-out" readonly />
+                <button class="copy-btn" data-target="md5-out">Copy</button>
+            </div>
+        </div>
+        <div class="hash-row">
+            <label>SHA-1</label>
+            <div class="field">
+                <input type="text" id="sha1-out" readonly />
+                <button class="copy-btn" data-target="sha1-out">Copy</button>
+            </div>
+        </div>
+        <div class="hash-row">
+            <label>SHA-256</label>
+            <div class="field">
+                <input type="text" id="sha256-out" readonly />
+                <button class="copy-btn" data-target="sha256-out">Copy</button>
+            </div>
+        </div>
+        <div class="hash-row">
+            <label>SHA-512</label>
+            <div class="field">
+                <input type="text" id="sha512-out" readonly />
+                <button class="copy-btn" data-target="sha512-out">Copy</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    import CryptoJS from "crypto-js";
+
+    const inp = document.getElementById("txt-in") as HTMLTextAreaElement;
+
+    inp.addEventListener("input", () => {
+        const val = inp.value;
+        document.getElementById("md5-out").value = CryptoJS.MD5(val).toString();
+        document.getElementById("sha1-out").value =
+            CryptoJS.SHA1(val).toString();
+        document.getElementById("sha256-out").value =
+            CryptoJS.SHA256(val).toString();
+        document.getElementById("sha512-out").value =
+            CryptoJS.SHA512(val).toString();
+    });
+
+    document.querySelectorAll(".copy-btn").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+            const id = (e.target as HTMLElement).dataset.target;
+            const el = document.getElementById(id) as HTMLInputElement;
+            navigator.clipboard.writeText(el.value);
+        });
+    });
+</script>
+
+<style>
+    .hash-tool {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    textarea {
+        width: 100%;
+        height: 100px;
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        margin-bottom: 20px;
+    }
+    .hash-row {
+        margin-bottom: 15px;
+    }
+    .hash-row label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: var(--c-text-muted);
+    }
+    .field {
+        display: flex;
+        gap: 10px;
+    }
+    .field input {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid var(--c-border);
+        border-radius: 4px;
+        font-family: monospace;
+        background: #f8fafc;
+    }
+    .copy-btn {
+        padding: 8px 15px;
+        cursor: pointer;
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: 4px;
+    }
+</style>

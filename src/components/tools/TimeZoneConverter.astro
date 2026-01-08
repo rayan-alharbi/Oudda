@@ -1,0 +1,124 @@
+---
+
+---
+
+<div class="tz-tool">
+    <div class="input-grp">
+        <label>الوقت المحلي (Local)</label>
+        <input type="datetime-local" id="local-time" />
+    </div>
+
+    <div class="zones-grid">
+        <div class="zone-card">
+            <h4>London (UTC)</h4>
+            <div id="t-utc" class="time"></div>
+        </div>
+        <div class="zone-card">
+            <h4>New York (EST)</h4>
+            <div id="t-ny" class="time"></div>
+        </div>
+        <div class="zone-card">
+            <h4>Tokyo (JST)</h4>
+            <div id="t-tokyo" class="time"></div>
+        </div>
+        <div class="zone-card">
+            <h4>Dubai (GST)</h4>
+            <div id="t-dubai" class="time"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const localIn = document.getElementById("local-time") as HTMLInputElement;
+
+    // Set default to current time
+    const now = new Date();
+    // Adjust to local ISO string for input
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    localIn.value = now.toISOString().slice(0, 16);
+
+    function update() {
+        const d = new Date(localIn.value);
+        if (isNaN(d.getTime())) return;
+
+        const date = new Date(d.getTime() + d.getTimezoneOffset() * 60000); // Back to UTC actual? No, input is local
+
+        // Correct approach: Treat input as Local Time
+        // HTML input datetime-local gives YYYY-MM-DDTHH:mm
+        // const d = new Date(val) creates a date object assuming local system time if no offset Z provided?
+        // Actually `new Date('2023-01-01T12:00')` creates date at 12:00 local time.
+
+        const opts = {
+            hour: "numeric",
+            minute: "numeric",
+            day: "numeric",
+            month: "short",
+            weekday: "short",
+        } as const;
+
+        document.getElementById("t-utc").textContent = d.toLocaleString(
+            "en-US",
+            { ...opts, timeZone: "UTC" },
+        );
+        document.getElementById("t-ny").textContent = d.toLocaleString(
+            "en-US",
+            { ...opts, timeZone: "America/New_York" },
+        );
+        document.getElementById("t-tokyo").textContent = d.toLocaleString(
+            "en-US",
+            { ...opts, timeZone: "Asia/Tokyo" },
+        );
+        document.getElementById("t-dubai").textContent = d.toLocaleString(
+            "en-US",
+            { ...opts, timeZone: "Asia/Dubai" },
+        );
+    }
+
+    localIn.addEventListener("input", update);
+    update();
+</script>
+
+<style>
+    .tz-tool {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    .input-grp {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    input {
+        padding: 10px;
+        font-size: 1.2rem;
+        border-radius: 6px;
+        border: 1px solid var(--c-border);
+    }
+
+    .zones-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+    @media (max-width: 500px) {
+        .zones-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .zone-card {
+        background: var(--c-surface);
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid var(--c-border);
+        text-align: center;
+    }
+    h4 {
+        margin: 0 0 10px 0;
+        color: var(--c-text-muted);
+    }
+    .time {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: var(--c-primary);
+    }
+</style>

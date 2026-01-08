@@ -1,0 +1,122 @@
+---
+
+---
+
+<div class="phone-tool">
+    <div class="input-grp">
+        <label>رقم الهاتف (مع الكود الدولي)</label>
+        <input type="text" id="ph-in" placeholder="+966 50 123 4567" />
+        <button id="parse-btn" class="btn-primary">تحليل</button>
+    </div>
+
+    <div class="results hidden" id="res">
+        <div class="row">
+            <label>صالح؟ (Valid)</label>
+            <span id="r-valid">-</span>
+        </div>
+        <div class="row">
+            <label>البلد (Country)</label>
+            <span id="r-country">-</span>
+        </div>
+        <div class="row">
+            <label>الصيغة الدولية</label>
+            <span id="r-intl">-</span>
+        </div>
+        <div class="row">
+            <label>الصيغة المحلية</label>
+            <span id="r-nat">-</span>
+        </div>
+        <div class="row">
+            <label>النوع (Type)</label>
+            <span id="r-type">-</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    import { parsePhoneNumber, isValidPhoneNumber } from "libphonenumber-js";
+
+    const inp = document.getElementById("ph-in") as HTMLInputElement;
+    const res = document.getElementById("res");
+
+    document.getElementById("parse-btn").addEventListener("click", () => {
+        try {
+            const num = parsePhoneNumber(inp.value);
+
+            res.classList.remove("hidden");
+
+            const valid = num.isValid() ? "✅ نعم" : "❌ لا";
+            document.getElementById("r-valid").textContent = valid;
+
+            if (num.isValid()) {
+                document.getElementById("r-country").textContent =
+                    num.country || "N/A";
+                document.getElementById("r-intl").textContent =
+                    num.formatInternational();
+                document.getElementById("r-nat").textContent =
+                    num.formatNational();
+                document.getElementById("r-type").textContent =
+                    num.getType() || "Unknown";
+            } else {
+                ["r-country", "r-intl", "r-nat", "r-type"].forEach(
+                    (id) => (document.getElementById(id).textContent = "-"),
+                );
+            }
+        } catch (e) {
+            res.classList.remove("hidden");
+            document.getElementById("r-valid").textContent = "❌ تنسيق خاطئ";
+        }
+    });
+</script>
+
+<style>
+    .phone-tool {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    .input-grp {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-direction: column;
+    }
+    input {
+        padding: 12px;
+        font-size: 1.1rem;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+    }
+    .btn-primary {
+        padding: 12px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .results {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: 8px;
+        padding: 20px;
+    }
+    .row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+    }
+    .row:last-child {
+        border: none;
+    }
+    .row label {
+        color: var(--c-text-muted);
+    }
+    .row span {
+        font-weight: bold;
+    }
+    .hidden {
+        display: none;
+    }
+</style>

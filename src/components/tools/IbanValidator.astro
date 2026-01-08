@@ -1,0 +1,123 @@
+---
+
+---
+
+<div class="iban-tool">
+    <div class="input-grp">
+        <input
+            type="text"
+            id="iban-in"
+            placeholder="SA00 0000 0000 0000 0000 0000"
+            style="text-transform: uppercase;"
+        />
+        <button id="chk-btn" class="btn-primary">فحص</button>
+    </div>
+
+    <div id="result" class="result hidden">
+        <div id="icon" class="status-icon"></div>
+        <div id="msg" class="status-msg"></div>
+    </div>
+</div>
+
+<script>
+    const inp = document.getElementById("iban-in") as HTMLInputElement;
+    const res = document.getElementById("result");
+    const icon = document.getElementById("icon");
+    const msg = document.getElementById("msg");
+
+    function isValidIBAN(iban) {
+        // Remove spaces and make uppercase
+        iban = iban.replace(/\s+/g, "").toUpperCase();
+
+        // Basic Length check (min 5, max 34)
+        if (iban.length < 5 || iban.length > 34) return false;
+
+        // Move first 4 chars to end
+        const rearranged = iban.slice(4) + iban.slice(0, 4);
+
+        // Replace letters with numbers (A=10, ..., Z=35)
+        const numeric = rearranged
+            .split("")
+            .map((c) => {
+                if (c >= "0" && c <= "9") return c;
+                return c.charCodeAt(0) - 55;
+            })
+            .join("");
+
+        // Modulo 97 check (using BigInt because number is huge)
+        try {
+            return BigInt(numeric) % 97n === 1n;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    document.getElementById("chk-btn").addEventListener("click", () => {
+        const val = inp.value;
+        const valid = isValidIBAN(val);
+
+        res.classList.remove("hidden");
+        if (valid) {
+            res.className = "result success";
+            icon.textContent = "✅";
+            msg.textContent = "رقم الآيبان صحيح (Valid IBAN).";
+        } else {
+            res.className = "result error";
+            icon.textContent = "❌";
+            msg.textContent = "رقم الآيبان غير صحيح (Invalid IBAN).";
+        }
+    });
+</script>
+
+<style>
+    .iban-tool {
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .input-grp {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    input {
+        flex: 1;
+        padding: 12px;
+        font-size: 1.1rem;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        font-family: monospace;
+        letter-spacing: 1px;
+    }
+    .btn-primary {
+        padding: 0 30px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .result {
+        padding: 20px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+    .result.success {
+        background: #dcfce7;
+        color: #166534;
+    }
+    .result.error {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+    .hidden {
+        display: none;
+    }
+</style>

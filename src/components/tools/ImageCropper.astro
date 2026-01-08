@@ -1,0 +1,137 @@
+---
+
+---
+
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"
+/>
+
+<div class="crop-tool">
+    <div class="toolbar">
+        <input type="file" id="img-in" accept="image/*" />
+        <button id="crop-btn" class="btn-primary" disabled>قص (Crop)</button>
+        <button id="dl-btn" class="btn-sec" disabled>تحميل</button>
+    </div>
+
+    <div class="workspace">
+        <div class="editor">
+            <img id="image" src="" />
+        </div>
+        <div class="preview-box">
+            <h4>معاينة</h4>
+            <div id="res-view"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    import Cropper from "cropperjs";
+
+    const inp = document.getElementById("img-in") as HTMLInputElement;
+    const image = document.getElementById("image") as HTMLImageElement;
+    const resView = document.getElementById("res-view");
+    let cropper;
+
+    inp.addEventListener("change", () => {
+        const file = inp.files[0];
+        if (file) {
+            image.src = URL.createObjectURL(file);
+            if (cropper) cropper.destroy();
+
+            image.onload = () => {
+                cropper = new Cropper(image, {
+                    aspectRatio: NaN,
+                    viewMode: 1,
+                    preview: ".preview-not-working-here-needed-css", // simple manual preview
+                });
+                document.getElementById("crop-btn").disabled = false;
+            };
+        }
+    });
+
+    document.getElementById("crop-btn").addEventListener("click", () => {
+        if (!cropper) return;
+
+        const canvas = cropper.getCroppedCanvas();
+        resView.innerHTML = "";
+        const img = document.createElement("img");
+        img.src = canvas.toDataURL();
+        img.style.maxWidth = "100%";
+        resView.appendChild(img);
+
+        const dlBtn = document.getElementById("dl-btn") as HTMLButtonElement;
+        dlBtn.disabled = false;
+        dlBtn.onclick = () => {
+            const a = document.createElement("a");
+            a.href = canvas.toDataURL("image/png");
+            a.download = "cropped.png";
+            a.click();
+        };
+    });
+</script>
+
+<style>
+    .crop-tool {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    .toolbar {
+        margin-bottom: 20px;
+        display: flex;
+        gap: 10px;
+    }
+    .btn-primary {
+        padding: 10px 20px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .btn-sec {
+        padding: 10px 20px;
+        background: white;
+        border: 1px solid var(--c-border);
+        color: var(--c-text);
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .btn-primary:disabled,
+    .btn-sec:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .workspace {
+        display: flex;
+        gap: 20px;
+        flex-direction: column;
+    }
+    @media (min-width: 768px) {
+        .workspace {
+            flex-direction: row;
+        }
+    }
+
+    .editor {
+        flex: 2;
+        height: 400px;
+        background: #333;
+    }
+    .editor img {
+        max-width: 100%;
+        display: block;
+    }
+
+    .preview-box {
+        flex: 1;
+        border: 1px solid var(--c-border);
+        padding: 10px;
+        border-radius: 8px;
+        min-height: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+</style>

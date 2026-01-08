@@ -1,0 +1,122 @@
+---
+
+---
+
+<div class="svg-tool">
+    <div class="input-area">
+        <label>Upload SVG</label>
+        <input type="file" id="svg-in" accept=".svg, image/svg+xml" />
+        <p>OR Paste SVG Code</p>
+        <textarea id="svg-code" placeholder="<svg>...</svg>"></textarea>
+    </div>
+
+    <div class="actions">
+        <button id="convert-btn" class="btn-primary">Convert to PNG</button>
+    </div>
+
+    <div class="preview-area hidden" id="preview-area">
+        <canvas id="canvas"></canvas>
+        <br />
+        <button id="dl-btn" class="btn-sec">Download PNG</button>
+    </div>
+</div>
+
+<script>
+    const fileIn = document.getElementById("svg-in") as HTMLInputElement;
+    const codeIn = document.getElementById("svg-code") as HTMLTextAreaElement;
+    const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+    const ctx = canvas.getContext("2d");
+    const area = document.getElementById("preview-area");
+
+    function render(svgStr) {
+        const img = new Image();
+        const blob = new Blob([svgStr], {
+            type: "image/svg+xml;charset=utf-8",
+        });
+        const url = URL.createObjectURL(blob);
+
+        img.onload = () => {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0);
+            URL.revokeObjectURL(url);
+            area.classList.remove("hidden");
+        };
+        img.src = url;
+    }
+
+    fileIn.addEventListener("change", () => {
+        const file = fileIn.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                codeIn.value = e.target.result as string;
+            };
+            reader.readAsText(file);
+        }
+    });
+
+    document.getElementById("convert-btn").addEventListener("click", () => {
+        if (codeIn.value) render(codeIn.value);
+    });
+
+    document.getElementById("dl-btn").addEventListener("click", () => {
+        const link = document.createElement("a");
+        link.download = "converted.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+    });
+</script>
+
+<style>
+    .svg-tool {
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    textarea {
+        width: 100%;
+        height: 150px;
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        margin-top: 10px;
+        font-family: monospace;
+    }
+    .actions {
+        margin: 20px 0;
+    }
+    .btn-primary {
+        padding: 12px 24px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 1.1rem;
+    }
+    .btn-sec {
+        padding: 10px 20px;
+        background: #fff;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .preview-area {
+        background: var(--c-surface);
+        padding: 20px;
+        border: 1px solid var(--c-border);
+        border-radius: 8px;
+    }
+    canvas {
+        max-width: 100%;
+        border: 1px dashed #ccc;
+        background: white;
+    } /* white bg to see transparent svg */
+    .hidden {
+        display: none;
+    }
+</style>

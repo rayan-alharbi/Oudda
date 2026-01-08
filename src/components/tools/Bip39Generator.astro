@@ -1,0 +1,139 @@
+---
+
+---
+
+<div class="bip39-tool">
+    <div class="controls">
+        <label>عدد الكلمات</label>
+        <select id="words-count">
+            <option value="12">12 كلمة</option>
+            <option value="15">15 كلمة</option>
+            <option value="18">18 كلمة</option>
+            <option value="21">21 كلمة</option>
+            <option value="24">24 كلمة</option>
+        </select>
+        <button id="gen-btn" class="btn-primary">توليد (Generate)</button>
+    </div>
+
+    <div class="result" id="mnemonic-box">
+        <p class="placeholder">اضغط توليد لإنشاء عبارة استرجاع جديدة.</p>
+    </div>
+
+    <button id="copy-btn" class="btn-sec hidden">نسخ العبارة</button>
+</div>
+
+<script>
+    import { wordlist } from "wordlist-english";
+    // wordlist['english'] is the array
+
+    const countSel = document.getElementById(
+        "words-count",
+    ) as HTMLSelectElement;
+    const box = document.getElementById("mnemonic-box");
+    const copyBtn = document.getElementById("copy-btn");
+    const list = wordlist["english"];
+
+    document.getElementById("gen-btn").addEventListener("click", () => {
+        const count = parseInt(countSel.value);
+        const words = [];
+
+        // Simulating robust randomness using crypto
+        const array = new Uint32Array(count);
+        crypto.getRandomValues(array);
+
+        for (let i = 0; i < count; i++) {
+            const idx = array[i] % list.length;
+            words.push(list[idx]);
+        }
+
+        const phrase = words.join(" ");
+
+        // Render
+        box.innerHTML = "";
+        words.forEach((w, i) => {
+            const span = document.createElement("div");
+            span.className = "word";
+            span.innerHTML = `<span class="idx">${i + 1}</span> ${w}`;
+            box.appendChild(span);
+        });
+
+        copyBtn.dataset.phrase = phrase;
+        copyBtn.classList.remove("hidden");
+    });
+
+    copyBtn.addEventListener("click", () => {
+        navigator.clipboard.writeText(copyBtn.dataset.phrase);
+        copyBtn.textContent = "تم النسخ!";
+        setTimeout(() => (copyBtn.textContent = "نسخ العبارة"), 2000);
+    });
+</script>
+
+<style>
+    .bip39-tool {
+        max-width: 700px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .controls {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    select {
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid var(--c-border);
+    }
+    .btn-primary {
+        padding: 10px 20px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .result {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        background: var(--c-surface);
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid var(--c-border);
+        min-height: 100px;
+        margin-bottom: 15px;
+    }
+    .word {
+        background: var(--c-background);
+        padding: 5px 12px;
+        border-radius: 20px;
+        border: 1px solid var(--c-border);
+        font-family: monospace;
+        font-size: 1.1rem;
+    }
+    .idx {
+        color: var(--c-text-muted);
+        font-size: 0.8rem;
+        margin-left: 5px;
+        user-select: none;
+    }
+
+    .placeholder {
+        color: var(--c-text-muted);
+        width: 100%;
+        margin-top: 20px;
+    }
+    .btn-sec {
+        padding: 8px 20px;
+        background: white;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        cursor: pointer;
+    }
+    .hidden {
+        display: none;
+    }
+</style>

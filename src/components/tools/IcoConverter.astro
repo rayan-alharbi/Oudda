@@ -1,0 +1,87 @@
+---
+
+---
+
+<div class="ico-tool">
+    <input type="file" id="img-in" accept="image/*" />
+
+    <div class="sizes">
+        <label><input type="checkbox" value="16" checked /> 16x16</label>
+        <label><input type="checkbox" value="32" checked /> 32x32</label>
+        <label><input type="checkbox" value="48" /> 48x48</label>
+        <label><input type="checkbox" value="64" /> 64x64</label>
+        <label><input type="checkbox" value="128" /> 128x128</label>
+        <label><input type="checkbox" value="256" /> 256x256</label>
+    </div>
+
+    <button id="convert-btn" class="btn-primary">Convert & Download PNGs</button
+    >
+    <div id="status"></div>
+</div>
+
+<script>
+    const inp = document.getElementById("img-in") as HTMLInputElement;
+    const status = document.getElementById("status");
+
+    document.getElementById("convert-btn").addEventListener("click", () => {
+        const file = inp.files[0];
+        if (!file) return alert("اختر صورة أولاً");
+
+        const selected = Array.from(
+            document.querySelectorAll('input[type="checkbox"]:checked'),
+        ).map((cb: HTMLInputElement) => parseInt(cb.value));
+
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+
+        img.onload = () => {
+            selected.forEach((size) => {
+                const canvas = document.createElement("canvas");
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, size, size);
+
+                canvas.toBlob((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `icon-${size}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                });
+            });
+            status.textContent = `تم تحميل ${selected.length} صور`;
+        };
+    });
+</script>
+
+<style>
+    .ico-tool {
+        max-width: 500px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .sizes {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        text-align: left;
+        margin: 20px auto;
+        max-width: 300px;
+    }
+    .btn-primary {
+        padding: 12px 24px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+    #status {
+        margin-top: 15px;
+        color: green;
+        font-weight: bold;
+    }
+</style>

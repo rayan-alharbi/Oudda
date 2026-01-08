@@ -1,0 +1,142 @@
+---
+
+---
+
+<div class="stat-tool">
+    <div class="input-area">
+        <label>الأرقام (افصل بفاصلة)</label>
+        <textarea id="num-in" placeholder="10, 20, 30, 40, 50"></textarea>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-box">
+            <span>المعدل (Mean)</span>
+            <strong id="v-mean">-</strong>
+        </div>
+        <div class="stat-box">
+            <span>الوسيط (Median)</span>
+            <strong id="v-median">-</strong>
+        </div>
+        <div class="stat-box">
+            <span>المنوال (Mode)</span>
+            <strong id="v-mode">-</strong>
+        </div>
+        <div class="stat-box">
+            <span>المدى (Range)</span>
+            <strong id="v-range">-</strong>
+        </div>
+        <div class="stat-box">
+            <span>الانحراف المعياري (Std Dev)</span>
+            <strong id="v-std">-</strong>
+        </div>
+        <div class="stat-box">
+            <span>المجموع (Sum)</span>
+            <strong id="v-sum">-</strong>
+        </div>
+    </div>
+</div>
+
+<script>
+    const inp = document.getElementById("num-in") as HTMLTextAreaElement;
+
+    function calcStats(nums) {
+        if (nums.length === 0) return {};
+        const sum = nums.reduce((a, b) => a + b, 0);
+        const mean = sum / nums.length;
+
+        // Median
+        const sorted = [...nums].sort((a, b) => a - b);
+        const mid = Math.floor(sorted.length / 2);
+        const median =
+            sorted.length % 2 !== 0
+                ? sorted[mid]
+                : (sorted[mid - 1] + sorted[mid]) / 2;
+
+        // Range
+        const range = sorted[sorted.length - 1] - sorted[0];
+
+        // Std Dev
+        const variance =
+            nums.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / nums.length;
+        const std = Math.sqrt(variance);
+
+        // Mode
+        const modeMap = {};
+        let maxCount = 0;
+        let modes = [];
+        nums.forEach((n) => {
+            modeMap[n] = (modeMap[n] || 0) + 1;
+            if (modeMap[n] > maxCount) maxCount = modeMap[n];
+        });
+        for (let n in modeMap) {
+            if (modeMap[n] === maxCount) modes.push(n);
+        }
+
+        return {
+            sum,
+            mean,
+            median,
+            range,
+            std,
+            mode: modes.length === nums.length ? "None" : modes.join(", "),
+        };
+    }
+
+    inp.addEventListener("input", () => {
+        const txt = inp.value;
+        const nums = txt
+            .split(/[,\s]+/)
+            .map((n) => parseFloat(n))
+            .filter((n) => !isNaN(n));
+
+        if (nums.length > 0) {
+            const res = calcStats(nums);
+            document.getElementById("v-mean").textContent = res.mean.toFixed(2);
+            document.getElementById("v-median").textContent =
+                res.median.toString();
+            document.getElementById("v-mode").textContent = res.mode;
+            document.getElementById("v-range").textContent =
+                res.range.toString();
+            document.getElementById("v-sum").textContent = res.sum.toString();
+            document.getElementById("v-std").textContent = res.std.toFixed(4);
+        }
+    });
+</script>
+
+<style>
+    .stat-tool {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    textarea {
+        width: 100%;
+        height: 100px;
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        margin-bottom: 20px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+    .stat-box {
+        background: var(--c-surface);
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid var(--c-border);
+        text-align: center;
+    }
+    .stat-box span {
+        display: block;
+        color: var(--c-text-muted);
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+    }
+    .stat-box strong {
+        font-size: 1.2rem;
+        color: var(--c-primary);
+    }
+</style>

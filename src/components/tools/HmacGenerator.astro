@@ -1,0 +1,139 @@
+---
+
+---
+
+<div class="hmac-tool">
+    <div class="grid">
+        <div class="col">
+            <label>Input Text</label>
+            <textarea id="txt-in" placeholder="Message"></textarea>
+        </div>
+        <div class="col">
+            <label>Secret Key</label>
+            <input type="text" id="key-in" placeholder="Secret Key" />
+            <div class="alg-choice">
+                <label
+                    ><input type="radio" name="alg" value="MD5" checked /> MD5</label
+                >
+                <label
+                    ><input type="radio" name="alg" value="SHA1" /> SHA1</label
+                >
+                <label
+                    ><input type="radio" name="alg" value="SHA256" /> SHA256</label
+                >
+                <label
+                    ><input type="radio" name="alg" value="SHA512" /> SHA512</label
+                >
+            </div>
+        </div>
+    </div>
+
+    <div class="result-box">
+        <label>HMAC Output</label>
+        <textarea id="hmac-out" readonly></textarea>
+        <button id="copy-btn" class="btn-primary">Copy</button>
+    </div>
+</div>
+
+<script>
+    import CryptoJS from "crypto-js";
+
+    const inputs = document.querySelectorAll(
+        '#txt-in, #key-in, input[name="alg"]',
+    );
+    const out = document.getElementById("hmac-out");
+
+    function update() {
+        const msg = (document.getElementById("txt-in") as HTMLTextAreaElement)
+            .value;
+        const key = (document.getElementById("key-in") as HTMLInputElement)
+            .value;
+        const alg = (
+            document.querySelector(
+                'input[name="alg"]:checked',
+            ) as HTMLInputElement
+        ).value;
+
+        if (!msg || !key) {
+            out.value = "";
+            return;
+        }
+
+        let res = "";
+        if (alg === "MD5") res = CryptoJS.HmacMD5(msg, key).toString();
+        else if (alg === "SHA1") res = CryptoJS.HmacSHA1(msg, key).toString();
+        else if (alg === "SHA256")
+            res = CryptoJS.HmacSHA256(msg, key).toString();
+        else if (alg === "SHA512")
+            res = CryptoJS.HmacSHA512(msg, key).toString();
+
+        out.value = res;
+    }
+
+    inputs.forEach((el) => el.addEventListener("input", update));
+    document
+        .getElementById("copy-btn")
+        .addEventListener("click", () =>
+            navigator.clipboard.writeText(out.value),
+        );
+</script>
+
+<style>
+    .hmac-tool {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    @media (max-width: 600px) {
+        .grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+    }
+    #txt-in {
+        height: 120px;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        margin-bottom: 15px;
+    }
+    .alg-choice {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+    .alg-choice label {
+        cursor: pointer;
+    }
+
+    .result-box textarea {
+        height: 80px;
+        background: #f8fafc;
+        font-family: monospace;
+        color: var(--c-primary);
+        margin-bottom: 10px;
+    }
+    .btn-primary {
+        padding: 10px 20px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>

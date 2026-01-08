@@ -1,0 +1,119 @@
+---
+
+---
+
+<div class="size-tool">
+    <div class="input-row">
+        <input type="number" id="val-in" value="1" />
+        <select id="unit-in">
+            <option value="b">Bytes</option>
+            <option value="kb">KB</option>
+            <option value="mb">MB</option>
+            <option value="gb" selected>GB</option>
+            <option value="tb">TB</option>
+            <option value="pb">PB</option>
+        </select>
+    </div>
+
+    <div class="results">
+        <div class="res-row">
+            <span>Bytes:</span>
+            <strong id="r-b"></strong>
+        </div>
+        <div class="res-row"><span>KB:</span> <strong id="r-kb"></strong></div>
+        <div class="res-row"><span>MB:</span> <strong id="r-mb"></strong></div>
+        <div class="res-row"><span>GB:</span> <strong id="r-gb"></strong></div>
+        <div class="res-row"><span>TB:</span> <strong id="r-tb"></strong></div>
+    </div>
+</div>
+
+<script>
+    const valIn = document.getElementById("val-in") as HTMLInputElement;
+    const unitIn = document.getElementById("unit-in") as HTMLSelectElement;
+
+    // Base is Bytes
+    const FACTORS = {
+        b: 1,
+        kb: 1024,
+        mb: 1024 * 1024,
+        gb: 1024 * 1024 * 1024,
+        tb: 1024 * 1024 * 1024 * 1024,
+        pb: 1024 * 1024 * 1024 * 1024 * 1024,
+    };
+
+    function fmt(n) {
+        return n.toLocaleString(undefined, { maximumFractionDigits: 4 });
+    }
+
+    function update() {
+        const val = parseFloat(valIn.value) || 0;
+        const unit = unitIn.value;
+        const bytes = val * FACTORS[unit];
+
+        document.getElementById("r-b").textContent = fmt(bytes);
+        document.getElementById("r-kb").textContent = fmt(
+            bytes / FACTORS["kb"],
+        );
+        document.getElementById("r-mb").textContent = fmt(
+            bytes / FACTORS["mb"],
+        );
+        document.getElementById("r-gb").textContent = fmt(
+            bytes / FACTORS["gb"],
+        );
+        document.getElementById("r-tb").textContent = fmt(
+            bytes / FACTORS["tb"],
+        );
+    }
+
+    valIn.addEventListener("input", update);
+    unitIn.addEventListener("change", update);
+    update();
+</script>
+
+<style>
+    .size-tool {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    .input-row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    input {
+        flex: 2;
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 4px;
+        font-size: 1.2rem;
+    }
+    select {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 4px;
+    }
+
+    .results {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: 8px;
+        padding: 20px;
+    }
+    .res-row {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #eee;
+        padding: 10px 0;
+    }
+    .res-row:last-child {
+        border: none;
+    }
+    .res-row span {
+        color: var(--c-text-muted);
+    }
+    .res-row strong {
+        color: var(--c-primary);
+        font-family: monospace;
+    }
+</style>

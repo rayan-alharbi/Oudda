@@ -1,0 +1,181 @@
+---
+
+---
+
+<div class="matrix-tool">
+    <div class="matrices">
+        <div class="mat-group">
+            <label>Matrix A</label>
+            <div class="mat-grid">
+                <input type="number" id="a11" value="1" />
+                <input type="number" id="a12" value="2" />
+                <input type="number" id="a21" value="3" />
+                <input type="number" id="a22" value="4" />
+            </div>
+        </div>
+
+        <div class="ops">
+            <button id="add">+</button>
+            <button id="sub">-</button>
+            <button id="mul">×</button>
+        </div>
+
+        <div class="mat-group">
+            <label>Matrix B</label>
+            <div class="mat-grid">
+                <input type="number" id="b11" value="5" />
+                <input type="number" id="b12" value="6" />
+                <input type="number" id="b21" value="7" />
+                <input type="number" id="b22" value="8" />
+            </div>
+        </div>
+    </div>
+
+    <div class="result-box">
+        <label>Result</label>
+        <div class="mat-grid res">
+            <div id="r11">0</div>
+            <div id="r12">0</div>
+            <div id="r21">0</div>
+            <div id="r22">0</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function getMat(prefix) {
+        return [
+            [
+                parseFloat(
+                    (document.getElementById(prefix + "11") as HTMLInputElement)
+                        .value,
+                ) || 0,
+                parseFloat(
+                    (document.getElementById(prefix + "12") as HTMLInputElement)
+                        .value,
+                ) || 0,
+            ],
+            [
+                parseFloat(
+                    (document.getElementById(prefix + "21") as HTMLInputElement)
+                        .value,
+                ) || 0,
+                parseFloat(
+                    (document.getElementById(prefix + "22") as HTMLInputElement)
+                        .value,
+                ) || 0,
+            ],
+        ];
+    }
+
+    function setRes(m) {
+        document.getElementById("r11").textContent = m[0][0];
+        document.getElementById("r12").textContent = m[0][1];
+        document.getElementById("r21").textContent = m[1][0];
+        document.getElementById("r22").textContent = m[1][1];
+    }
+
+    document.getElementById("add").addEventListener("click", () => {
+        const A = getMat("a");
+        const B = getMat("b");
+        setRes([
+            [A[0][0] + B[0][0], A[0][1] + B[0][1]],
+            [A[1][0] + B[1][0], A[1][1] + B[1][1]],
+        ]);
+    });
+
+    document.getElementById("sub").addEventListener("click", () => {
+        const A = getMat("a");
+        const B = getMat("b");
+        setRes([
+            [A[0][0] - B[0][0], A[0][1] - B[0][1]],
+            [A[1][0] - B[1][0], A[1][1] - B[1][1]],
+        ]);
+    });
+
+    document.getElementById("mul").addEventListener("click", () => {
+        const A = getMat("a");
+        const B = getMat("b");
+        setRes([
+            [
+                A[0][0] * B[0][0] + A[0][1] * B[1][0],
+                A[0][0] * B[0][1] + A[0][1] * B[1][1],
+            ],
+            [
+                A[1][0] * B[0][0] + A[1][1] * B[1][0],
+                A[1][0] * B[0][1] + A[1][1] * B[1][1],
+            ],
+        ]);
+    });
+</script>
+
+<style>
+    .matrix-tool {
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .matrices {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 30px;
+    }
+    @media (max-width: 600px) {
+        .matrices {
+            flex-direction: column;
+        }
+    }
+
+    .mat-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5px;
+        width: 120px;
+    }
+    input {
+        width: 50px;
+        padding: 5px;
+        text-align: center;
+        border: 1px solid var(--c-border);
+        border-radius: 4px;
+    }
+
+    .ops {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    @media (max-width: 600px) {
+        .ops {
+            flex-direction: row;
+        }
+    }
+
+    button {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: none;
+        background: var(--c-primary);
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+    }
+
+    .mat-grid.res {
+        margin: 0 auto;
+    }
+    .mat-grid.res div {
+        width: 50px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        border-radius: 4px;
+        font-weight: bold;
+    }
+</style>

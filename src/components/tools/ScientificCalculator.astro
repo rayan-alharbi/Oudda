@@ -1,0 +1,146 @@
+---
+
+---
+
+<div class="sci-calc">
+    <div class="display">
+        <div id="calc-hist" class="hist"></div>
+        <div id="calc-out" class="curr">0</div>
+    </div>
+
+    <div class="keys">
+        <button class="fn">C</button>
+        <button class="fn">(</button>
+        <button class="fn">)</button>
+        <button class="op">÷</button>
+
+        <button class="fn">sin</button>
+        <button class="fn">cos</button>
+        <button class="fn">tan</button>
+        <button class="op">×</button>
+
+        <button>7</button>
+        <button>8</button>
+        <button>9</button>
+        <button class="op">-</button>
+
+        <button>4</button>
+        <button>5</button>
+        <button>6</button>
+        <button class="op">+</button>
+
+        <button>1</button>
+        <button>2</button>
+        <button>3</button>
+        <button class="fn">π</button>
+
+        <button>0</button>
+        <button>.</button>
+        <button class="fn">√</button>
+        <button class="eq">=</button>
+    </div>
+</div>
+
+<script>
+    const out = document.getElementById("calc-out");
+    const hist = document.getElementById("calc-hist");
+    let expr = "";
+
+    document.querySelectorAll("button").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const val = btn.innerText;
+
+            if (val === "C") {
+                expr = "";
+                out.innerText = "0";
+                hist.innerText = "";
+            } else if (val === "=") {
+                try {
+                    // Safe eval replacement
+                    // Mapping UI symbols to JS
+                    let evalExpr = expr
+                        .replace(/×/g, "*")
+                        .replace(/÷/g, "/")
+                        .replace(/π/g, "Math.PI")
+                        .replace(/sin/g, "Math.sin")
+                        .replace(/cos/g, "Math.cos")
+                        .replace(/tan/g, "Math.tan")
+                        .replace(/√/g, "Math.sqrt");
+
+                    const res = new Function("return " + evalExpr)();
+                    hist.innerText = expr + " =";
+                    out.innerText = parseFloat(res).toLocaleString(undefined, {
+                        maximumFractionDigits: 10,
+                    });
+                    expr = res.toString();
+                } catch (e) {
+                    out.innerText = "Error";
+                }
+            } else {
+                if (out.innerText === "0" || out.innerText === "Error")
+                    expr = "";
+                expr += val;
+                out.innerText = expr;
+            }
+        });
+    });
+</script>
+
+<style>
+    .sci-calc {
+        max-width: 400px;
+        margin: 0 auto;
+        background: #1e293b;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+    .display {
+        background: #334155;
+        color: white;
+        padding: 20px;
+        text-align: right;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    .hist {
+        font-size: 0.9rem;
+        color: #94a3b8;
+        min-height: 1.2em;
+    }
+    .curr {
+        font-size: 2rem;
+        overflow-x: auto;
+    }
+
+    .keys {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+    button {
+        padding: 15px;
+        font-size: 1.2rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        background: #475569;
+        color: white;
+        transition: background 0.1s;
+    }
+    button:active {
+        transform: scale(0.95);
+    }
+    .op {
+        background: #f59e0b;
+        color: #1e293b;
+    }
+    .fn {
+        background: #64748b;
+        font-size: 1rem;
+    }
+    .eq {
+        background: #3b82f6;
+        color: white;
+    }
+</style>

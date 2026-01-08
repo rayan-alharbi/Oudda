@@ -1,0 +1,157 @@
+---
+
+---
+
+<div class="filter-tool">
+    <div class="sidebar">
+        <label>Brightness</label>
+        <input type="range" id="br" min="0" max="200" value="100" />
+
+        <label>Contrast</label>
+        <input type="range" id="co" min="0" max="200" value="100" />
+
+        <label>Saturation</label>
+        <input type="range" id="sa" min="0" max="200" value="100" />
+
+        <label>Grayscale</label>
+        <input type="range" id="gr" min="0" max="100" value="0" />
+
+        <label>Sepia</label>
+        <input type="range" id="se" min="0" max="100" value="0" />
+
+        <label>Blur (px)</label>
+        <input type="range" id="bl" min="0" max="20" value="0" />
+
+        <button id="reset-btn">Reset</button>
+        <button id="dl-btn" class="btn-primary">Download</button>
+    </div>
+
+    <div class="main-view">
+        <input type="file" id="img-in" accept="image/*" />
+        <div class="canvas-box">
+            <canvas id="canvas"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    const inputs = ["br", "co", "sa", "gr", "se", "bl"];
+    const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+    const ctx = canvas.getContext("2d");
+    const imgIn = document.getElementById("img-in") as HTMLInputElement;
+    let img = new Image();
+
+    imgIn.addEventListener("change", () => {
+        const file = imgIn.files[0];
+        if (file) {
+            img.src = URL.createObjectURL(file);
+            img.onload = () => {
+                // Resize canvas if image is too large for display?
+                // Better keep original size for download quality.
+                // Scale display via CSS.
+                canvas.width = img.width;
+                canvas.height = img.height;
+                draw();
+            };
+        }
+    });
+
+    function draw() {
+        if (!img.src) return;
+
+        const br = (document.getElementById("br") as HTMLInputElement).value;
+        const co = (document.getElementById("co") as HTMLInputElement).value;
+        const sa = (document.getElementById("sa") as HTMLInputElement).value;
+        const gr = (document.getElementById("gr") as HTMLInputElement).value;
+        const se = (document.getElementById("se") as HTMLInputElement).value;
+        const bl = (document.getElementById("bl") as HTMLInputElement).value;
+
+        const filter = `brightness(${br}%) contrast(${co}%) saturate(${sa}%) grayscale(${gr}%) sepia(${se}%) blur(${bl}px)`;
+
+        ctx.filter = filter;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    }
+
+    inputs.forEach((id) =>
+        document.getElementById(id).addEventListener("input", draw),
+    );
+
+    document.getElementById("reset-btn").addEventListener("click", () => {
+        (document.getElementById("br") as HTMLInputElement).value = "100";
+        (document.getElementById("co") as HTMLInputElement).value = "100";
+        (document.getElementById("sa") as HTMLInputElement).value = "100";
+        (document.getElementById("gr") as HTMLInputElement).value = "0";
+        (document.getElementById("se") as HTMLInputElement).value = "0";
+        (document.getElementById("bl") as HTMLInputElement).value = "0";
+        draw();
+    });
+
+    document.getElementById("dl-btn").addEventListener("click", () => {
+        const link = document.createElement("a");
+        link.download = "filtered.png";
+        link.href = canvas.toDataURL();
+        link.click();
+    });
+</script>
+
+<style>
+    .filter-tool {
+        display: flex;
+        gap: 20px;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    @media (max-width: 700px) {
+        .filter-tool {
+            flex-direction: column;
+        }
+    }
+
+    .sidebar {
+        flex: 1;
+        padding: 20px;
+        background: var(--c-surface);
+        border-radius: 8px;
+        border: 1px solid var(--c-border);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .main-view {
+        flex: 3;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    input[type="range"] {
+        width: 100%;
+    }
+    .canvas-box {
+        max-width: 100%;
+        overflow: auto;
+        border: 1px dashed var(--c-border);
+        margin-top: 20px;
+    }
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .btn-primary {
+        padding: 10px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    #reset-btn {
+        padding: 8px;
+        background: transparent;
+        border: 1px solid var(--c-border);
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>
