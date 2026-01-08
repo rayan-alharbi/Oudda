@@ -3,7 +3,9 @@
 ---
 
 <div class="color-converter">
-    <div class="color-preview" id="color-preview"></div>
+    <div class="color-preview" id="color-preview">
+        <input type="color" id="color-picker" value="#2563eb" />
+    </div>
 
     <div class="inputs-container">
         <div class="input-group">
@@ -41,6 +43,7 @@
     const rgbInput = document.getElementById("rgb-input") as HTMLInputElement;
     const hslInput = document.getElementById("hsl-input") as HTMLInputElement;
     const preview = document.getElementById("color-preview");
+    const picker = document.getElementById("color-picker") as HTMLInputElement;
 
     function hexToRgb(hex) {
         const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -51,12 +54,6 @@
                   b: parseInt(result[3], 16),
               }
             : null;
-    }
-
-    function rgbToHex(r, g, b) {
-        return (
-            "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
-        );
     }
 
     function rgbToHsl(r, g, b) {
@@ -94,27 +91,32 @@
         };
     }
 
-    function updateFromHex() {
-        let hex = hexInput.value;
+    function updateFromHex(hex) {
+        let validHex = hex;
         if (hex.length === 4)
-            hex = "#" + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3]; // Expand short hex
+            validHex =
+                "#" + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
 
-        const rgb = hexToRgb(hex);
+        const rgb = hexToRgb(validHex);
         if (rgb) {
-            preview.style.backgroundColor = hex;
+            preview.style.backgroundColor = validHex;
+            picker.value = validHex; // update picker
             rgbInput.value = `${rgb.r}, ${rgb.g}, ${rgb.b}`;
             const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
             hslInput.value = `${hsl.h}, ${hsl.s}%, ${hsl.l}%`;
         }
     }
 
-    hexInput.addEventListener("input", updateFromHex);
+    hexInput.addEventListener("input", () => updateFromHex(hexInput.value));
+
+    picker.addEventListener("input", () => {
+        hexInput.value = picker.value;
+        updateFromHex(picker.value);
+    });
+
     // Initial
     hexInput.value = "#2563eb";
-    updateFromHex();
-
-    // Simplified for this demo: One-way binding mostly, full 3-way binding needs more parsing logic.
-    // Focusing on HEX -> others primarily for user ease.
+    updateFromHex("#2563eb");
 </script>
 
 <style>
@@ -122,19 +124,29 @@
         max-width: 500px;
         margin: 0 auto;
     }
-
     .color-preview {
         height: 150px;
         border-radius: var(--radius-lg);
         margin-bottom: var(--space-lg);
         border: 1px solid var(--c-border);
         box-shadow: var(--shadow-md);
+        position: relative;
+        overflow: hidden;
+    }
+
+    #color-picker {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
     }
 
     .input-group {
         margin-bottom: var(--space-md);
     }
-
     .form-input {
         width: 100%;
         padding: var(--space-sm);
@@ -142,9 +154,8 @@
         border-radius: var(--radius-md);
         font-family: monospace;
         text-align: center;
-        direction: ltr; /* Codes are LTR */
+        direction: ltr;
     }
-
     label {
         display: block;
         margin-bottom: 4px;

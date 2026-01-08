@@ -1,0 +1,80 @@
+---
+
+---
+
+<div class="diff-tool">
+    <div class="inputs">
+        <textarea id="origin" placeholder="النص الأصلي"></textarea>
+        <textarea id="target" placeholder="النص الجديد"></textarea>
+    </div>
+
+    <button id="compare-btn" class="btn-primary">مقارنة</button>
+
+    <div id="diff-output" class="diff-output"></div>
+</div>
+
+<script>
+    import { diffWords } from "diff";
+
+    const origin = document.getElementById("origin") as HTMLTextAreaElement;
+    const target = document.getElementById("target") as HTMLTextAreaElement;
+    const output = document.getElementById("diff-output");
+
+    document.getElementById("compare-btn").addEventListener("click", () => {
+        const diff = diffWords(origin.value, target.value);
+        output.innerHTML = "";
+
+        diff.forEach((part) => {
+            const span = document.createElement("span");
+            span.textContent = part.value;
+            if (part.added) {
+                span.style.backgroundColor = "#dcfce7"; // green
+                span.style.color = "#166534";
+            } else if (part.removed) {
+                span.style.backgroundColor = "#fee2e2"; // red
+                span.style.color = "#991b1b";
+                span.style.textDecoration = "line-through";
+            }
+            output.appendChild(span);
+        });
+    });
+</script>
+
+<style>
+    .diff-tool {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .inputs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    textarea {
+        height: 200px;
+        resize: none;
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+    }
+    .btn-primary {
+        width: 100%;
+        padding: 10px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-bottom: 20px;
+    }
+    .diff-output {
+        padding: 20px;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        background: var(--c-surface);
+        line-height: 1.8;
+        white-space: pre-wrap;
+        min-height: 100px;
+    }
+</style>

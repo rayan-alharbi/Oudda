@@ -3,24 +3,34 @@
 ---
 
 <div class="markdown-editor">
-    <div class="editor-pane">
-        <div class="toolbar">MD (ادخل النص هنا)</div>
-        <textarea
-            id="md-input"
-            placeholder="# عنوان رئيسي\n\nنص عادي **نص غامق**\n- قائمة"
-        ></textarea>
+    <div class="toolbar-top">
+        <button id="download-html" class="btn-tool">📄 تحميل HTML</button>
+        <button id="download-pdf" class="btn-tool">📑 تحميل PDF</button>
     </div>
-    <div class="preview-pane">
-        <div class="toolbar">المعاينة</div>
-        <div id="md-preview" class="preview-content"></div>
+
+    <div class="panes-wrapper">
+        <div class="editor-pane">
+            <div class="toolbar">MD (ادخل النص هنا)</div>
+            <textarea
+                id="md-input"
+                placeholder="# عنوان رئيسي\n\nنص عادي **نص غامق**\n- قائمة"
+            ></textarea>
+        </div>
+        <div class="preview-pane">
+            <div class="toolbar">المعاينة</div>
+            <div id="md-preview" class="preview-content"></div>
+        </div>
     </div>
 </div>
 
 <script>
     import { marked } from "marked";
+    import html2pdf from "html2pdf.js";
 
     const input = document.getElementById("md-input") as HTMLTextAreaElement;
     const preview = document.getElementById("md-preview");
+    const dlHtml = document.getElementById("download-html");
+    const dlPdf = document.getElementById("download-pdf");
 
     function update() {
         const text = input.value;
@@ -28,24 +38,66 @@
     }
 
     input.addEventListener("input", update);
-    // Initial text
     input.value =
-        "# مرحباً بك في UniConvert 👋\n\nيمكنك كتابة **Markdown** هنا وسيتم عرضه مباشرة.";
+        "# مرحباً بك في UniConvert 👋\n\nيمكنك كتابة **Markdown** هنا وسيتم عرضه مباشرة.\n\n- نقطة 1\n- نقطة 2";
     update();
+
+    // Download HTML
+    dlHtml.addEventListener("click", () => {
+        const blob = new Blob([preview.innerHTML], { type: "text/html" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "document.html";
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+
+    // Download PDF
+    dlPdf.addEventListener("click", () => {
+        const element = preview;
+        const opt = {
+            margin: 10,
+            filename: "document.pdf",
+            image: { type: "jpeg", quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        };
+        html2pdf().set(opt).from(element).save();
+    });
 </script>
 
 <style>
     .markdown-editor {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    .toolbar-top {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+        justify-content: flex-end;
+    }
+    .btn-tool {
+        padding: 8px 15px;
+        border: 1px solid var(--c-primary);
+        background: var(--c-surface);
+        color: var(--c-primary);
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .btn-tool:hover {
+        background: var(--c-background);
+    }
+
+    .panes-wrapper {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: var(--space-md);
         height: 600px;
-        max-width: 1000px;
-        margin: 0 auto;
     }
-
     @media (max-width: 768px) {
-        .markdown-editor {
+        .panes-wrapper {
             grid-template-columns: 1fr;
             height: auto;
         }
@@ -60,7 +112,6 @@
         overflow: hidden;
         background: var(--c-surface);
     }
-
     .toolbar {
         background: var(--c-background);
         padding: var(--space-sm);
@@ -68,7 +119,6 @@
         border-bottom: 1px solid var(--c-border);
         text-align: center;
     }
-
     textarea {
         flex: 1;
         resize: none;
@@ -79,14 +129,14 @@
         min-height: 300px;
         outline: none;
     }
-
     .preview-content {
         flex: 1;
         padding: var(--space-md);
         overflow-y: auto;
+        background: white;
     }
 
-    /* Basic Markdown Styles within Preview */
+    /* Global Styles for Preview Content */
     .preview-content :global(h1) {
         border-bottom: 2px solid var(--c-border);
         padding-bottom: 0.5rem;

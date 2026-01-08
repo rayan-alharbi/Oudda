@@ -1,0 +1,95 @@
+---
+
+---
+
+<div class="unix-converter">
+    <div class="group">
+        <label>Unix Timestmap (seconds)</label>
+        <div class="row">
+            <input type="number" id="ts-input" />
+            <button id="ts-convert" class="btn">تحويل ⬇</button>
+        </div>
+    </div>
+
+    <div class="group">
+        <label>Date (ISO)</label>
+        <div class="row">
+            <input
+                type="text"
+                id="date-input"
+                placeholder="YYYY-MM-DD HH:mm:ss"
+            />
+            <button id="date-convert" class="btn">تحويل ⬆</button>
+        </div>
+    </div>
+
+    <div class="current-row">
+        الحالي: <span id="current-ts">-</span>
+    </div>
+</div>
+
+<script>
+    const tsInput = document.getElementById("ts-input") as HTMLInputElement;
+    const dateInput = document.getElementById("date-input") as HTMLInputElement;
+    const curSpan = document.getElementById("current-ts");
+
+    // Update current
+    setInterval(() => {
+        curSpan.textContent = Math.floor(Date.now() / 1000).toString();
+    }, 1000);
+    curSpan.textContent = Math.floor(Date.now() / 1000).toString();
+
+    document.getElementById("ts-convert").addEventListener("click", () => {
+        const ts = parseInt(tsInput.value);
+        if (!isNaN(ts)) {
+            const d = new Date(ts * 1000);
+            dateInput.value = d.toISOString().replace("T", " ").split(".")[0];
+        }
+    });
+
+    document.getElementById("date-convert").addEventListener("click", () => {
+        const d = new Date(dateInput.value);
+        if (!isNaN(d.getTime())) {
+            tsInput.value = Math.floor(d.getTime() / 1000).toString();
+        }
+    });
+</script>
+
+<style>
+    .unix-converter {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    .group {
+        margin-bottom: 20px;
+    }
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    .row {
+        display: flex;
+        gap: 10px;
+    }
+    input {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid var(--c-border);
+        border-radius: 4px;
+    }
+    .btn {
+        padding: 8px 15px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .current-row {
+        text-align: center;
+        margin-top: 20px;
+        font-family: monospace;
+        color: var(--c-text-muted);
+    }
+</style>

@@ -1,0 +1,63 @@
+---
+
+---
+
+<div class="base64-tool">
+    <textarea id="b64-input" placeholder="النص العادي..."></textarea>
+    <div class="actions">
+        <button id="encode">تشفير (Encode)</button>
+        <button id="decode">فك التشفير (Decode)</button>
+    </div>
+    <textarea id="b64-output" readonly placeholder="النتيجة..."></textarea>
+</div>
+
+<script>
+    const input = document.getElementById("b64-input") as HTMLTextAreaElement;
+    const output = document.getElementById("b64-output") as HTMLTextAreaElement;
+
+    document.getElementById("encode").addEventListener("click", () => {
+        try {
+            output.value = btoa(input.value);
+        } catch (e) {
+            output.value = "Error";
+        }
+    });
+
+    document.getElementById("decode").addEventListener("click", () => {
+        try {
+            output.value = atob(input.value);
+        } catch (e) {
+            output.value = "Invalid Base64";
+        }
+    });
+</script>
+
+<style>
+    .base64-tool {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    textarea {
+        width: 100%;
+        height: 150px;
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        resize: vertical;
+        margin-bottom: 10px;
+    }
+    .actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+    button {
+        padding: 8px 16px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>

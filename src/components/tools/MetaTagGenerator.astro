@@ -1,0 +1,105 @@
+---
+
+---
+
+<div class="meta-tool">
+    <div class="form">
+        <div class="group">
+            <label>عنوان الموقع (Title)</label>
+            <input type="text" id="title" placeholder="My Website" />
+        </div>
+        <div class="group">
+            <label>الوصف (Description)</label>
+            <textarea id="desc" placeholder="وصف مختصر للموقع..."></textarea>
+        </div>
+        <div class="group">
+            <label>الكلمات المفتاحية (Keywords)</label>
+            <input type="text" id="keywords" placeholder="seo, tools, web" />
+        </div>
+        <div class="group">
+            <label>اسم الكاتب (Author)</label>
+            <input type="text" id="author" placeholder="اسمك" />
+        </div>
+    </div>
+
+    <div class="output">
+        <textarea id="meta-output" readonly></textarea>
+        <button id="copy-meta" class="btn-primary">نسخ الكود</button>
+    </div>
+</div>
+
+<script>
+    const title = document.getElementById("title") as HTMLInputElement;
+    const desc = document.getElementById("desc") as HTMLTextAreaElement;
+    const keywords = document.getElementById("keywords") as HTMLInputElement;
+    const author = document.getElementById("author") as HTMLInputElement;
+    const out = document.getElementById("meta-output") as HTMLTextAreaElement;
+
+    function update() {
+        let res = `<!-- SEO Meta Tags -->\n`;
+        if (title.value) res += `<title>${title.value}</title>\n`;
+        if (desc.value)
+            res += `<meta name="description" content="${desc.value}">\n`;
+        if (keywords.value)
+            res += `<meta name="keywords" content="${keywords.value}">\n`;
+        if (author.value)
+            res += `<meta name="author" content="${author.value}">\n`;
+        res += `<meta name="viewport" content="width=device-width, initial-scale=1.0">`;
+        out.value = res;
+    }
+
+    [title, desc, keywords, author].forEach((el) =>
+        el.addEventListener("input", update),
+    );
+
+    document.getElementById("copy-meta").addEventListener("click", () => {
+        navigator.clipboard.writeText(out.value);
+    });
+
+    update();
+</script>
+
+<style>
+    .meta-tool {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .form {
+        margin-bottom: 20px;
+    }
+    .group {
+        margin-bottom: 15px;
+    }
+    label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    input,
+    textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid var(--c-border);
+        border-radius: 4px;
+    }
+    textarea {
+        height: 80px;
+        resize: vertical;
+    }
+    .output textarea {
+        font-family: monospace;
+        height: 150px;
+        background: #f8fafc;
+        color: #334155;
+    }
+    .btn-primary {
+        margin-top: 10px;
+        width: 100%;
+        padding: 10px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>

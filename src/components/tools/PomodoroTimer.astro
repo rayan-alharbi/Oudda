@@ -11,17 +11,32 @@
         <button id="pause" class="btn" disabled>إيقاف مؤقت</button>
         <button id="reset" class="btn">إعادة تعيين</button>
     </div>
+
+    <div class="settings">
+        <div class="setting-group">
+            <label>وقت العمل (دقيقة)</label>
+            <input type="number" id="work-input" value="25" min="1" max="60" />
+        </div>
+        <div class="setting-group">
+            <label>وقت الراحة (دقيقة)</label>
+            <input type="number" id="break-input" value="5" min="1" max="30" />
+        </div>
+    </div>
 </div>
 
 <script>
-    let timeLeft = 25 * 60;
     let timerId = null;
     let isWork = true;
+    let timeLeft = 25 * 60;
 
     const display = document.getElementById("time");
     const status = document.getElementById("status");
     const startBtn = document.getElementById("start") as HTMLButtonElement;
     const pauseBtn = document.getElementById("pause") as HTMLButtonElement;
+    const workInput = document.getElementById("work-input") as HTMLInputElement;
+    const breakInput = document.getElementById(
+        "break-input",
+    ) as HTMLInputElement;
 
     function format(sec) {
         const m = Math.floor(sec / 60)
@@ -41,6 +56,14 @@
         }
     }
 
+    function updateTimeFromSettings() {
+        if (timerId) return; // Don't update if running
+        timeLeft =
+            (isWork ? parseInt(workInput.value) : parseInt(breakInput.value)) *
+            60;
+        display.textContent = format(timeLeft);
+    }
+
     function tick() {
         if (timeLeft > 0) {
             timeLeft--;
@@ -54,9 +77,8 @@
                     : "انتهت الاستراحة! عد للعمل 💪",
             );
             isWork = !isWork;
-            timeLeft = isWork ? 25 * 60 : 5 * 60;
+            updateTimeFromSettings(); // switch to next duration
             status.textContent = isWork ? "وقت التركيز 🎯" : "وقت الاستراحة ☕";
-            display.textContent = format(timeLeft);
             startBtn.disabled = false;
             pauseBtn.disabled = true;
         }
@@ -67,6 +89,8 @@
             timerId = setInterval(tick, 1000);
             startBtn.disabled = true;
             pauseBtn.disabled = false;
+            workInput.disabled = true;
+            breakInput.disabled = true;
             Notification.requestPermission();
         }
     });
@@ -76,23 +100,29 @@
         timerId = null;
         startBtn.disabled = false;
         pauseBtn.disabled = true;
+        workInput.disabled = false;
+        breakInput.disabled = false;
     });
 
     document.getElementById("reset").addEventListener("click", () => {
         clearInterval(timerId);
         timerId = null;
         isWork = true;
-        timeLeft = 25 * 60;
-        display.textContent = "25:00";
+        workInput.disabled = false;
+        breakInput.disabled = false;
+        updateTimeFromSettings();
         status.textContent = "وقت التركيز 🎯";
         startBtn.disabled = false;
         pauseBtn.disabled = true;
     });
+
+    workInput.addEventListener("change", updateTimeFromSettings);
+    breakInput.addEventListener("change", updateTimeFromSettings);
 </script>
 
 <style>
     .pomodoro {
-        max-width: 300px;
+        max-width: 400px;
         margin: 0 auto;
         text-align: center;
     }
@@ -106,12 +136,13 @@
     .status-text {
         font-size: 1.2rem;
         color: var(--c-text-muted);
-        margin-bottom: 30px;
+        margin-bottom: 20px;
     }
     .controls {
         display: flex;
         gap: 10px;
         justify-content: center;
+        margin-bottom: 30px;
     }
     .btn {
         padding: 10px 20px;
@@ -127,5 +158,25 @@
     }
     button:disabled {
         opacity: 0.5;
+    }
+
+    .settings {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        padding-top: 20px;
+        border-top: 1px solid var(--c-border);
+    }
+    .setting-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    input {
+        padding: 8px;
+        width: 70px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        text-align: center;
     }
 </style>

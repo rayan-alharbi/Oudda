@@ -15,6 +15,16 @@ import AspectRatioCalculator from '../components/tools/AspectRatioCalculator.ast
 import TextCaseConverter from '../components/tools/TextCaseConverter.astro';
 import BmiCalculator from '../components/tools/BmiCalculator.astro';
 import PomodoroTimer from '../components/tools/PomodoroTimer.astro';
+import PasswordStrength from '../components/tools/PasswordStrength.astro';
+import UnixTimestamp from '../components/tools/UnixTimestamp.astro';
+import Base64Converter from '../components/tools/Base64Converter.astro';
+import UrlConverter from '../components/tools/UrlConverter.astro';
+import DiffChecker from '../components/tools/DiffChecker.astro';
+import UuidGenerator from '../components/tools/UuidGenerator.astro';
+import BoxShadowGenerator from '../components/tools/BoxShadowGenerator.astro';
+import MetaTagGenerator from '../components/tools/MetaTagGenerator.astro';
+import ImageToBase64 from '../components/tools/ImageToBase64.astro';
+import RegexTester from '../components/tools/RegexTester.astro';
 
 export interface ToolConfig {
     id: string;
@@ -25,128 +35,38 @@ export interface ToolConfig {
 }
 
 export const tools: ToolConfig[] = [
-    // Core (Original 4)
-    {
-        id: 'unit-converter',
-        title: 'تحويل الوحدات',
-        description: 'شامل: طول، وزن، حرارة، وقت، مساحة، وتخزين رقمي.',
-        icon: 'scale',
-        component: UnitConverter,
-    },
-    {
-        id: 'date-converter',
-        title: 'تحويل التواريخ',
-        description: 'التحويل بين الهجري والميلادي بدقة.',
-        icon: 'calendar',
-        component: DateConverter,
-    },
-    {
-        id: 'age-calculator',
-        title: 'حاسبة العمر',
-        description: 'احسب عمرك بدقة (ميلادي وهجري) وموعد عيد ميلادك.',
-        icon: 'cake',
-        component: AgeCalculator,
-    },
-    {
-        id: 'qr-generator',
-        title: 'توليد QR',
-        description: 'أنشئ رموز QR بسرعة للنصوص والروابط.',
-        icon: 'qr_code',
-        component: QRCodeGenerator,
-    },
+    // Core (Original)
+    { id: 'unit-converter', title: 'تحويل الوحدات', description: 'طول، وزن، حرارة، ووحدات أخرى.', icon: 'scale', component: UnitConverter },
+    { id: 'date-converter', title: 'تحويل التواريخ', description: 'هجري <-> ميلادي.', icon: 'calendar', component: DateConverter },
+    { id: 'age-calculator', title: 'حاسبة العمر', description: 'حساب العمر بدقة بالميلادي والهجري.', icon: 'cake', component: AgeCalculator },
+    { id: 'qr-generator', title: 'توليد QR', description: 'إنشاء رموز QR.', icon: 'qr_code', component: QRCodeGenerator },
 
-    // Utilities (Batch 1)
-    {
-        id: 'password-generator',
-        title: 'مولد كلمات المرور',
-        description: 'أنشئ كلمات مرور قوية وآمنة.',
-        icon: 'key',
-        component: PasswordGenerator,
-    },
-    {
-        id: 'json-formatter',
-        title: 'منسق JSON',
-        description: 'تنسيق، ضغط، والتحقق من أكواد JSON.',
-        icon: 'code',
-        component: JsonFormatter,
-    },
-    {
-        id: 'word-counter',
-        title: 'عداد الكلمات',
-        description: 'تحليل النصوص: كلمات، حروف، فقرات.',
-        icon: 'text_fields',
-        component: WordCounter,
-    },
+    // Batch 1 (3 Tools)
+    { id: 'password-generator', title: 'مولد كلمات المرور', description: 'كلمات مرور آمنة.', icon: 'key', component: PasswordGenerator },
+    { id: 'json-formatter', title: 'منسق JSON', description: 'تنسيق والتحقق من JSON.', icon: 'code', component: JsonFormatter },
+    { id: 'word-counter', title: 'عداد الكلمات', description: 'تحليل النصوص.', icon: 'text_fields', component: WordCounter },
 
-    // Mega Expansion (10 New)
-    {
-        id: 'stopwatch',
-        title: 'ساعة إيقاف',
-        description: 'ساعة إيقاف دقيقة مع نظام الجولات (Laps).',
-        icon: 'timer',
-        component: Stopwatch,
-    },
-    {
-        id: 'pomodoro-timer',
-        title: 'مؤقت بومودورو',
-        description: 'مؤقت تركيز (25 دقيقة) لزيادة الإنتاجية.',
-        icon: 'hourglass_top', // or hourglass_empty
-        component: PomodoroTimer,
-    },
-    {
-        id: 'markdown-preview',
-        title: 'معاين Markdown',
-        description: 'محرر ومعاين مباشر لنصوص Markdown.',
-        icon: 'article',
-        component: MarkdownPreview,
-    },
-    {
-        id: 'color-converter',
-        title: 'محول الألوان',
-        description: 'تحويل بين صيغ الألوان Hex, RGB, HSL.',
-        icon: 'palette',
-        component: ColorConverter,
-    },
-    {
-        id: 'lorem-generator',
-        title: 'مولد نص عشوائي',
-        description: 'توليد نصوص عربية عشوائية للاختبار (Lorem Ipsum).',
-        icon: 'format_align_justify',
-        component: LoremGenerator,
-    },
-    {
-        id: 'bmi-calculator',
-        title: 'حاسبة كتلة الجسم',
-        description: 'احسب مؤشر كتلة الجسم (BMI) واعرف حالتك الصحية.',
-        icon: 'health_and_safety',
-        component: BmiCalculator,
-    },
-    {
-        id: 'number-converter',
-        title: 'محول الأنظمة الرقمية',
-        description: 'تحويل بين الثنائي، العشري، الثماني، والسداسي عشر.',
-        icon: 'onetwothree', // alternative: binary
-        component: NumberConverter,
-    },
-    {
-        id: 'percentage-calculator',
-        title: 'حاسبة النسبة المئوية',
-        description: 'حسابات سريعة للنسب المئوية والخصومات.',
-        icon: 'percent',
-        component: PercentageCalculator,
-    },
-    {
-        id: 'aspect-ratio',
-        title: 'حاسبة الأبعاد',
-        description: 'حساب نسبة العرض إلى الارتفاع للشاشات والصور.',
-        icon: 'aspect_ratio',
-        component: AspectRatioCalculator,
-    },
-    {
-        id: 'text-case',
-        title: 'محول حالة النص',
-        description: 'تحويل النصوص إلى أحرف كبيرة، صغيرة، أو عناوين.',
-        icon: 'text_format',
-        component: TextCaseConverter,
-    },
+    // Mega Expansion 1 (10 Tools)
+    { id: 'stopwatch', title: 'ساعة إيقاف', description: 'ساعة إيقاف مع جولات.', icon: 'timer', component: Stopwatch },
+    { id: 'pomodoro-timer', title: 'مؤقت بومودورو', description: 'مؤقت تركيز قابل للتخصيص.', icon: 'hourglass_top', component: PomodoroTimer },
+    { id: 'markdown-preview', title: 'معاين Markdown', description: 'محرر مع تصدير PDF/HTML.', icon: 'article', component: MarkdownPreview },
+    { id: 'color-converter', title: 'محول الألوان', description: 'Hex, RGB, HSL مع لاقط ألوان.', icon: 'palette', component: ColorConverter },
+    { id: 'lorem-generator', title: 'مولد نص عشوائي', description: 'نصوص عربية للاختبار.', icon: 'format_align_justify', component: LoremGenerator },
+    { id: 'bmi-calculator', title: 'حاسبة كتلة الجسم', description: 'مؤشر كتلة الجسم (BMI).', icon: 'health_and_safety', component: BmiCalculator },
+    { id: 'number-converter', title: 'محول الأنظمة', description: 'ثنائي، عشري، سداسي.', icon: 'onetwothree', component: NumberConverter },
+    { id: 'percentage-calculator', title: 'حاسبة النسبة', description: 'حساب النسب والخصومات.', icon: 'percent', component: PercentageCalculator },
+    { id: 'aspect-ratio', title: 'حاسبة الأبعاد', description: 'حساب أبعاد الشاشة.', icon: 'aspect_ratio', component: AspectRatioCalculator },
+    { id: 'text-case', title: 'محول حالة النص', description: 'أحرف كبيرة/صغيرة.', icon: 'text_format', component: TextCaseConverter },
+
+    // Mega Expansion 2 (10 Tools)
+    { id: 'pwd-strength', title: 'فحص كلمة المرور', description: 'تحليل قوة كلمة المرور.', icon: 'shield', component: PasswordStrength },
+    { id: 'unix-timestamp', title: 'وقت Unix', description: 'تحويل الطوابع الزمنية.', icon: 'schedule', component: UnixTimestamp },
+    { id: 'base64-tool', title: 'محول Base64', description: 'تشفير وفك تشفير Base64.', icon: 'enhanced_encryption', component: Base64Converter },
+    { id: 'url-encoder', title: 'تشفير الروابط', description: 'تشفير وفك تشفير URL.', icon: 'link', component: UrlConverter },
+    { id: 'diff-checker', title: 'مقارنة النصوص', description: 'إيجاد الفروقات بين نصين.', icon: 'difference', component: DiffChecker },
+    { id: 'uuid-generator', title: 'توليد UUID', description: 'معرفات فريدة v4.', icon: 'fingerprint', component: UuidGenerator },
+    { id: 'box-shadow', title: 'مولد الظل', description: 'إنشاء كود CSS Box Shadow.', icon: 'layers', component: BoxShadowGenerator },
+    { id: 'meta-tag', title: 'مولد Meta Tags', description: 'أكواد SEO للمواقع.', icon: 'search', component: MetaTagGenerator },
+    { id: 'img-base64', title: 'صورة إلى Base64', description: 'تحويل الصور لنصوص.', icon: 'image', component: ImageToBase64 },
+    { id: 'regex-tester', title: 'فاحص Regex', description: 'اختبار التعابير النمطية.', icon: 'rule', component: RegexTester },
 ];

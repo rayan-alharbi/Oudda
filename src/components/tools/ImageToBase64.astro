@@ -1,0 +1,87 @@
+---
+
+---
+
+<div class="img-base64">
+    <div class="upload-area">
+        <input type="file" id="img-input" accept="image/*" />
+    </div>
+
+    <div class="output-area hidden" id="out-area">
+        <label>String Output</label>
+        <textarea id="base64-out" readonly></textarea>
+        <button id="copy-btn" class="btn">نسخ</button>
+        <div class="preview">
+            <img id="img-preview" alt="Preview" />
+        </div>
+    </div>
+</div>
+
+<script>
+    const input = document.getElementById("img-input") as HTMLInputElement;
+    const out = document.getElementById("base64-out") as HTMLTextAreaElement;
+    const preview = document.getElementById("img-preview") as HTMLImageElement;
+    const area = document.getElementById("out-area");
+
+    input.addEventListener("change", () => {
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const res = e.target.result as string;
+                out.value = res;
+                preview.src = res;
+                area.classList.remove("hidden");
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    document.getElementById("copy-btn").addEventListener("click", () => {
+        out.select();
+        document.execCommand("copy");
+    });
+</script>
+
+<style>
+    .img-base64 {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .upload-area {
+        margin-bottom: 20px;
+        padding: 20px;
+        border: 2px dashed #ccc;
+        text-align: center;
+        border-radius: 8px;
+    }
+    textarea {
+        width: 100%;
+        height: 150px;
+        font-family: monospace;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        padding: 10px;
+    }
+    .hidden {
+        display: none;
+    }
+    .preview img {
+        max-width: 100%;
+        height: auto;
+        margin-top: 10px;
+        border: 1px solid #ddd;
+        padding: 4px;
+        border-radius: 4px;
+    }
+    .btn {
+        width: 100%;
+        padding: 10px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>
