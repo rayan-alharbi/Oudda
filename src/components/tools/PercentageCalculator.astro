@@ -1,0 +1,100 @@
+---
+
+---
+
+<div class="percentage-calc">
+    <!-- Value of Percentage -->
+    <div class="calc-row">
+        <h3>كم هي نسبة X% من Y؟</h3>
+        <div class="inputs">
+            <span>نسبة</span>
+            <input type="number" id="p1-num" placeholder="15" />
+            <span>% من</span>
+            <input type="number" id="p1-tot" placeholder="100" />
+        </div>
+        <div class="result">النتيجة: <span id="p1-res">-</span></div>
+    </div>
+
+    <hr />
+
+    <!-- X is what % of Y -->
+    <div class="calc-row">
+        <h3>الرقم X هو كم % من Y؟</h3>
+        <div class="inputs">
+            <span>الرقم</span>
+            <input type="number" id="p2-num" placeholder="25" />
+            <span>من</span>
+            <input type="number" id="p2-tot" placeholder="50" />
+        </div>
+        <div class="result">النتيجة: <span id="p2-res">-</span>%</div>
+    </div>
+</div>
+
+<script>
+    // Part 1
+    const p1n = document.getElementById("p1-num") as HTMLInputElement;
+    const p1t = document.getElementById("p1-tot") as HTMLInputElement;
+    const p1r = document.getElementById("p1-res");
+
+    function calc1() {
+        const n = parseFloat(p1n.value);
+        const t = parseFloat(p1t.value);
+        if (!isNaN(n) && !isNaN(t))
+            p1r.textContent = ((n / 100) * t).toFixed(2);
+    }
+    p1n.addEventListener("input", calc1);
+    p1t.addEventListener("input", calc1);
+
+    // Part 2
+    const p2n = document.getElementById("p2-num") as HTMLInputElement;
+    const p2t = document.getElementById("p2-tot") as HTMLInputElement;
+    const p2r = document.getElementById("p2-res");
+
+    function calc2() {
+        const n = parseFloat(p2n.value);
+        const t = parseFloat(p2t.value);
+        if (!isNaN(n) && !isNaN(t) && t !== 0)
+            p2r.textContent = ((n / t) * 100).toFixed(2);
+    }
+    p2n.addEventListener("input", calc2);
+    p2t.addEventListener("input", calc2);
+</script>
+
+<style>
+    .percentage-calc {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .calc-row {
+        background: var(--c-surface);
+        padding: var(--space-md);
+        border-radius: 8px;
+        border: 1px solid var(--c-border);
+        margin-bottom: 20px;
+    }
+    .inputs {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+        margin: 15px 0;
+    }
+    input {
+        width: 80px;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        text-align: center;
+    }
+    .result {
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+        color: var(--c-primary);
+    }
+    hr {
+        margin: 20px 0;
+        border: 0;
+        border-top: 1px solid #eee;
+    }
+</style>

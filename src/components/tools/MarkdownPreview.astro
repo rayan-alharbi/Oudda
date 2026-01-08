@@ -1,0 +1,106 @@
+---
+
+---
+
+<div class="markdown-editor">
+    <div class="editor-pane">
+        <div class="toolbar">MD (ادخل النص هنا)</div>
+        <textarea
+            id="md-input"
+            placeholder="# عنوان رئيسي\n\nنص عادي **نص غامق**\n- قائمة"
+        ></textarea>
+    </div>
+    <div class="preview-pane">
+        <div class="toolbar">المعاينة</div>
+        <div id="md-preview" class="preview-content"></div>
+    </div>
+</div>
+
+<script>
+    import { marked } from "marked";
+
+    const input = document.getElementById("md-input") as HTMLTextAreaElement;
+    const preview = document.getElementById("md-preview");
+
+    function update() {
+        const text = input.value;
+        preview.innerHTML = marked.parse(text);
+    }
+
+    input.addEventListener("input", update);
+    // Initial text
+    input.value =
+        "# مرحباً بك في UniConvert 👋\n\nيمكنك كتابة **Markdown** هنا وسيتم عرضه مباشرة.";
+    update();
+</script>
+
+<style>
+    .markdown-editor {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-md);
+        height: 600px;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    @media (max-width: 768px) {
+        .markdown-editor {
+            grid-template-columns: 1fr;
+            height: auto;
+        }
+    }
+
+    .editor-pane,
+    .preview-pane {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        background: var(--c-surface);
+    }
+
+    .toolbar {
+        background: var(--c-background);
+        padding: var(--space-sm);
+        font-weight: bold;
+        border-bottom: 1px solid var(--c-border);
+        text-align: center;
+    }
+
+    textarea {
+        flex: 1;
+        resize: none;
+        border: none;
+        padding: var(--space-md);
+        font-family: monospace;
+        font-size: 1rem;
+        min-height: 300px;
+        outline: none;
+    }
+
+    .preview-content {
+        flex: 1;
+        padding: var(--space-md);
+        overflow-y: auto;
+    }
+
+    /* Basic Markdown Styles within Preview */
+    .preview-content :global(h1) {
+        border-bottom: 2px solid var(--c-border);
+        padding-bottom: 0.5rem;
+    }
+    .preview-content :global(blockquote) {
+        border-right: 4px solid var(--c-primary);
+        margin: 0;
+        padding-right: 1rem;
+        color: var(--c-text-muted);
+    }
+    .preview-content :global(code) {
+        background: #f1f5f9;
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+        font-family: monospace;
+    }
+</style>

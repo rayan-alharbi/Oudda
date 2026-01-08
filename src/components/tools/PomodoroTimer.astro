@@ -1,0 +1,131 @@
+---
+
+---
+
+<div class="pomodoro">
+    <div class="timer-display" id="time">25:00</div>
+    <div class="status-text" id="status">وقت التركيز 🎯</div>
+
+    <div class="controls">
+        <button id="start" class="btn">بدء</button>
+        <button id="pause" class="btn" disabled>إيقاف مؤقت</button>
+        <button id="reset" class="btn">إعادة تعيين</button>
+    </div>
+</div>
+
+<script>
+    let timeLeft = 25 * 60;
+    let timerId = null;
+    let isWork = true;
+
+    const display = document.getElementById("time");
+    const status = document.getElementById("status");
+    const startBtn = document.getElementById("start") as HTMLButtonElement;
+    const pauseBtn = document.getElementById("pause") as HTMLButtonElement;
+
+    function format(sec) {
+        const m = Math.floor(sec / 60)
+            .toString()
+            .padStart(2, "0");
+        const s = (sec % 60).toString().padStart(2, "0");
+        return `${m}:${s}`;
+    }
+
+    function notify(msg) {
+        if (Notification.permission === "granted") {
+            new Notification(msg);
+        } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then((permission) => {
+                if (permission === "granted") new Notification(msg);
+            });
+        }
+    }
+
+    function tick() {
+        if (timeLeft > 0) {
+            timeLeft--;
+            display.textContent = format(timeLeft);
+        } else {
+            clearInterval(timerId);
+            timerId = null;
+            notify(
+                isWork
+                    ? "انتهى وقت العمل! خذ استراحة ☕"
+                    : "انتهت الاستراحة! عد للعمل 💪",
+            );
+            isWork = !isWork;
+            timeLeft = isWork ? 25 * 60 : 5 * 60;
+            status.textContent = isWork ? "وقت التركيز 🎯" : "وقت الاستراحة ☕";
+            display.textContent = format(timeLeft);
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+        }
+    }
+
+    startBtn.addEventListener("click", () => {
+        if (!timerId) {
+            timerId = setInterval(tick, 1000);
+            startBtn.disabled = true;
+            pauseBtn.disabled = false;
+            Notification.requestPermission();
+        }
+    });
+
+    pauseBtn.addEventListener("click", () => {
+        clearInterval(timerId);
+        timerId = null;
+        startBtn.disabled = false;
+        pauseBtn.disabled = true;
+    });
+
+    document.getElementById("reset").addEventListener("click", () => {
+        clearInterval(timerId);
+        timerId = null;
+        isWork = true;
+        timeLeft = 25 * 60;
+        display.textContent = "25:00";
+        status.textContent = "وقت التركيز 🎯";
+        startBtn.disabled = false;
+        pauseBtn.disabled = true;
+    });
+</script>
+
+<style>
+    .pomodoro {
+        max-width: 300px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .timer-display {
+        font-size: 4rem;
+        font-weight: bold;
+        color: var(--c-primary);
+        margin: 20px 0;
+        font-family: monospace;
+    }
+    .status-text {
+        font-size: 1.2rem;
+        color: var(--c-text-muted);
+        margin-bottom: 30px;
+    }
+    .controls {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        cursor: pointer;
+        font-size: 1rem;
+    }
+    .btn:hover {
+        background: var(--c-background);
+    }
+    button:disabled {
+        opacity: 0.5;
+    }
+</style>

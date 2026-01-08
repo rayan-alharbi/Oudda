@@ -1,0 +1,86 @@
+---
+
+---
+
+<div class="aspect-ratio">
+    <div class="ratio-inputs">
+        <label>نسبة العرض</label>
+        <input type="number" id="ratio-w" value="16" />
+        <span>:</span>
+        <label>نسبة الارتفاع</label>
+        <input type="number" id="ratio-h" value="9" />
+    </div>
+
+    <div class="res-inputs">
+        <div class="group">
+            <label>العرض (W)</label>
+            <input type="number" id="width" placeholder="1920" />
+        </div>
+        <div class="group">
+            <label>الارتفاع (H)</label>
+            <input type="number" id="height" placeholder="1080" />
+        </div>
+    </div>
+</div>
+
+<script>
+    const rw = document.getElementById("ratio-w") as HTMLInputElement;
+    const rh = document.getElementById("ratio-h") as HTMLInputElement;
+    const w = document.getElementById("width") as HTMLInputElement;
+    const h = document.getElementById("height") as HTMLInputElement;
+
+    function updateH() {
+        const r_w = parseFloat(rw.value);
+        const r_h = parseFloat(rh.value);
+        const width = parseFloat(w.value);
+        if (r_w && r_h && width) {
+            h.value = Math.round((width * r_h) / r_w).toString();
+        }
+    }
+
+    function updateW() {
+        const r_w = parseFloat(rw.value);
+        const r_h = parseFloat(rh.value);
+        const height = parseFloat(h.value);
+        if (r_w && r_h && height) {
+            w.value = Math.round((height * r_w) / r_h).toString();
+        }
+    }
+
+    w.addEventListener("input", updateH);
+    h.addEventListener("input", updateW);
+    rw.addEventListener("input", updateH);
+    rh.addEventListener("input", updateH);
+</script>
+
+<style>
+    .aspect-ratio {
+        max-width: 500px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .ratio-inputs {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    .res-inputs {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+    }
+    .group label {
+        display: block;
+        margin-bottom: 5px;
+    }
+    input {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 100px;
+        text-align: center;
+    }
+</style>

@@ -9,11 +9,13 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@types/marked": "^5.0.2",
     "@types/qrcode": "^1.5.6",
     "astro": "^5.16.7",
     "astro-icon": "^1.1.5",
     "convert-units": "^2.3.4",
     "hijri-converter": "^1.1.1",
+    "marked": "^17.0.1",
     "qrcode": "^1.5.4"
   }
 }

@@ -1,0 +1,153 @@
+---
+
+---
+
+<div class="color-converter">
+    <div class="color-preview" id="color-preview"></div>
+
+    <div class="inputs-container">
+        <div class="input-group">
+            <label>HEX</label>
+            <input
+                type="text"
+                id="hex-input"
+                class="form-input"
+                placeholder="#000000"
+            />
+        </div>
+        <div class="input-group">
+            <label>RGB (r, g, b)</label>
+            <input
+                type="text"
+                id="rgb-input"
+                class="form-input"
+                placeholder="0, 0, 0"
+            />
+        </div>
+        <div class="input-group">
+            <label>HSL (h, s%, l%)</label>
+            <input
+                type="text"
+                id="hsl-input"
+                class="form-input"
+                placeholder="0, 0%, 0%"
+            />
+        </div>
+    </div>
+</div>
+
+<script>
+    const hexInput = document.getElementById("hex-input") as HTMLInputElement;
+    const rgbInput = document.getElementById("rgb-input") as HTMLInputElement;
+    const hslInput = document.getElementById("hsl-input") as HTMLInputElement;
+    const preview = document.getElementById("color-preview");
+
+    function hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result
+            ? {
+                  r: parseInt(result[1], 16),
+                  g: parseInt(result[2], 16),
+                  b: parseInt(result[3], 16),
+              }
+            : null;
+    }
+
+    function rgbToHex(r, g, b) {
+        return (
+            "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
+        );
+    }
+
+    function rgbToHsl(r, g, b) {
+        r /= 255;
+        g /= 255;
+        b /= 255;
+        const max = Math.max(r, g, b),
+            min = Math.min(r, g, b);
+        let h,
+            s,
+            l = (max + min) / 2;
+
+        if (max == min) {
+            h = s = 0;
+        } else {
+            const d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+                case r:
+                    h = (g - b) / d + (g < b ? 6 : 0);
+                    break;
+                case g:
+                    h = (b - r) / d + 2;
+                    break;
+                case b:
+                    h = (r - g) / d + 4;
+                    break;
+            }
+            h /= 6;
+        }
+        return {
+            h: Math.round(h * 360),
+            s: Math.round(s * 100),
+            l: Math.round(l * 100),
+        };
+    }
+
+    function updateFromHex() {
+        let hex = hexInput.value;
+        if (hex.length === 4)
+            hex = "#" + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3]; // Expand short hex
+
+        const rgb = hexToRgb(hex);
+        if (rgb) {
+            preview.style.backgroundColor = hex;
+            rgbInput.value = `${rgb.r}, ${rgb.g}, ${rgb.b}`;
+            const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+            hslInput.value = `${hsl.h}, ${hsl.s}%, ${hsl.l}%`;
+        }
+    }
+
+    hexInput.addEventListener("input", updateFromHex);
+    // Initial
+    hexInput.value = "#2563eb";
+    updateFromHex();
+
+    // Simplified for this demo: One-way binding mostly, full 3-way binding needs more parsing logic.
+    // Focusing on HEX -> others primarily for user ease.
+</script>
+
+<style>
+    .color-converter {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .color-preview {
+        height: 150px;
+        border-radius: var(--radius-lg);
+        margin-bottom: var(--space-lg);
+        border: 1px solid var(--c-border);
+        box-shadow: var(--shadow-md);
+    }
+
+    .input-group {
+        margin-bottom: var(--space-md);
+    }
+
+    .form-input {
+        width: 100%;
+        padding: var(--space-sm);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        font-family: monospace;
+        text-align: center;
+        direction: ltr; /* Codes are LTR */
+    }
+
+    label {
+        display: block;
+        margin-bottom: 4px;
+        font-weight: bold;
+    }
+</style>

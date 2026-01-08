@@ -1,0 +1,89 @@
+---
+
+---
+
+<div class="number-converter">
+    <div class="input-group">
+        <label>عشري (Decimal)</label>
+        <input
+            type="text"
+            id="dec-input"
+            class="form-input"
+            placeholder="0-9"
+        />
+    </div>
+    <div class="input-group">
+        <label>ثنائي (Binary)</label>
+        <input
+            type="text"
+            id="bin-input"
+            class="form-input"
+            placeholder="0-1"
+        />
+    </div>
+    <div class="input-group">
+        <label>ثماني (Octal)</label>
+        <input
+            type="text"
+            id="oct-input"
+            class="form-input"
+            placeholder="0-7"
+        />
+    </div>
+    <div class="input-group">
+        <label>سداسي عشر (Hex)</label>
+        <input
+            type="text"
+            id="hex-input"
+            class="form-input"
+            placeholder="0-9, A-F"
+        />
+    </div>
+</div>
+
+<script>
+    const dec = document.getElementById("dec-input") as HTMLInputElement;
+    const bin = document.getElementById("bin-input") as HTMLInputElement;
+    const oct = document.getElementById("oct-input") as HTMLInputElement;
+    const hex = document.getElementById("hex-input") as HTMLInputElement;
+
+    function update(value: number) {
+        if (isNaN(value)) {
+            dec.value = bin.value = oct.value = hex.value = "";
+            return;
+        }
+        dec.value = value.toString(10);
+        bin.value = value.toString(2);
+        oct.value = value.toString(8);
+        hex.value = value.toString(16).toUpperCase();
+    }
+
+    dec.addEventListener("input", () => update(parseInt(dec.value, 10)));
+    bin.addEventListener("input", () => update(parseInt(bin.value, 2)));
+    oct.addEventListener("input", () => update(parseInt(oct.value, 8)));
+    hex.addEventListener("input", () => update(parseInt(hex.value, 16)));
+</script>
+
+<style>
+    .number-converter {
+        max-width: 500px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+    .input-group {
+        display: flex;
+        flex-direction: column;
+    }
+    label {
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    .form-input {
+        padding: 8px;
+        border: 1px solid var(--c-border);
+        border-radius: 4px;
+        font-family: monospace;
+    }
+</style>

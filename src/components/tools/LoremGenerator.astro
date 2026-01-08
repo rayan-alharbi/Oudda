@@ -1,0 +1,164 @@
+---
+
+---
+
+<div class="lorem-gen">
+    <div class="controls">
+        <label
+            >عدد الفقرات: <input
+                type="number"
+                id="para-num"
+                value="3"
+                min="1"
+                max="20"
+            /></label
+        >
+        <button id="gen-btn" class="btn-primary">توليد النص</button>
+    </div>
+
+    <div class="output-box">
+        <textarea id="output" readonly></textarea>
+        <button id="copy-btn" class="copy-float">نسخ</button>
+    </div>
+</div>
+
+<script>
+    const AR_WORDS = [
+        "هذا",
+        "النص",
+        "هو",
+        "مثال",
+        "لنص",
+        "يمكن",
+        "أن",
+        "يستبدل",
+        "في",
+        "نفس",
+        "المساحة",
+        "لقد",
+        "تم",
+        "توليد",
+        "هذا",
+        "النص",
+        "من",
+        "مولد",
+        "النص",
+        "العربي",
+        "حيث",
+        "يمكنك",
+        "أن",
+        "تولد",
+        "مثل",
+        "هذا",
+        "النص",
+        "أو",
+        "العديد",
+        "من",
+        "النصوص",
+        "الأخرى",
+        "إضافة",
+        "إلى",
+        "زيادة",
+        "عدد",
+        "الحروف",
+        "التي",
+        "يولدها",
+        "التطبيق",
+        "إذا",
+        "كنت",
+        "تحتاج",
+        "إلى",
+        "عدد",
+        "أكبر",
+        "من",
+        "الفقرات",
+        "يسمح",
+        "لك",
+        "مولد",
+        "النص",
+        "هذا",
+        "بزيادة",
+        "عدد",
+        "الفقرات",
+        "كما",
+        "تريد",
+    ];
+
+    function genSentence() {
+        const len = 10 + Math.random() * 10;
+        let s = "";
+        for (let i = 0; i < len; i++) {
+            s += AR_WORDS[Math.floor(Math.random() * AR_WORDS.length)] + " ";
+        }
+        return s.trim() + ".";
+    }
+
+    function genPara() {
+        const len = 3 + Math.random() * 4;
+        let p = "";
+        for (let i = 0; i < len; i++) {
+            p += genSentence() + " ";
+        }
+        return p.trim();
+    }
+
+    const btn = document.getElementById("gen-btn");
+    const input = document.getElementById("para-num") as HTMLInputElement;
+    const output = document.getElementById("output") as HTMLTextAreaElement;
+    const copy = document.getElementById("copy-btn");
+
+    btn.addEventListener("click", () => {
+        const n = parseInt(input.value);
+        let res = "";
+        for (let i = 0; i < n; i++) {
+            res += genPara() + "\n\n";
+        }
+        output.value = res.trim();
+    });
+
+    copy.addEventListener("click", () => {
+        navigator.clipboard.writeText(output.value);
+        copy.textContent = "تم النسخ!";
+        setTimeout(() => (copy.textContent = "نسخ"), 1000);
+    });
+
+    btn.click(); // init
+</script>
+
+<style>
+    .lorem-gen {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .controls {
+        display: flex;
+        gap: var(--space-md);
+        margin-bottom: var(--space-md);
+        align-items: center;
+    }
+    input {
+        padding: 8px;
+        width: 60px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+    .output-box {
+        position: relative;
+    }
+    textarea {
+        width: 100%;
+        height: 300px;
+        padding: var(--space-md);
+        border-radius: var(--radius-md);
+        border: 1px solid var(--c-border);
+        resize: vertical;
+        line-height: 1.8;
+    }
+    .copy-float {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        padding: 4px 8px;
+        cursor: pointer;
+    }
+</style>

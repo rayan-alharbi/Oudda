@@ -44,37 +44,45 @@
         </div>
     </div>
 
-    <button id="calc-btn" class="btn-primary">احسب عمري</button>
+    <button id="calc-btn" class="btn-primary">احسب العمر</button>
 
     <div id="result-container" class="result-container hidden">
-        <div class="main-age">
-            <span class="value" id="years">0</span>
-            <span class="unit">سنة</span>
-        </div>
-
-        <div class="age-details">
-            <div class="detail-card">
-                <span class="value" id="months">0</span>
-                <span class="unit">شهر</span>
+        <div class="result-grid">
+            <!-- Gregorian Age -->
+            <div class="result-card g-aging">
+                <h3>العمر بالميلادي 📅</h3>
+                <div class="main-age">
+                    <span class="value" id="g-years">0</span>
+                    <span class="unit">سنة</span>
+                </div>
+                <div class="small-details">
+                    <span id="g-months">0</span> شهر و
+                    <span id="g-days">0</span> يوم
+                </div>
             </div>
-            <div class="detail-card">
-                <span class="value" id="days">0</span>
-                <span class="unit">يوم</span>
+
+            <!-- Hijri Age -->
+            <div class="result-card h-aging">
+                <h3>العمر بالهجري 🌙</h3>
+                <div class="main-age">
+                    <span class="value" id="h-years">0</span>
+                    <span class="unit">سنة</span>
+                </div>
+                <div class="small-details">
+                    <span id="h-months">0</span> شهر و
+                    <span id="h-days">0</span> يوم
+                </div>
             </div>
         </div>
 
         <div class="extra-info">
-            <p>
-                الموافق بالميلادي: <span id="g-equivalent" class="highlight"
-                    >-</span>
-            </p>
             <p>يوم ميلادك القادم بعد: <strong id="next-birthday"></strong></p>
         </div>
     </div>
 </div>
 
 <script>
-    import { toGregorian } from "hijri-converter";
+    import { toGregorian, toHijri } from "hijri-converter";
 
     const gSection = document.getElementById("g-input-section");
     const hSection = document.getElementById("h-input-section");
@@ -88,7 +96,6 @@
     const calcBtn = document.getElementById("calc-btn");
     const container = document.getElementById("result-container");
 
-    // Hijri Month Names
     const hijriMonths = [
         "محرم",
         "صفر",
@@ -108,7 +115,6 @@
         hMonth.add(new Option(m, (i + 1).toString()));
     });
 
-    // Toggle Logic
     radios.forEach((r) => {
         r.addEventListener("change", (e: any) => {
             if (e.target.value === "g") {
@@ -122,57 +128,50 @@
         });
     });
 
-    // Set max G date to today
     birthInput.max = new Date().toISOString().split("T")[0];
 
-    function calculateAge() {
-        const type = (
-            document.querySelector(
-                'input[name="cal-type"]:checked',
-            ) as HTMLInputElement
-        ).value;
-        let birthDate;
-        let gEquivalentStr = "";
-
-        if (type === "g") {
-            if (!birthInput.value) return;
-            birthDate = new Date(birthInput.value);
-            gEquivalentStr = birthInput.value;
-        } else {
-            const d = parseInt(hDay.value);
-            const m = parseInt(hMonth.value);
-            const y = parseInt(hYear.value);
-
-            if (!d || !m || !y) {
-                alert("الرجاء تعبئة التاريخ الهجري كاملاً");
-                return;
-            }
-
-            // Convert to Gregorian
-            const g = toGregorian(y, m, d);
-            birthDate = new Date(g.gy, g.gm - 1, g.gd);
-            gEquivalentStr = `${g.gy}-${g.gm}-${g.gd}`; // approximate for display
-        }
-
+    function calculateDiff(
+        year: number,
+        month: number,
+        day: number,
+        type: "g" | "h",
+    ) {
         const today = new Date();
 
-        if (isNaN(birthDate.getTime()) || birthDate > today) {
-            alert("الرجاء إدخال تاريخ صحيح في الماضي");
-            return;
+        let cYear, cMonth, cDay; // Current Date parts
+
+        if (type === "g") {
+            cYear = today.getFullYear();
+            cMonth = today.getMonth() + 1; // 1-index
+            cDay = today.getDate();
+        } else {
+            const hToday = toHijri(
+                today.getFullYear(),
+                today.getMonth() + 1,
+                today.getDate(),
+            );
+            cYear = hToday.hy;
+            cMonth = hToday.hm;
+            cDay = hToday.hd;
         }
 
-        let years = today.getFullYear() - birthDate.getFullYear();
-        let months = today.getMonth() - birthDate.getMonth();
-        let days = today.getDate() - birthDate.getDate();
+        let years = cYear - year;
+        let months = cMonth - month;
+        let days = cDay - day;
 
         if (days < 0) {
             months--;
-            const prevMonth = new Date(
-                today.getFullYear(),
-                today.getMonth(),
-                0,
-            );
-            days += prevMonth.getDate();
+            // Simple approach for days overflow: add 30 for Hijri approximation or get real days for G
+            if (type === "g") {
+                const prevMonth = new Date(
+                    today.getFullYear(),
+                    today.getMonth(),
+                    0,
+                );
+                days += prevMonth.getDate();
+            } else {
+                days += 30; // Approximation for Hijri
+            }
         }
 
         if (months < 0) {
@@ -180,27 +179,66 @@
             months += 12;
         }
 
-        // Display
-        document.getElementById("years").textContent = years.toString();
-        document.getElementById("months").textContent = months.toString();
-        document.getElementById("days").textContent = days.toString();
+        return { years, months, days };
+    }
 
-        document.getElementById("g-equivalent").textContent =
-            birthDate.toLocaleDateString("ar-EG", { dateStyle: "long" });
+    function calculateAge() {
+        const type = (
+            document.querySelector(
+                'input[name="cal-type"]:checked',
+            ) as HTMLInputElement
+        ).value;
+        let birthG, birthH;
 
-        // Next Birthday
+        if (type === "g") {
+            if (!birthInput.value) return;
+            const date = new Date(birthInput.value);
+            birthG = {
+                year: date.getFullYear(),
+                month: date.getMonth() + 1,
+                day: date.getDate(),
+            };
+            // Convert G birth to H birth
+            const h = toHijri(birthG.year, birthG.month, birthG.day);
+            birthH = { year: h.hy, month: h.hm, day: h.hd };
+        } else {
+            const d = parseInt(hDay.value);
+            const m = parseInt(hMonth.value);
+            const y = parseInt(hYear.value);
+            if (!d || !m || !y) return;
+
+            birthH = { year: y, month: m, day: d };
+            // Convert H birth to G birth
+            const g = toGregorian(y, m, d);
+            birthG = { year: g.gy, month: g.gm, day: g.gd };
+        }
+
+        // Calculate Gregorian Age
+        const gAge = calculateDiff(birthG.year, birthG.month, birthG.day, "g");
+        document.getElementById("g-years").textContent = gAge.years.toString();
+        document.getElementById("g-months").textContent =
+            gAge.months.toString();
+        document.getElementById("g-days").textContent = gAge.days.toString();
+
+        // Calculate Hijri Age
+        const hAge = calculateDiff(birthH.year, birthH.month, birthH.day, "h");
+        document.getElementById("h-years").textContent = hAge.years.toString();
+        document.getElementById("h-months").textContent =
+            hAge.months.toString();
+        document.getElementById("h-days").textContent = hAge.days.toString();
+
+        // Next Birthday (Gregorian based logic for simplicity)
+        const today = new Date();
         const nextBirthday = new Date(
             today.getFullYear(),
-            birthDate.getMonth(),
-            birthDate.getDate(),
+            birthG.month - 1,
+            birthG.day,
         );
         if (nextBirthday < today) {
             nextBirthday.setFullYear(today.getFullYear() + 1);
         }
-
         const diffTime = Math.abs(nextBirthday.getTime() - today.getTime());
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
         document.getElementById("next-birthday").textContent =
             `${diffDays} يوم`;
 
@@ -212,7 +250,7 @@
 
 <style>
     .age-calculator {
-        max-width: 500px;
+        max-width: 600px;
         margin: 0 auto;
     }
 
@@ -227,34 +265,23 @@
         border-radius: var(--radius-md);
     }
 
-    .calendar-toggle label {
-        display: flex;
-        align-items: center;
-        gap: var(--space-xs);
-        cursor: pointer;
-        font-weight: 500;
-    }
-
+    /* ... shared styles ref ... */
     .input-section {
         margin-bottom: var(--space-lg);
-        animation: fadeIn 0.3s ease;
     }
-
     .h-date-row {
         display: grid;
         grid-template-columns: 1fr 2fr 1.5fr;
         gap: var(--space-sm);
     }
-
     .form-input,
     .form-select {
         width: 100%;
         padding: var(--space-sm);
-        font-size: 1.1rem;
         border: 1px solid var(--c-border);
         border-radius: var(--radius-md);
+        font-size: 1.1rem;
     }
-
     .btn-primary {
         width: 100%;
         padding: var(--space-sm);
@@ -265,78 +292,74 @@
         font-size: 1.1rem;
         cursor: pointer;
     }
-
     .hidden {
         display: none;
     }
 
     .result-container {
-        text-align: center;
         margin-top: var(--space-lg);
-        animation: slideUp 0.4s ease;
+        animation: fadeIn 0.4s ease;
     }
 
-    .main-age {
-        font-size: 3.5rem;
-        font-weight: 800;
-        color: var(--c-primary);
-        line-height: 1;
-        margin-bottom: var(--space-sm);
-    }
-
-    .unit {
-        font-size: 1rem;
-        color: var(--c-text-muted);
-        font-weight: normal;
-    }
-
-    .age-details {
-        display: flex;
+    .result-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: var(--space-md);
-        justify-content: center;
-        margin-top: var(--space-md);
     }
 
-    .detail-card {
+    @media (max-width: 500px) {
+        .result-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .result-card {
         background: var(--c-surface);
         padding: var(--space-md);
-        border-radius: var(--radius-md);
-        min-width: 90px;
+        border-radius: var(--radius-lg);
         border: 1px solid var(--c-border);
+        text-align: center;
     }
 
-    .detail-card .value {
-        display: block;
-        font-size: 1.5rem;
-        font-weight: bold;
+    .g-aging {
+        border-top: 4px solid #3b82f6;
+    } /* Blue */
+    .h-aging {
+        border-top: 4px solid #10b981;
+    } /* Green */
+
+    .result-card h3 {
+        margin-bottom: var(--space-sm);
+        font-size: 1.1rem;
+    }
+
+    .main-age .value {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--c-text-main);
+    }
+    .main-age .unit {
+        font-size: 0.9rem;
+        color: var(--c-text-muted);
+    }
+
+    .small-details {
+        margin-top: var(--space-xs);
+        font-size: 0.9rem;
+        color: var(--c-text-muted);
     }
 
     .extra-info {
         margin-top: var(--space-md);
+        text-align: center;
         padding-top: var(--space-md);
         border-top: 1px solid var(--c-border);
-        color: var(--c-text-muted);
-        font-size: 0.9rem;
-    }
-
-    .highlight {
-        color: var(--c-text-main);
-        font-weight: bold;
     }
 
     @keyframes fadeIn {
         from {
             opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
-
-    @keyframes slideUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(10px);
         }
         to {
             opacity: 1;
