@@ -1,0 +1,163 @@
+---
+
+---
+
+<div class="tool-content">
+    <div class="chmod-grid">
+        <div class="perm-group">
+            <h3>Owner</h3>
+            <label
+                ><input type="checkbox" class="perm" data-val="400" checked /> Read
+                (4)</label
+            >
+            <label
+                ><input type="checkbox" class="perm" data-val="200" checked /> Write
+                (2)</label
+            >
+            <label
+                ><input type="checkbox" class="perm" data-val="100" checked /> Execute
+                (1)</label
+            >
+        </div>
+
+        <div class="perm-group">
+            <h3>Group</h3>
+            <label
+                ><input type="checkbox" class="perm" data-val="40" checked /> Read
+                (4)</label
+            >
+            <label
+                ><input type="checkbox" class="perm" data-val="20" /> Write (2)</label
+            >
+            <label
+                ><input type="checkbox" class="perm" data-val="10" checked /> Execute
+                (1)</label
+            >
+        </div>
+
+        <div class="perm-group">
+            <h3>Public</h3>
+            <label
+                ><input type="checkbox" class="perm" data-val="4" checked /> Read
+                (4)</label
+            >
+            <label
+                ><input type="checkbox" class="perm" data-val="2" /> Write (2)</label
+            >
+            <label
+                ><input type="checkbox" class="perm" data-val="1" checked /> Execute
+                (1)</label
+            >
+        </div>
+    </div>
+
+    <div class="results">
+        <div class="result-box">
+            <span class="label">Octal:</span>
+            <span id="octal-val" class="value">755</span>
+        </div>
+        <div class="result-box">
+            <span class="label">Symbolic:</span>
+            <span id="symbolic-val" class="value">-rwxr-xr-x</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    const checkboxes = document.querySelectorAll(".perm");
+    const octalDisplay = document.getElementById("octal-val");
+    const symbolicDisplay = document.getElementById("symbolic-val");
+
+    function calculate() {
+        let octal = 0;
+        let symbolic = "-";
+
+        // Calculate Octal
+        checkboxes.forEach((cb: any) => {
+            if (cb.checked) {
+                octal += parseInt(cb.dataset.val);
+            }
+        });
+
+        const octalStr = octal.toString().padStart(3, "0");
+        if (octalDisplay) octalDisplay.textContent = octalStr;
+
+        // Calculate Symbolic - Lazy way using octal digits
+        const map = ["---", "--x", "-w-", "-wx", "r--", "r-x", "rw-", "rwx"];
+        symbolic += map[parseInt(octalStr[0])];
+        symbolic += map[parseInt(octalStr[1])];
+        symbolic += map[parseInt(octalStr[2])];
+
+        if (symbolicDisplay) symbolicDisplay.textContent = symbolic;
+    }
+
+    checkboxes.forEach((cb) => cb.addEventListener("change", calculate));
+</script>
+
+<style>
+    .tool-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-lg);
+    }
+
+    .chmod-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: var(--space-md);
+    }
+
+    .perm-group {
+        background: var(--c-surface);
+        padding: var(--space-md);
+        border-radius: var(--radius-md);
+        border: 1px solid var(--c-border);
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .perm-group h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        border-bottom: 1px solid var(--c-border);
+        padding-bottom: 0.25rem;
+    }
+
+    label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+    }
+
+    .results {
+        display: flex;
+        gap: var(--space-md);
+        flex-wrap: wrap;
+    }
+
+    .result-box {
+        flex: 1;
+        background: var(--c-background);
+        padding: var(--space-md);
+        border-radius: var(--radius-md);
+        border: 1px solid var(--c-border);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .label {
+        color: var(--c-text-muted);
+        font-size: 0.9rem;
+    }
+
+    .value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--c-primary);
+        font-family: monospace;
+    }
+</style>

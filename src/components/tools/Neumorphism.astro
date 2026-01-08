@@ -1,0 +1,154 @@
+---
+
+---
+
+<div class="tool-content">
+    <div class="preview-area" id="bg-preview">
+        <div id="neu-box" class="neu-box"></div>
+    </div>
+
+    <div class="controls">
+        <div class="control-group">
+            <label>Size: <span id="size-val">200</span>px</label>
+            <input type="range" id="size" min="100" max="300" value="200" />
+        </div>
+        <div class="control-group">
+            <label>Radius: <span id="radius-val">30</span>px</label>
+            <input type="range" id="radius" min="0" max="150" value="30" />
+        </div>
+        <div class="control-group">
+            <label>Distance: <span id="distance-val">20</span>px</label>
+            <input type="range" id="distance" min="1" max="50" value="20" />
+        </div>
+        <div class="control-group">
+            <label>Intensity: <span id="intensity-val">0.15</span></label>
+            <input
+                type="range"
+                id="intensity"
+                min="0.01"
+                max="0.3"
+                step="0.01"
+                value="0.15"
+            />
+        </div>
+        <div class="control-group">
+            <label>Blur: <span id="blur-val">60</span>px</label>
+            <input type="range" id="blur" min="0" max="100" value="60" />
+        </div>
+    </div>
+
+    <div class="code-output">
+        <pre id="css-output"></pre>
+        <button id="copy" class="btn">Copy CSS</button>
+    </div>
+</div>
+
+<script>
+    const box = document.getElementById("neu-box");
+    const bg = document.getElementById("bg-preview");
+    const output = document.getElementById("css-output");
+    const inputs = ["size", "radius", "distance", "intensity", "blur"];
+
+    const baseColor = "#e0e0e0";
+
+    function update() {
+        const size = (document.getElementById("size") as HTMLInputElement)
+            .value;
+        const radius = (document.getElementById("radius") as HTMLInputElement)
+            .value;
+        const distance = parseInt(
+            (document.getElementById("distance") as HTMLInputElement).value,
+        );
+        const intensity = parseFloat(
+            (document.getElementById("intensity") as HTMLInputElement).value,
+        );
+        const blur = (document.getElementById("blur") as HTMLInputElement)
+            .value;
+
+        // Calculate light and dark shadows
+        // Simplified simulation for gray background
+        const lightInt = Math.floor(255 * (1 + intensity)); // simplistic
+        const darkInt = Math.floor(255 * (1 - intensity)); // simplistic - doesn't work well for all colors but okay for gray
+
+        const shadow1 = `${distance}px ${distance}px ${blur}px #bebebe`;
+        const shadow2 = `-${distance}px -${distance}px ${blur}px #ffffff`;
+
+        const css = `border-radius: ${radius}px;
+background: ${baseColor};
+box-shadow: ${shadow1},
+            ${shadow2};`;
+
+        if (box) {
+            box.style.width = `${size}px`;
+            box.style.height = `${size}px`;
+            box.style.borderRadius = `${radius}px`;
+            box.style.background = baseColor;
+            box.style.boxShadow = `${shadow1}, ${shadow2}`;
+        }
+
+        if (bg) bg.style.background = baseColor;
+        if (output) output.textContent = css;
+
+        inputs.forEach((id) => {
+            document.getElementById(id + "-val")!.textContent = (
+                document.getElementById(id) as HTMLInputElement
+            ).value;
+        });
+    }
+
+    inputs.forEach((id) =>
+        document.getElementById(id)?.addEventListener("input", update),
+    );
+
+    document.getElementById("copy")?.addEventListener("click", () => {
+        if (output && output.textContent)
+            navigator.clipboard.writeText(output.textContent);
+    });
+
+    update();
+</script>
+
+<style>
+    .tool-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-lg);
+    }
+
+    .preview-area {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 3rem;
+        border-radius: var(--radius-lg);
+    }
+
+    .controls {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--space-md);
+    }
+
+    .code-output {
+        background: #1e1e1e;
+        padding: 1rem;
+        border-radius: var(--radius-md);
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    pre {
+        color: #a5f3fc;
+        margin: 0;
+    }
+
+    .btn {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>

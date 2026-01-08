@@ -1,0 +1,139 @@
+---
+
+---
+
+<div class="tool-content">
+    <div class="panel">
+        <label>JSON Input</label>
+        <textarea id="json-input" placeholder='{"id": 1, "name": "test"}'
+        ></textarea>
+    </div>
+
+    <div class="actions">
+        <button id="convert" class="btn primary">Convert to Interface →</button>
+    </div>
+
+    <div class="panel">
+        <label>TypeScript Interface</label>
+        <textarea id="ts-output" readonly></textarea>
+    </div>
+</div>
+
+<script>
+    function jsonToTs(json: any, rootName = "RootObject"): string {
+        let interfaces: string[] = [];
+        const seenObjects = new Set();
+
+        function getType(value: any): string {
+            if (value === null) return "any";
+            if (Array.isArray(value)) {
+                if (value.length === 0) return "any[]";
+                return `${getType(value[0])}[]`;
+            }
+            if (typeof value === "object") {
+                return "object"; // Simplified for recursion handling outside
+            }
+            return typeof value;
+        }
+
+        function parseObject(obj: any, name: string) {
+            if (typeof obj !== "object" || obj === null || Array.isArray(obj))
+                return;
+
+            let output = `interface ${name} {\n`;
+            const keys = Object.keys(obj);
+
+            for (const key of keys) {
+                const value = obj[key];
+                const type = getType(value);
+
+                if (type === "object") {
+                    const childName =
+                        name + key.charAt(0).toUpperCase() + key.slice(1);
+                    output += `  ${key}: ${childName};\n`;
+                    parseObject(value, childName);
+                } else if (
+                    Array.isArray(value) &&
+                    value.length > 0 &&
+                    typeof value[0] === "object"
+                ) {
+                    const childName =
+                        name +
+                        key.charAt(0).toUpperCase() +
+                        key.slice(1) +
+                        "Item";
+                    output += `  ${key}: ${childName}[];\n`;
+                    parseObject(value[0], childName);
+                } else {
+                    output += `  ${key}: ${type};\n`;
+                }
+            }
+
+            output += "}\n\n";
+            interfaces.push(output);
+        }
+
+        try {
+            const obj = JSON.parse(json);
+            parseObject(obj, rootName);
+            return interfaces.reverse().join("");
+        } catch (e) {
+            return "// Invalid JSON";
+        }
+    }
+
+    const input = document.getElementById("json-input") as HTMLTextAreaElement;
+    const output = document.getElementById("ts-output") as HTMLTextAreaElement;
+
+    document.getElementById("convert")?.addEventListener("click", () => {
+        output.value = jsonToTs(input.value);
+    });
+</script>
+
+<style>
+    .tool-content {
+        display: flex;
+        gap: var(--space-md);
+        height: 500px;
+    }
+
+    @media (max-width: 768px) {
+        .tool-content {
+            flex-direction: column;
+            height: auto;
+        }
+    }
+
+    .panel {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    textarea {
+        flex: 1;
+        padding: var(--space-sm);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        background: var(--c-background);
+        color: var(--c-text-main);
+        family: monospace;
+        min-height: 200px;
+    }
+
+    .actions {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .btn {
+        padding: var(--space-sm) var(--space-md);
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+    }
+</style>

@@ -1,0 +1,110 @@
+---
+
+---
+
+<div class="tool-content">
+    <div class="input-group">
+        <label for="input-text">النص المدخل:</label>
+        <textarea
+            id="input-text"
+            rows="8"
+            placeholder="الصق النص هنا لاستخراج العناوين..."></textarea>
+    </div>
+
+    <div class="controls">
+        <button id="extract" class="btn primary">استخراج الإيميلات</button>
+        <button id="copy" class="btn secondary">نسخ النتائج</button>
+    </div>
+
+    <div class="input-group">
+        <div class="result-header">
+            <label for="output-text">النتائج:</label>
+            <span id="count-badge" class="badge">0</span>
+        </div>
+        <textarea id="output-text" rows="8" readonly></textarea>
+    </div>
+</div>
+
+<script>
+    const input = document.getElementById("input-text") as HTMLTextAreaElement;
+    const output = document.getElementById(
+        "output-text",
+    ) as HTMLTextAreaElement;
+    const countBadge = document.getElementById("count-badge");
+
+    document.getElementById("extract")?.addEventListener("click", () => {
+        const text = input.value;
+        // Regex for email extraction
+        const emailRegex =
+            /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi;
+        const matches = text.match(emailRegex) || [];
+        const uniqueMatches = [...new Set(matches)];
+
+        output.value = uniqueMatches.join("\n");
+        if (countBadge)
+            countBadge.textContent = uniqueMatches.length.toString();
+    });
+
+    document.getElementById("copy")?.addEventListener("click", () => {
+        output.select();
+        document.execCommand("copy");
+        // Optional: Show feedback
+    });
+</script>
+
+<style>
+    .tool-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+
+    textarea {
+        width: 100%;
+        padding: var(--space-sm);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        background: var(--c-background);
+        color: var(--c-text-main);
+        resize: vertical;
+    }
+
+    .controls {
+        display: flex;
+        gap: var(--space-sm);
+    }
+
+    .btn {
+        padding: var(--space-sm) var(--space-md);
+        border-radius: var(--radius-md);
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    .primary {
+        background: var(--c-primary);
+        color: white;
+    }
+
+    .secondary {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        color: var(--c-text-main);
+    }
+
+    .result-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .badge {
+        background: var(--c-primary);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+    }
+</style>

@@ -1,0 +1,193 @@
+---
+
+---
+
+<div class="tool-content">
+    <div class="input-group">
+        <input
+            type="text"
+            id="search-input"
+            placeholder="Search code or meaning (e.g. 404, Not Found)..."
+        />
+    </div>
+
+    <div id="status-list" class="status-list">
+        <!-- Items injected by script -->
+    </div>
+</div>
+
+<script>
+    const statusCodes = [
+        {
+            code: 100,
+            title: "Continue",
+            desc: "The initial part of a request has been received and has not yet been rejected via Server.",
+        },
+        { code: 200, title: "OK", desc: "The request has succeeded." },
+        {
+            code: 201,
+            title: "Created",
+            desc: "The request has been fulfilled and resulted in a new resource.",
+        },
+        {
+            code: 204,
+            title: "No Content",
+            desc: "The server successfully processed the request and is not returning any content.",
+        },
+        {
+            code: 301,
+            title: "Moved Permanently",
+            desc: "The requested resource has been assigned a new permanent URI.",
+        },
+        {
+            code: 302,
+            title: "Found",
+            desc: "The requested resource resides temporarily under a different URI.",
+        },
+        {
+            code: 304,
+            title: "Not Modified",
+            desc: "Indicates that the resource has not been modified since the version specified by the request headers.",
+        },
+        {
+            code: 400,
+            title: "Bad Request",
+            desc: "The server cannot or will not process the request due to an apparent client error.",
+        },
+        {
+            code: 401,
+            title: "Unauthorized",
+            desc: "Authentication is required and has failed or has not yet been provided.",
+        },
+        {
+            code: 403,
+            title: "Forbidden",
+            desc: "The request was valid, but the server is refusing action.",
+        },
+        {
+            code: 404,
+            title: "Not Found",
+            desc: "The requested resource could not be found but may be available in the future.",
+        },
+        {
+            code: 405,
+            title: "Method Not Allowed",
+            desc: "A request method is not supported for the requested resource.",
+        },
+        {
+            code: 429,
+            title: "Too Many Requests",
+            desc: "The user has sent too many requests in a given amount of time.",
+        },
+        {
+            code: 500,
+            title: "Internal Server Error",
+            desc: "A generic error message, given when an unexpected condition was encountered.",
+        },
+        {
+            code: 502,
+            title: "Bad Gateway",
+            desc: "The server was acting as a gateway or proxy and received an invalid response.",
+        },
+        {
+            code: 503,
+            title: "Service Unavailable",
+            desc: "The server is currently unavailable (overloaded or down for maintenance).",
+        },
+        {
+            code: 504,
+            title: "Gateway Timeout",
+            desc: "The server was acting as a gateway or proxy and did not receive a timely response.",
+        },
+    ];
+
+    const input = document.getElementById("search-input") as HTMLInputElement;
+    const list = document.getElementById("status-list") as HTMLDivElement;
+
+    function render(filter = "") {
+        list.innerHTML = "";
+        const term = filter.toLowerCase();
+
+        statusCodes.forEach((item) => {
+            if (
+                item.code.toString().includes(term) ||
+                item.title.toLowerCase().includes(term) ||
+                item.desc.toLowerCase().includes(term)
+            ) {
+                const div = document.createElement("div");
+                div.className = `status-item ${item.code >= 500 ? "error" : item.code >= 400 ? "warning" : "success"}`;
+                div.innerHTML = `
+          <div class="code">${item.code}</div>
+          <div class="info">
+            <h3>${item.title}</h3>
+            <p>${item.desc}</p>
+          </div>
+        `;
+                list.appendChild(div);
+            }
+        });
+    }
+
+    render();
+    input.addEventListener("input", () => render(input.value));
+</script>
+
+<style>
+    .tool-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+
+    input {
+        width: 100%;
+        padding: var(--space-md);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        background: var(--c-background);
+        color: var(--c-text-main);
+    }
+
+    .status-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-sm);
+    }
+
+    .status-item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-md);
+        background: var(--c-surface);
+        padding: var(--space-md);
+        border-radius: var(--radius-md);
+        border: 1px solid var(--c-border);
+    }
+
+    .code {
+        font-size: 1.5rem;
+        font-weight: 800;
+        min-width: 60px;
+    }
+
+    .info h3 {
+        margin: 0 0 0.25rem 0;
+        font-size: 1.1rem;
+    }
+
+    .info p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: var(--c-text-muted);
+    }
+
+    .success .code {
+        color: #10b981;
+    }
+    .warning .code {
+        color: #f59e0b;
+    }
+    .error .code {
+        color: #ef4444;
+    }
+</style>

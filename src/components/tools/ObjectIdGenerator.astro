@@ -1,0 +1,112 @@
+---
+
+---
+
+<div class="tool-content">
+    <div class="controls">
+        <button id="generate" class="btn primary">Generate ObjectId</button>
+        <button id="copy" class="btn secondary">Copy</button>
+    </div>
+
+    <div class="display-area">
+        <div id="oid-output" class="oid-display">Loading...</div>
+        <div class="oid-breakdown">
+            <span id="label-ts">Timestamp</span> • <span id="label-random"
+                >Random</span
+            > • <span id="label-counter">Counter</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Simple ObjectId generator
+    // 4-byte timestamp, 5-byte random value, 3-byte incrementing counter
+
+    let counter = Math.floor(Math.random() * 0xffffff);
+
+    function generateObjectId() {
+        const timestamp = Math.floor(Date.now() / 1000)
+            .toString(16)
+            .padStart(8, "0");
+        const random = Math.floor(Math.random() * 0xffffffffff)
+            .toString(16)
+            .padStart(10, "0");
+        counter = (counter + 1) % 0xffffff;
+        const counterStr = counter.toString(16).padStart(6, "0");
+
+        return timestamp + random + counterStr;
+    }
+
+    const output = document.getElementById("oid-output");
+
+    function update() {
+        if (output) output.textContent = generateObjectId();
+    }
+
+    document.getElementById("generate")?.addEventListener("click", update);
+
+    document.getElementById("copy")?.addEventListener("click", () => {
+        if (output && output.textContent) {
+            navigator.clipboard.writeText(output.textContent);
+            // Feedback logic could be added here
+        }
+    });
+
+    update();
+</script>
+
+<style>
+    .tool-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-lg);
+        align-items: center;
+        text-align: center;
+    }
+
+    .controls {
+        display: flex;
+        gap: var(--space-md);
+    }
+
+    .display-area {
+        background: var(--c-surface);
+        padding: var(--space-xl);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--c-border);
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .oid-display {
+        font-size: 2.5rem;
+        font-family: monospace;
+        color: var(--c-primary);
+        margin-bottom: var(--space-md);
+    }
+
+    .oid-breakdown {
+        font-size: 0.9rem;
+        color: var(--c-text-muted);
+    }
+
+    .btn {
+        padding: var(--space-md) var(--space-xl);
+        border-radius: var(--radius-md);
+        border: none;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+
+    .primary {
+        background: var(--c-primary);
+        color: white;
+    }
+
+    .secondary {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        color: var(--c-text-main);
+    }
+</style>

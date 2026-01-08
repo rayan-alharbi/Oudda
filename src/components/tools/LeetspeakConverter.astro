@@ -1,0 +1,83 @@
+---
+
+---
+
+<div class="tool-content">
+    <div class="input-group">
+        <label for="input-text">النص العادي:</label>
+        <textarea id="input-text" rows="4" placeholder="Hello World"></textarea>
+    </div>
+
+    <div class="actions">
+        <button id="convert" class="btn primary">↓ Convert to 1337 ↓</button>
+    </div>
+
+    <div class="input-group">
+        <label for="output-text">L337 Sp34k:</label>
+        <textarea id="output-text" rows="4" readonly></textarea>
+    </div>
+</div>
+
+<script>
+    const leetMap: { [key: string]: string } = {
+        a: "4",
+        b: "8",
+        e: "3",
+        g: "6",
+        i: "1",
+        l: "1",
+        o: "0",
+        s: "5",
+        t: "7",
+        z: "2",
+    };
+
+    const input = document.getElementById("input-text") as HTMLTextAreaElement;
+    const output = document.getElementById(
+        "output-text",
+    ) as HTMLTextAreaElement;
+
+    document.getElementById("convert")?.addEventListener("click", () => {
+        const text = input.value.toLowerCase();
+        let result = "";
+
+        for (const char of text) {
+            result += leetMap[char] || char;
+        }
+
+        output.value = result;
+    });
+</script>
+
+<style>
+    .tool-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+
+    textarea {
+        width: 100%;
+        padding: var(--space-sm);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        background: var(--c-background);
+        color: var(--c-text-main);
+        font-family: monospace;
+    }
+
+    .actions {
+        display: flex;
+        justify-content: center;
+    }
+
+    .btn {
+        padding: var(--space-sm) var(--space-xl);
+        border-radius: var(--radius-md);
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+    }
+</style>

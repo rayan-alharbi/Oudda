@@ -1,0 +1,129 @@
+---
+
+---
+
+<div class="tool-content">
+    <div class="input-group">
+        <label for="input-text">النص المدخل:</label>
+        <textarea id="input-text" rows="8" placeholder="أدخل النص هنا للفرز..."
+        ></textarea>
+    </div>
+
+    <div class="controls">
+        <button id="sort-asc" class="btn primary">أ-ي (تصاعدي)</button>
+        <button id="sort-desc" class="btn secondary">ي-أ (تنازلي)</button>
+        <button id="sort-num" class="btn secondary">رقمي</button>
+        <button id="reverse" class="btn secondary">عكس الترتيب</button>
+        <button id="shuffle" class="btn secondary">خلط عشوائي</button>
+        <button id="deduplicate" class="btn secondary">إزالة المكرر</button>
+        <button id="trim" class="btn secondary">إزالة الفراغات</button>
+    </div>
+
+    <div class="input-group">
+        <label for="output-text">النتيجة:</label>
+        <textarea id="output-text" rows="8" readonly></textarea>
+    </div>
+</div>
+
+<script>
+    const input = document.getElementById("input-text") as HTMLTextAreaElement;
+    const output = document.getElementById(
+        "output-text",
+    ) as HTMLTextAreaElement;
+
+    function getLines() {
+        return input.value.split("\n");
+    }
+
+    function setLines(lines: string[]) {
+        output.value = lines.join("\n");
+    }
+
+    document.getElementById("sort-asc")?.addEventListener("click", () => {
+        setLines(getLines().sort((a, b) => a.localeCompare(b, "ar")));
+    });
+
+    document.getElementById("sort-desc")?.addEventListener("click", () => {
+        setLines(getLines().sort((a, b) => b.localeCompare(a, "ar")));
+    });
+
+    document.getElementById("sort-num")?.addEventListener("click", () => {
+        setLines(
+            getLines().sort((a, b) => {
+                const numA = parseFloat(a.replace(/[^0-9.-]/g, ""));
+                const numB = parseFloat(b.replace(/[^0-9.-]/g, ""));
+                if (isNaN(numA)) return 1;
+                if (isNaN(numB)) return -1;
+                return numA - numB;
+            }),
+        );
+    });
+
+    document.getElementById("reverse")?.addEventListener("click", () => {
+        setLines(getLines().reverse());
+    });
+
+    document.getElementById("shuffle")?.addEventListener("click", () => {
+        setLines(getLines().sort(() => Math.random() - 0.5));
+    });
+
+    document.getElementById("deduplicate")?.addEventListener("click", () => {
+        setLines([...new Set(getLines())]);
+    });
+
+    document.getElementById("trim")?.addEventListener("click", () => {
+        setLines(
+            getLines()
+                .map((l) => l.trim())
+                .filter((l) => l),
+        );
+    });
+</script>
+
+<style>
+    .tool-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+
+    textarea {
+        width: 100%;
+        padding: var(--space-sm);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        background: var(--c-background);
+        color: var(--c-text-main);
+        resize: vertical;
+    }
+
+    .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-sm);
+    }
+
+    .btn {
+        padding: var(--space-sm) var(--space-md);
+        border-radius: var(--radius-md);
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+        transition: opacity 0.2s;
+    }
+
+    .btn:hover {
+        opacity: 0.9;
+    }
+
+    .primary {
+        background: var(--c-primary);
+        color: white;
+    }
+
+    .secondary {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        color: var(--c-text-main);
+    }
+</style>

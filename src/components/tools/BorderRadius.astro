@@ -1,0 +1,125 @@
+---
+
+---
+
+<div class="tool-content">
+    <div class="preview-area">
+        <div id="box" class="box"></div>
+    </div>
+
+    <div class="controls">
+        <div class="control-group">
+            <label>Top Left: <span id="tl-val">0</span>px</label>
+            <input type="range" id="tl" min="0" max="150" value="0" />
+        </div>
+        <div class="control-group">
+            <label>Top Right: <span id="tr-val">0</span>px</label>
+            <input type="range" id="tr" min="0" max="150" value="0" />
+        </div>
+        <div class="control-group">
+            <label>Bottom Right: <span id="br-val">0</span>px</label>
+            <input type="range" id="br" min="0" max="150" value="0" />
+        </div>
+        <div class="control-group">
+            <label>Bottom Left: <span id="bl-val">0</span>px</label>
+            <input type="range" id="bl" min="0" max="150" value="0" />
+        </div>
+    </div>
+
+    <div class="code-output">
+        <pre id="css-output">border-radius: 0px 0px 0px 0px;</pre>
+        <button id="copy" class="btn secondary">Copy CSS</button>
+    </div>
+</div>
+
+<script>
+    const box = document.getElementById("box");
+    const output = document.getElementById("css-output");
+    const inputs = ["tl", "tr", "br", "bl"];
+
+    function update() {
+        const values = inputs.map((id) => {
+            const val = (document.getElementById(id) as HTMLInputElement).value;
+            document.getElementById(id + "-val")!.textContent = val;
+            return val + "px";
+        });
+
+        const css = `border-radius: ${values[0]} ${values[1]} ${values[2]} ${values[3]};`;
+        if (box)
+            box.style.borderRadius = `${values[0]} ${values[1]} ${values[2]} ${values[3]}`;
+        if (output) output.textContent = css;
+    }
+
+    inputs.forEach((id) => {
+        document.getElementById(id)?.addEventListener("input", update);
+    });
+
+    document.getElementById("copy")?.addEventListener("click", () => {
+        if (output && output.textContent)
+            navigator.clipboard.writeText(output.textContent);
+    });
+</script>
+
+<style>
+    .tool-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-lg);
+        align-items: center;
+    }
+
+    .preview-area {
+        display: flex;
+        justify-content: center;
+        padding: 2rem;
+        background: var(--c-surface);
+        border-radius: var(--radius-lg);
+        width: 100%;
+    }
+
+    .box {
+        width: 200px;
+        height: 200px;
+        background: linear-gradient(135deg, var(--c-primary), #a855f7);
+        transition: border-radius 0.2s;
+    }
+
+    .controls {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--space-md);
+        width: 100%;
+    }
+
+    .control-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .code-output {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        background: #1e1e1e;
+        padding: 1rem;
+        border-radius: var(--radius-md);
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    pre {
+        color: #a5f3fc;
+        margin: 0;
+        font-family: monospace;
+    }
+
+    .btn {
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius-sm);
+        border: none;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        cursor: pointer;
+    }
+</style>

@@ -1,0 +1,136 @@
+---
+
+---
+
+<div class="tool-content">
+    <div class="bpm-display">
+        <div id="bpm-val" class="bpm-value">0</div>
+        <div class="bpm-label">BPM</div>
+    </div>
+
+    <div class="controls">
+        <button id="tap-btn" class="tap-btn">TAP!</button>
+        <button id="reset-btn" class="reset-btn">Reset</button>
+    </div>
+</div>
+
+<script>
+    const bpmDisplay = document.getElementById("bpm-val");
+    const tapBtn = document.getElementById("tap-btn");
+    const resetBtn = document.getElementById("reset-btn");
+
+    let taps: number[] = [];
+    const timeout = 2000; // Reset if no tap for 2 seconds
+
+    tapBtn?.addEventListener("click", () => {
+        const now = Date.now();
+
+        if (taps.length > 0 && now - taps[taps.length - 1] > timeout) {
+            taps = []; // Reset on timeout
+        }
+
+        taps.push(now);
+
+        // Keep only last 20 taps for average
+        if (taps.length > 20) taps.shift();
+
+        if (taps.length > 1) {
+            // Calculate average interval
+            let intervals = [];
+            for (let i = 1; i < taps.length; i++) {
+                intervals.push(taps[i] - taps[i - 1]);
+            }
+
+            const avgInterval =
+                intervals.reduce((a, b) => a + b, 0) / intervals.length;
+            const bpm = Math.round(60000 / avgInterval);
+
+            if (bpmDisplay) bpmDisplay.textContent = bpm.toString();
+
+            // Animation effect
+            tapBtn.classList.add("tapped");
+            setTimeout(() => tapBtn.classList.remove("tapped"), 100);
+        }
+    });
+
+    resetBtn?.addEventListener("click", () => {
+        taps = [];
+        if (bpmDisplay) bpmDisplay.textContent = "0";
+    });
+</script>
+
+<style>
+    .tool-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-xl);
+        padding: var(--space-xl);
+    }
+
+    .bpm-display {
+        text-align: center;
+        background: var(--c-surface);
+        padding: 3rem;
+        border-radius: 50%;
+        width: 200px;
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border: 4px solid var(--c-primary);
+        box-shadow: 0 0 20px rgba(var(--c-primary-rgb), 0.3);
+    }
+
+    .bpm-value {
+        font-size: 4rem;
+        font-weight: 900;
+        color: var(--c-text-main);
+    }
+
+    .bpm-label {
+        color: var(--c-text-muted);
+        font-weight: 500;
+    }
+
+    .controls {
+        display: flex;
+        gap: var(--space-lg);
+    }
+
+    .tap-btn {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: none;
+        background: var(--c-primary);
+        color: white;
+        font-size: 1.5rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition:
+            transform 0.1s,
+            background 0.2s;
+        box-shadow: 0 4px 0 #0f766e; /* Darker shade of primary */
+    }
+
+    .tap-btn:active,
+    .tap-btn.tapped {
+        transform: translateY(4px);
+        box-shadow: none;
+    }
+
+    .reset-btn {
+        padding: 0 2rem;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--c-border);
+        background: transparent;
+        color: var(--c-text-muted);
+        cursor: pointer;
+    }
+
+    .reset-btn:hover {
+        background: var(--c-surface);
+        color: var(--c-text-main);
+    }
+</style>

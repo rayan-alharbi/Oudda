@@ -1,0 +1,146 @@
+---
+
+---
+
+<div class="tool-content">
+    <div class="input-group">
+        <label for="input-text">النص:</label>
+        <textarea id="input-text" rows="4" placeholder="Type something..."
+        ></textarea>
+    </div>
+
+    <div class="actions">
+        <button id="flip-btn" class="btn primary">ilp ⅄</button>
+    </div>
+
+    <div class="input-group">
+        <label for="output-text">المقلوب:</label>
+        <textarea id="output-text" rows="4" readonly></textarea>
+    </div>
+</div>
+
+<script>
+    // Simple mapping for common chars
+    const flipTable: { [key: string]: string } = {
+        a: "\u0250",
+        b: "q",
+        c: "\u0254",
+        d: "p",
+        e: "\u01dd",
+        f: "\u025f",
+        g: "\u0183",
+        h: "\u0265",
+        i: "\u1d09",
+        j: "\u027e",
+        k: "\u029e",
+        l: "\u0283",
+        m: "\u026f",
+        n: "u",
+        o: "o",
+        p: "d",
+        q: "b",
+        r: "\u0279",
+        s: "s",
+        t: "\u0287",
+        u: "n",
+        v: "\u028c",
+        w: "\u028d",
+        x: "x",
+        y: "\u028e",
+        z: "z",
+        A: "\u2200",
+        B: "B",
+        C: "\u0186",
+        D: "D",
+        E: "\u018e",
+        F: "\u2132",
+        G: "\u2141",
+        H: "H",
+        I: "I",
+        J: "\u017f",
+        K: "K",
+        L: "\u2142",
+        M: "W",
+        N: "N",
+        O: "O",
+        P: "\u0500",
+        Q: "\u038c",
+        R: "\u1d1a",
+        S: "S",
+        T: "\u22a5",
+        U: "\u2229",
+        V: "\u039b",
+        W: "M",
+        X: "X",
+        Y: "\u2144",
+        Z: "Z",
+        "1": "\u21c2",
+        "2": "\u1105",
+        "3": "\u0190",
+        "4": "\u3123",
+        "5": "\u03db",
+        "6": "9",
+        "7": "\u3125",
+        "8": "8",
+        "9": "6",
+        "0": "0",
+        ".": "\u02d9",
+        ",": "\'",
+        "'": ",",
+        '"': ",,",
+        "`": ",",
+        "<": ">",
+        ">": "<",
+        "&": "\u214b",
+        _: "\u203e",
+        "?": "\u00bf",
+        "!": "\u00a1",
+    };
+
+    const input = document.getElementById("input-text") as HTMLTextAreaElement;
+    const output = document.getElementById(
+        "output-text",
+    ) as HTMLTextAreaElement;
+
+    document.getElementById("flip-btn")?.addEventListener("click", () => {
+        const text = input.value;
+        let result = "";
+        for (let i = text.length - 1; i >= 0; i--) {
+            const char = text.charAt(i);
+            result += flipTable[char] || char;
+        }
+        output.value = result;
+    });
+</script>
+
+<style>
+    .tool-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+
+    textarea {
+        width: 100%;
+        padding: var(--space-sm);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        background: var(--c-background);
+        color: var(--c-text-main);
+    }
+
+    .actions {
+        display: flex;
+        justify-content: center;
+    }
+
+    .btn {
+        padding: var(--space-sm) var(--space-xl);
+        border-radius: var(--radius-md);
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+    }
+</style>

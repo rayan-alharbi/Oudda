@@ -1,0 +1,125 @@
+---
+import { ulid } from "ulid";
+---
+
+<div class="tool-content">
+    <div class="controls">
+        <button id="generate" class="btn primary">Generate New ULID</button>
+        <button id="copy" class="btn secondary">Copy</button>
+    </div>
+
+    <div class="display-area">
+        <div id="ulid-output" class="ulid-display">Generating...</div>
+    </div>
+
+    <div class="info-section">
+        <h3>About ULID</h3>
+        <ul>
+            <li>128-bit compatibility with UUID</li>
+            <li>1.21e+24 unique ULIDs per millisecond</li>
+            <li>Lexicographically sortable!</li>
+            <li>
+                Canonically encoded as a 26 character string, as opposed to the
+                36 character UUID
+            </li>
+            <li>
+                Uses Crockford's base32 for better efficiency and readability (5
+                bits per character)
+            </li>
+            <li>Case insensitive</li>
+            <li>No special characters (URL safe)</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    import { ulid } from "ulid";
+
+    const output = document.getElementById("ulid-output");
+
+    function generate() {
+        if (output) output.textContent = ulid();
+    }
+
+    document.getElementById("generate")?.addEventListener("click", generate);
+
+    document.getElementById("copy")?.addEventListener("click", () => {
+        if (output && output.textContent) {
+            navigator.clipboard.writeText(output.textContent);
+            const btn = document.getElementById("copy");
+            if (btn) {
+                const original = btn.textContent;
+                btn.textContent = "Copied!";
+                setTimeout(() => (btn.textContent = original), 1500);
+            }
+        }
+    });
+
+    generate();
+</script>
+
+<style>
+    .tool-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-lg);
+        align-items: center;
+        text-align: center;
+    }
+
+    .controls {
+        display: flex;
+        gap: var(--space-md);
+    }
+
+    .display-area {
+        background: var(--c-surface);
+        padding: var(--space-xl);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--c-border);
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .ulid-display {
+        font-size: 2.5rem;
+        font-family: monospace;
+        color: var(--c-primary);
+        word-break: break-all;
+    }
+
+    .btn {
+        padding: var(--space-md) var(--space-xl);
+        border-radius: var(--radius-md);
+        border: none;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+
+    .primary {
+        background: var(--c-primary);
+        color: white;
+    }
+
+    .secondary {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        color: var(--c-text-main);
+    }
+
+    .info-section {
+        text-align: left;
+        max-width: 600px;
+        color: var(--c-text-muted);
+    }
+
+    .info-section ul {
+        margin-top: 1rem;
+        padding-left: 1.5rem;
+    }
+
+    .info-section li {
+        margin-bottom: 0.5rem;
+    }
+</style>

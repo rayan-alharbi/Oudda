@@ -75,6 +75,26 @@ import ImageCropper from '../components/tools/ImageCropper.astro';
 import ImageFilters from '../components/tools/ImageFilters.astro';
 import SvgToPng from '../components/tools/SvgToPng.astro';
 import IcoConverter from '../components/tools/IcoConverter.astro';
+import TextSorter from '../components/tools/TextSorter.astro';
+import EmailExtractor from '../components/tools/EmailExtractor.astro';
+import UrlExtractor from '../components/tools/UrlExtractor.astro';
+import TextToSpeech from '../components/tools/TextToSpeech.astro';
+import NatoConverter from '../components/tools/NatoConverter.astro';
+import LeetspeakConverter from '../components/tools/LeetspeakConverter.astro';
+import UpsideDownText from '../components/tools/UpsideDownText.astro';
+import ChmodCalculator from '../components/tools/ChmodCalculator.astro';
+import HttpStatus from '../components/tools/HttpStatus.astro';
+import MimeTypes from '../components/tools/MimeTypes.astro';
+import UlidGenerator from '../components/tools/UlidGenerator.astro';
+import ObjectIdGenerator from '../components/tools/ObjectIdGenerator.astro';
+import JsonToTypescript from '../components/tools/JsonToTypescript.astro';
+import BorderRadius from '../components/tools/BorderRadius.astro';
+import Glassmorphism from '../components/tools/Glassmorphism.astro';
+import Neumorphism from '../components/tools/Neumorphism.astro';
+import BpmTapper from '../components/tools/BpmTapper.astro';
+import CoinFlipper from '../components/tools/CoinFlipper.astro';
+import DiceRoller from '../components/tools/DiceRoller.astro';
+import ReactionTime from '../components/tools/ReactionTime.astro';
 
 export interface ToolConfig {
     id: string;
@@ -180,4 +200,32 @@ export const tools: ToolConfig[] = [
     { id: 'memo-pad', title: 'مذكرتي', description: 'ملاحظات.', icon: 'edit-note', component: Scratchpad },
     { id: 'key-code', title: 'أزرار الكيبورد', description: 'Key Codes.', icon: 'keyboard', component: KeyCodeInfo },
     { id: 'aspect-ratio', title: 'أبعاد الشاشة', description: '16:9, 4:3.', icon: 'aspect-ratio', component: AspectRatioCalculator },
+
+    // --- New Text Utilities ---
+    { id: 'text-sorter', title: 'فرز النصوص', description: 'ترتيب وتصفية.', icon: 'sort-by-alpha', component: TextSorter },
+    { id: 'email-extractor', title: 'إيميلات', description: 'استخراج العناوين.', icon: 'mark-email-read', component: EmailExtractor },
+    { id: 'url-extractor', title: 'روابط', description: 'استخراج URL.', icon: 'link', component: UrlExtractor },
+    { id: 'text-speech', title: 'قراءة النص', description: 'نطق آلي.', icon: 'record-voice-over', component: TextToSpeech },
+    { id: 'nato-alphabet', title: 'أبجدية الناتو', description: 'Alpha, Bravo.', icon: 'campaign', component: NatoConverter },
+    { id: 'leetspeak', title: '1337 Sp34k', description: 'تحويل Hackers.', icon: 'terminal', component: LeetspeakConverter },
+    { id: 'upside-down', title: 'نص مقلوب', description: 'Upside Down.', icon: 'rotate-90-degrees-ccw', component: UpsideDownText },
+
+    // --- New Developer Tools ---
+    { id: 'chmod-calc', title: 'تصاريح Chmod', description: 'Linux Permissions.', icon: 'lock-open', component: ChmodCalculator },
+    { id: 'http-status', title: 'أكواد HTTP', description: '404, 500 Info.', icon: 'http', component: HttpStatus },
+    { id: 'mime-types', title: 'أنواع MIME', description: 'صيغ الملفات.', icon: 'folder-special', component: MimeTypes },
+    { id: 'ulid-gen', title: 'ULID', description: 'Sortable IDs.', icon: 'fingerprint', component: UlidGenerator },
+    { id: 'object-id', title: 'ObjectId', description: 'MongoDB IDs.', icon: 'data-object', component: ObjectIdGenerator },
+    { id: 'json-ts', title: 'JSON to TS', description: 'Interfaces.', icon: 'integration-instructions', component: JsonToTypescript },
+
+    // --- New Design Tools ---
+    { id: 'border-radius', title: 'حواف CSS', description: 'Border Radius.', icon: 'rounded-corner', component: BorderRadius },
+    { id: 'glassmorphism', title: 'زجاجي', description: 'Glass Effect.', icon: 'blur-on', component: Glassmorphism },
+    { id: 'neumorphism', title: 'نيو مورفيزم', description: 'Soft UI.', icon: 'light-mode', component: Neumorphism },
+
+    // --- New Misc/Fun Tools ---
+    { id: 'bpm-tapper', title: 'عداد BPM', description: 'إيقاع الموسيقى.', icon: 'music-note', component: BpmTapper },
+    { id: 'coin-flipper', title: 'رمي عملة', description: 'وجه أم قفى.', icon: 'monetization-on', component: CoinFlipper },
+    { id: 'dice-roller', title: 'نرد', description: 'رمي الزهر.', icon: 'casino', component: DiceRoller },
+    { id: 'reaction-time', title: 'سرعة البديهة', description: 'اختبر رد فعلك.', icon: 'speed', component: ReactionTime },
 ];

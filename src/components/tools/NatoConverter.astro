@@ -1,0 +1,137 @@
+---
+
+---
+
+<div class="tool-content">
+    <div class="input-group">
+        <label for="input-text">النص:</label>
+        <input type="text" id="input-text" placeholder="مثال: Hello World" />
+    </div>
+
+    <div class="output-area">
+        <div id="nato-output"></div>
+    </div>
+</div>
+
+<script>
+    const natoMap: { [key: string]: string } = {
+        a: "Alfa",
+        b: "Bravo",
+        c: "Charlie",
+        d: "Delta",
+        e: "Echo",
+        f: "Foxtrot",
+        g: "Golf",
+        h: "Hotel",
+        i: "India",
+        j: "Juliett",
+        k: "Kilo",
+        l: "Lima",
+        m: "Mike",
+        n: "November",
+        o: "Oscar",
+        p: "Papa",
+        q: "Quebec",
+        r: "Romeo",
+        s: "Sierra",
+        t: "Tango",
+        u: "Uniform",
+        v: "Victor",
+        w: "Whiskey",
+        x: "X-ray",
+        y: "Yankee",
+        z: "Zulu",
+        "0": "Zero",
+        "1": "One",
+        "2": "Two",
+        "3": "Three",
+        "4": "Four",
+        "5": "Five",
+        "6": "Six",
+        "7": "Seven",
+        "8": "Eight",
+        "9": "Nine",
+    };
+
+    const input = document.getElementById("input-text") as HTMLInputElement;
+    const output = document.getElementById("nato-output") as HTMLDivElement;
+
+    input.addEventListener("input", () => {
+        const text = input.value.toLowerCase();
+        output.innerHTML = "";
+
+        for (const char of text) {
+            if (char === " ") {
+                const spacer = document.createElement("div");
+                spacer.className = "spacer";
+                output.appendChild(spacer);
+                continue;
+            }
+
+            const word = natoMap[char];
+            if (word) {
+                const chip = document.createElement("span");
+                chip.className = "nato-chip";
+                chip.innerHTML = `<span class="letter">${char.toUpperCase()}</span> ${word}`;
+                output.appendChild(chip);
+            }
+        }
+    });
+</script>
+
+<style>
+    .tool-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-lg);
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: var(--space-md);
+        font-size: 1.5rem;
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        background: var(--c-background);
+        color: var(--c-text-main);
+    }
+
+    .output-area {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding: var(--space-md);
+        background: var(--c-surface);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--c-border);
+        min-height: 100px;
+    }
+
+    :global(.nato-chip) {
+        background: var(--c-primary);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    :global(.nato-chip .letter) {
+        background: rgba(255, 255, 255, 0.2);
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-weight: bold;
+        font-size: 0.8rem;
+    }
+
+    :global(.spacer) {
+        flex-basis: 100%;
+        height: 0.5rem;
+    }
+</style>

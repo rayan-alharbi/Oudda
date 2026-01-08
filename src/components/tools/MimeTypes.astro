@@ -1,0 +1,138 @@
+---
+
+---
+
+<div class="tool-content">
+    <div class="input-group">
+        <input
+            type="text"
+            id="mime-search"
+            placeholder="Search extension (e.g. .pdf) or type (e.g. application/json)..."
+        />
+    </div>
+
+    <div id="mime-list" class="mime-list">
+        <!-- Items -->
+    </div>
+</div>
+
+<script>
+    // Common MIME types
+    const mimeTypes = [
+        { ext: ".html", type: "text/html" },
+        { ext: ".css", type: "text/css" },
+        { ext: ".js", type: "text/javascript" },
+        { ext: ".json", type: "application/json" },
+        { ext: ".png", type: "image/png" },
+        { ext: ".jpg, .jpeg", type: "image/jpeg" },
+        { ext: ".gif", type: "image/gif" },
+        { ext: ".svg", type: "image/svg+xml" },
+        { ext: ".pdf", type: "application/pdf" },
+        { ext: ".zip", type: "application/zip" },
+        { ext: ".mp3", type: "audio/mpeg" },
+        { ext: ".mp4", type: "video/mp4" },
+        { ext: ".wav", type: "audio/wav" },
+        { ext: ".txt", type: "text/plain" },
+        { ext: ".xml", type: "application/xml" },
+        { ext: ".doc", type: "application/msword" },
+        {
+            ext: ".docx",
+            type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        },
+        { ext: ".xls", type: "application/vnd.ms-excel" },
+        {
+            ext: ".xlsx",
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        },
+        { ext: ".csv", type: "text/csv" },
+    ];
+
+    const input = document.getElementById("mime-search") as HTMLInputElement;
+    const list = document.getElementById("mime-list") as HTMLDivElement;
+
+    function render(filter = "") {
+        list.innerHTML = "";
+        const term = filter.toLowerCase();
+
+        mimeTypes.forEach((item) => {
+            if (item.ext.includes(term) || item.type.includes(term)) {
+                const div = document.createElement("div");
+                div.className = "mime-item";
+                div.innerHTML = `
+          <div class="ext">${item.ext}</div>
+          <div class="type">${item.type}</div>
+          <button class="copy-btn" data-copy="${item.type}">Copy</button>
+        `;
+                list.appendChild(div);
+            }
+        });
+
+        // Add copy listeners
+        document.querySelectorAll(".copy-btn").forEach((btn) => {
+            btn.addEventListener("click", (e: any) => {
+                const text = e.target.dataset.copy;
+                navigator.clipboard.writeText(text);
+                const original = e.target.textContent;
+                e.target.textContent = "Copied!";
+                setTimeout(() => (e.target.textContent = original), 1500);
+            });
+        });
+    }
+
+    render();
+    input.addEventListener("input", () => render(input.value));
+</script>
+
+<style>
+    .tool-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+
+    input {
+        width: 100%;
+        padding: var(--space-md);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        background: var(--c-background);
+        color: var(--c-text-main);
+    }
+
+    .mime-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xs);
+    }
+
+    .mime-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--c-surface);
+        padding: var(--space-md);
+        border-radius: var(--radius-md);
+        border: 1px solid var(--c-border);
+    }
+
+    .ext {
+        font-weight: bold;
+        color: var(--c-primary);
+        width: 80px;
+    }
+
+    .type {
+        flex: 1;
+        font-family: monospace;
+        color: var(--c-text-muted);
+    }
+
+    .copy-btn {
+        padding: 4px 8px;
+        border: 1px solid var(--c-border);
+        border-radius: 4px;
+        background: var(--c-background);
+        cursor: pointer;
+        font-size: 0.8rem;
+    }
+</style>
