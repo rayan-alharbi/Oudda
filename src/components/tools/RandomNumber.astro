@@ -1,0 +1,91 @@
+---
+
+---
+
+<div class="rng-tool">
+    <div class="inputs">
+        <div class="grp">
+            <label>من (Min)</label>
+            <input type="number" id="min-in" value="1" />
+        </div>
+        <div class="grp">
+            <label>إلى (Max)</label>
+            <input type="number" id="max-in" value="100" />
+        </div>
+    </div>
+
+    <button id="gen-btn" class="btn-primary">توليد رقم</button>
+
+    <div class="result-box">
+        <span id="result">-</span>
+    </div>
+</div>
+
+<script>
+    const minIn = document.getElementById("min-in") as HTMLInputElement;
+    const maxIn = document.getElementById("max-in") as HTMLInputElement;
+    const res = document.getElementById("result");
+
+    document.getElementById("gen-btn").addEventListener("click", () => {
+        const min = parseInt(minIn.value);
+        const max = parseInt(maxIn.value);
+
+        if (isNaN(min) || isNaN(max) || min > max) {
+            res.textContent = "خطأ";
+            return;
+        }
+
+        const r = Math.floor(Math.random() * (max - min + 1)) + min;
+        res.textContent = r.toString();
+
+        // Simple animation
+        res.style.transform = "scale(1.2)";
+        setTimeout(() => (res.style.transform = "scale(1)"), 200);
+    });
+</script>
+
+<style>
+    .rng-tool {
+        max-width: 400px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .inputs {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+    .grp {
+        display: flex;
+        flex-direction: column;
+    }
+    input {
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        width: 100px;
+        text-align: center;
+    }
+    .btn-primary {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        background: var(--c-primary);
+        color: white;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        cursor: pointer;
+    }
+    .result-box {
+        margin-top: 30px;
+        font-size: 4rem;
+        font-weight: bold;
+        color: var(--c-text-main);
+        min-height: 80px;
+    }
+    #result {
+        display: inline-block;
+        transition: transform 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    }
+</style>

@@ -1,0 +1,97 @@
+---
+
+---
+
+<div class="sig-tool">
+    <div class="canvas-wrapper">
+        <canvas id="sig-canvas"></canvas>
+    </div>
+
+    <div class="actions">
+        <button id="clear-btn" class="btn btn-sec">مسح</button>
+        <button id="save-png" class="btn btn-pri">تحميل (PNG)</button>
+    </div>
+</div>
+
+<script>
+    import SignaturePad from "signature_pad";
+
+    const canvas = document.getElementById("sig-canvas") as HTMLCanvasElement;
+    const wrapper = document.querySelector(".canvas-wrapper") as HTMLElement;
+
+    // Resize canvas to fill wrapper
+    function resizeCanvas() {
+        const ratio = Math.max(window.devicePixelRatio || 1, 1);
+        canvas.width = wrapper.clientWidth * ratio;
+        canvas.height = wrapper.clientHeight * ratio;
+        canvas.getContext("2d").scale(ratio, ratio);
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    const signaturePad = new SignaturePad(canvas, {
+        backgroundColor: "rgba(255, 255, 255, 1)", // White background
+        penColor: "black",
+    });
+
+    document
+        .getElementById("clear-btn")
+        .addEventListener("click", () => signaturePad.clear());
+
+    document.getElementById("save-png").addEventListener("click", () => {
+        if (signaturePad.isEmpty()) {
+            alert("التوقيع فارغ!");
+            return;
+        }
+        const dataURL = signaturePad.toDataURL();
+        const link = document.createElement("a");
+        link.download = "signature.png";
+        link.href = dataURL;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+</script>
+
+<style>
+    .sig-tool {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .canvas-wrapper {
+        height: 300px;
+        border: 1px solid var(--c-border);
+        border-radius: 8px;
+        background: white;
+        margin-bottom: 20px;
+        overflow: hidden;
+        position: relative;
+    }
+    canvas {
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+    }
+
+    .actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    .btn-pri {
+        background: var(--c-primary);
+        color: white;
+    }
+    .btn-sec {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        color: var(--c-text-main);
+    }
+</style>

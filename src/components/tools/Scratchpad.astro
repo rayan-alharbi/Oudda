@@ -1,0 +1,92 @@
+---
+
+---
+
+<div class="memo-tool">
+    <div class="toolbar">
+        <span>📝 مذكرتي السريعة</span>
+        <button id="clear-memo" class="btn-sm">مسح</button>
+    </div>
+    <textarea
+        id="memo-area"
+        placeholder="اكتب ملاحظاتك هنا... سيتم حفظها تلقائياً."></textarea>
+    <div class="status" id="save-status">تم الحفظ</div>
+</div>
+
+<script>
+    const area = document.getElementById("memo-area") as HTMLTextAreaElement;
+    const status = document.getElementById("save-status");
+    const KEY = "uniconvert_memo_v1";
+
+    // Load
+    area.value = localStorage.getItem(KEY) || "";
+
+    let timeout;
+    area.addEventListener("input", () => {
+        status.style.opacity = "0";
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            localStorage.setItem(KEY, area.value);
+            status.textContent = "تم الحفظ";
+            status.style.opacity = "1";
+        }, 500);
+    });
+
+    document.getElementById("clear-memo").addEventListener("click", () => {
+        if (confirm("هل أنت متأكد من مسح الملاحظات؟")) {
+            area.value = "";
+            localStorage.removeItem(KEY);
+        }
+    });
+</script>
+
+<style>
+    .memo-tool {
+        max-width: 600px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        height: 500px;
+    }
+    .toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-bottom: none;
+        border-radius: 6px 6px 0 0;
+        font-weight: bold;
+    }
+    .btn-sm {
+        padding: 4px 10px;
+        font-size: 0.8rem;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    textarea {
+        flex: 1;
+        padding: 15px;
+        border: 1px solid var(--c-border);
+        border-radius: 0 0 6px 6px;
+        resize: none;
+        font-size: 1.1rem;
+        line-height: 1.6;
+        background: #fffbeb;
+        color: #4b5563;
+        outline: none;
+    }
+    .status {
+        text-align: left;
+        font-size: 0.8rem;
+        color: var(--c-text-muted);
+        margin-top: 5px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+</style>

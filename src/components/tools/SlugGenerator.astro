@@ -1,0 +1,74 @@
+---
+
+---
+
+<div class="slug-tool">
+    <input
+        type="text"
+        id="slug-in"
+        placeholder="عنوان المقال هنا..."
+        class="lg-input"
+    />
+
+    <div class="output-row">
+        <input type="text" id="slug-out" readonly class="lg-input out" />
+        <button id="copy-slug" class="btn-copy">نسخ</button>
+    </div>
+</div>
+
+<script>
+    const inp = document.getElementById("slug-in") as HTMLInputElement;
+    const out = document.getElementById("slug-out") as HTMLInputElement;
+
+    function slugify(text) {
+        return text
+            .toString()
+            .toLowerCase()
+            .replace(/\s+/g, "-") // Replace spaces with -
+            .replace(/[^\w\u0600-\u06FF\-]+/g, "") // Remove all non-word chars (allow Arabic)
+            .replace(/\-\-+/g, "-") // Replace multiple - with single -
+            .replace(/^-+/, "") // Trim - from start of text
+            .replace(/-+$/, ""); // Trim - from end of text
+    }
+
+    inp.addEventListener("input", () => {
+        out.value = slugify(inp.value);
+    });
+
+    document.getElementById("copy-slug").addEventListener("click", () => {
+        navigator.clipboard.writeText(out.value);
+    });
+</script>
+
+<style>
+    .slug-tool {
+        max-width: 600px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .lg-input {
+        width: 100%;
+        padding: 12px;
+        font-size: 1.1rem;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+    }
+    .out {
+        background: #f8fafc;
+        color: #334155;
+    }
+    .output-row {
+        display: flex;
+        gap: 10px;
+    }
+    .btn-copy {
+        padding: 0 20px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+</style>

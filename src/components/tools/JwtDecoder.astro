@@ -1,0 +1,57 @@
+---
+---
+
+<div class="jwt-tool">
+    <div class="input-section">
+        <label>JWT Token</label>
+        <textarea id="jwt-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."></textarea>
+    </div>
+
+    <div class="output-section">
+        <div class="box">
+            <label>Header</label>
+            <pre id="header-out">{}</pre>
+        </div>
+        <div class="box">
+            <label>Payload</label>
+            <pre id="payload-out">{}</pre>
+        </div>
+    </div>
+</div>
+
+<script>
+    import { jwtDecode } from "jwt-decode";
+
+    const input = document.getElementById('jwt-input') as HTMLTextAreaElement;
+    const hOut = document.getElementById('header-out');
+    const pOut = document.getElementById('payload-out');
+
+    input.addEventListener('input', () => {
+        const token = input.value.trim();
+        if(!token) return;
+
+        try {
+            const header = jwtDecode(token, { header: true });
+            const payload = jwtDecode(token);
+            
+            hOut.textContent = JSON.stringify(header, null, 2);
+            pOut.textContent = JSON.stringify(payload, null, 2);
+        } catch (e) {
+            pOut.textContent = "Invalid Token";
+            hOut.textContent = "";
+        }
+    });
+</script>
+
+<style>
+    .jwt-tool { max-width: 800px; margin: 0 auto; }
+    .input-section { margin-bottom: 20px; }
+    textarea { width: 100%; height: 100px; padding: 10px; border: 1px solid var(--c-border); border-radius: 6px; font-family: monospace; }
+    
+    .output-section { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 600px) { .output-section { grid-template-columns: 1fr; } }
+
+    .box { background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 6px; padding: 10px; }
+    label { display: block; font-weight: bold; margin-bottom: 5px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+    pre { white-space: pre-wrap; word-break: break-all; font-family: monospace; color: var(--c-text-main); font-size: 0.9rem; }
+</style>

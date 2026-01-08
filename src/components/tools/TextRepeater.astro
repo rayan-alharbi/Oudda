@@ -1,0 +1,93 @@
+---
+
+---
+
+<div class="repeater-tool">
+    <div class="inputs">
+        <input
+            type="text"
+            id="text-in"
+            placeholder="النص للتكرار..."
+            class="main-input"
+        />
+        <input
+            type="number"
+            id="count-in"
+            value="5"
+            min="1"
+            max="1000"
+            class="num-input"
+        />
+    </div>
+
+    <div class="options">
+        <label><input type="checkbox" id="new-line" checked /> سطر جديد</label>
+        <button id="repeat-btn" class="btn-primary">تكرار</button>
+    </div>
+
+    <textarea id="result-out" readonly></textarea>
+</div>
+
+<script>
+    const txt = document.getElementById("text-in") as HTMLInputElement;
+    const num = document.getElementById("count-in") as HTMLInputElement;
+    const nl = document.getElementById("new-line") as HTMLInputElement;
+    const out = document.getElementById("result-out") as HTMLTextAreaElement;
+
+    document.getElementById("repeat-btn").addEventListener("click", () => {
+        const t = txt.value;
+        const n = parseInt(num.value);
+        if (!t || isNaN(n)) return;
+
+        const sep = nl.checked ? "\n" : " ";
+        out.value = Array(n).fill(t).join(sep);
+    });
+</script>
+
+<style>
+    .repeater-tool {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .inputs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    .main-input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 4px;
+    }
+    .num-input {
+        width: 80px;
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 4px;
+    }
+
+    .options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .btn-primary {
+        padding: 8px 20px;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    textarea {
+        width: 100%;
+        height: 200px;
+        padding: 10px;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        resize: vertical;
+    }
+</style>

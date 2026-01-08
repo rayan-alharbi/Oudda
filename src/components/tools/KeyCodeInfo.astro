@@ -1,0 +1,125 @@
+---
+
+---
+
+<div class="keycode-tool" id="key-area" tabindex="0">
+    <div class="prompt" id="prompt">اضغط على أي زر في لوحة المفاتيح...</div>
+
+    <div class="result hidden" id="result-box">
+        <div class="main-code" id="main-code">00</div>
+
+        <div class="details-grid">
+            <div class="item">
+                <label>Key</label>
+                <span id="k-key">-</span>
+            </div>
+            <div class="item">
+                <label>Code</label>
+                <span id="k-code">-</span>
+            </div>
+            <div class="item">
+                <label>KeyCode</label>
+                <span id="k-keycode">-</span>
+            </div>
+            <div class="item">
+                <label>Location</label>
+                <span id="k-loc">-</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const area = document.getElementById("key-area");
+    const prompt = document.getElementById("prompt");
+    const resBox = document.getElementById("result-box");
+
+    const kKey = document.getElementById("k-key");
+    const kCode = document.getElementById("k-code");
+    const kKeyCode = document.getElementById("k-keycode");
+    const kLoc = document.getElementById("k-loc");
+    const main = document.getElementById("main-code");
+
+    area.addEventListener("keydown", (e) => {
+        e.preventDefault();
+        prompt.classList.add("hidden");
+        resBox.classList.remove("hidden");
+
+        main.textContent = e.keyCode.toString();
+
+        kKey.textContent = e.key === " " ? "(Space)" : e.key;
+        kCode.textContent = e.code;
+        kKeyCode.textContent = e.keyCode.toString();
+        kLoc.textContent = e.location.toString();
+    });
+
+    // Focus on load to capture keys immediately if clicked
+    area.focus();
+</script>
+
+<style>
+    .keycode-tool {
+        max-width: 600px;
+        margin: 0 auto;
+        min-height: 400px;
+        border: 2px dashed var(--c-border);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        outline: none;
+        background: var(--c-surface);
+    }
+    .keycode-tool:focus {
+        border-color: var(--c-primary);
+    }
+
+    .prompt {
+        font-size: 1.5rem;
+        color: var(--c-text-muted);
+    }
+    .hidden {
+        display: none;
+    }
+
+    .result {
+        text-align: center;
+        width: 100%;
+        padding: 20px;
+    }
+    .main-code {
+        font-size: 6rem;
+        font-weight: bold;
+        color: var(--c-primary);
+        margin-bottom: 30px;
+    }
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+    @media (max-width: 500px) {
+        .details-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    .item {
+        background: var(--c-background);
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid var(--c-border);
+    }
+    .item label {
+        display: block;
+        font-size: 0.8rem;
+        color: var(--c-text-muted);
+        margin-bottom: 5px;
+        text-transform: uppercase;
+    }
+    .item span {
+        font-weight: bold;
+        font-family: monospace;
+    }
+</style>

@@ -1,0 +1,115 @@
+---
+
+---
+
+<div class="gradient-tool">
+    <div class="preview" id="grad-preview"></div>
+
+    <div class="controls">
+        <div class="grp">
+            <label>Color 1</label>
+            <input type="color" id="c1" value="#3b82f6" />
+        </div>
+        <div class="grp">
+            <label>Color 2</label>
+            <input type="color" id="c2" value="#10b981" />
+        </div>
+        <div class="grp">
+            <label>Direction</label>
+            <select id="dir">
+                <option value="to right">➡ To Right</option>
+                <option value="to left">⬅ To Left</option>
+                <option value="to bottom">⬇ To Bottom</option>
+                <option value="to top">⬆ To Top</option>
+                <option value="45deg">↗ 45 deg</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="output">
+        <code id="css-out">background: linear-gradient(...)</code>
+        <button id="copy-css" class="btn-copy">نسخ</button>
+    </div>
+</div>
+
+<script>
+    const prev = document.getElementById("grad-preview");
+    const c1 = document.getElementById("c1") as HTMLInputElement;
+    const c2 = document.getElementById("c2") as HTMLInputElement;
+    const dir = document.getElementById("dir") as HTMLSelectElement;
+    const out = document.getElementById("css-out");
+
+    function update() {
+        const val = `linear-gradient(${dir.value}, ${c1.value}, ${c2.value})`;
+        prev.style.background = val;
+        out.textContent = `background: ${val};`;
+    }
+
+    [c1, c2, dir].forEach((el) => el.addEventListener("input", update));
+    document.getElementById("copy-css").addEventListener("click", () => {
+        navigator.clipboard.writeText(out.textContent);
+    });
+
+    update();
+</script>
+
+<style>
+    .gradient-tool {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .preview {
+        height: 200px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: var(--shadow-sm);
+    }
+    .controls {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-bottom: 20px;
+        background: var(--c-surface);
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid var(--c-border);
+    }
+    .grp {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    input[type="color"] {
+        border: none;
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+        background: none;
+    }
+    select {
+        padding: 8px;
+        border-radius: 4px;
+    }
+    .output {
+        background: #1e293b;
+        color: white;
+        padding: 15px;
+        border-radius: 6px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: monospace;
+        font-size: 0.9rem;
+    }
+    .btn-copy {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .btn-copy:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+</style>

@@ -25,6 +25,16 @@ import BoxShadowGenerator from '../components/tools/BoxShadowGenerator.astro';
 import MetaTagGenerator from '../components/tools/MetaTagGenerator.astro';
 import ImageToBase64 from '../components/tools/ImageToBase64.astro';
 import RegexTester from '../components/tools/RegexTester.astro';
+import YamlJsonConverter from '../components/tools/YamlJsonConverter.astro';
+import JwtDecoder from '../components/tools/JwtDecoder.astro';
+import TextRepeater from '../components/tools/TextRepeater.astro';
+import SlugGenerator from '../components/tools/SlugGenerator.astro';
+import RandomNumber from '../components/tools/RandomNumber.astro';
+import KeyCodeInfo from '../components/tools/KeyCodeInfo.astro';
+import GradientGenerator from '../components/tools/GradientGenerator.astro';
+import SignaturePad from '../components/tools/SignaturePad.astro';
+import PrimeChecker from '../components/tools/PrimeChecker.astro';
+import Scratchpad from '../components/tools/Scratchpad.astro';
 
 export interface ToolConfig {
     id: string;
@@ -69,4 +79,16 @@ export const tools: ToolConfig[] = [
     { id: 'meta-tag', title: 'مولد Meta Tags', description: 'أكواد SEO للمواقع.', icon: 'search', component: MetaTagGenerator },
     { id: 'img-base64', title: 'صورة إلى Base64', description: 'تحويل الصور لنصوص.', icon: 'image', component: ImageToBase64 },
     { id: 'regex-tester', title: 'فاحص Regex', description: 'اختبار التعابير النمطية.', icon: 'rule', component: RegexTester },
+
+    // Mega Expansion 3 (10 Tools)
+    { id: 'yaml-json', title: 'محول YAML/JSON', description: 'تحويل بين YAML ولاJSON.', icon: 'data_object', component: YamlJsonConverter },
+    { id: 'jwt-decoder', title: 'فك تشفير JWT', description: 'قراءة محتوى توكن JWT.', icon: 'vpn_key', component: JwtDecoder },
+    { id: 'text-repeater', title: 'مكرر النصوص', description: 'تكرار النص عدة مرات.', icon: 'replay', component: TextRepeater },
+    { id: 'slug-generator', title: 'مولد Slug', description: 'تحويل العناوين لروابط.', icon: 'link', component: SlugGenerator },
+    { id: 'random-number', title: 'أرقام عشوائية', description: 'توليد رقم ضمن نطاق.', icon: 'casino', component: RandomNumber },
+    { id: 'key-code', title: 'معلومات المفاتيح', description: 'إظهار أكواد أزرار الكيبورد.', icon: 'keyboard', component: KeyCodeInfo },
+    { id: 'gradient-gen', title: 'مولد التدرج', description: 'صنع تدرجات لونية CSS.', icon: 'gradient', component: GradientGenerator },
+    { id: 'signature-pad', title: 'لوحة التوقيع', description: 'رسم وحفظ التواقيع.', icon: 'draw', component: SignaturePad },
+    { id: 'prime-checker', title: 'فحص الأعداد الأولية', description: 'هل الرقم أولي؟', icon: 'functions', component: PrimeChecker },
+    { id: 'memo-pad', title: 'مذكرتي', description: 'تدوين ملاحظات سريعة.', icon: 'note', component: Scratchpad },
 ];
