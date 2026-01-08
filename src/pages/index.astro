@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { Icon } from "astro-icon/components";
 import { tools } from "../config/tools";
 ---
 
@@ -18,13 +19,10 @@ import { tools } from "../config/tools";
 				tools.map((tool) => (
 					<a href={`/tool/${tool.id}`} class="tool-card">
 						<div class="card-icon">
-							{tool.icon === "scale"
-								? "⚖️"
-								: tool.icon === "calendar"
-									? "📅"
-									: tool.icon === "cake"
-										? "🎂"
-										: "📱"}
+							<Icon
+								name={`material-symbols:${tool.icon}`}
+								size={48}
+							/>
 						</div>
 						<h2>{tool.title}</h2>
 						<p>{tool.description}</p>

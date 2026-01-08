@@ -9,6 +9,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@iconify-json/material-symbols": "^1.2.51",
     "@types/crypto-js": "^4.2.2",
     "@types/diff": "^7.0.2",
     "@types/js-yaml": "^4.0.9",

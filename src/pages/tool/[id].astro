@@ -1,5 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import { Icon } from "astro-icon/components";
 import { tools } from "../../config/tools";
 
 export async function getStaticPaths() {
@@ -18,17 +19,9 @@ const ToolComponent = tool.component;
         <div class="tool-header">
             <a href="/" class="back-link"> ← العودة للأدوات </a>
             <h1>
-                <span class="icon"
-                    >{
-                        tool.icon === "scale"
-                            ? "⚖️"
-                            : tool.icon === "calendar"
-                              ? "📅"
-                              : tool.icon === "cake"
-                                ? "🎂"
-                                : "📱"
-                    }</span
-                >
+                <span class="icon">
+                    <Icon name={`material-symbols:${tool.icon}`} size={40} />
+                </span>
                 {tool.title}
             </h1>
             <p class="description">{tool.description}</p>
