@@ -1,0 +1,90 @@
+---
+
+---
+
+<div class="physics-calc">
+    <div class="input-row">
+        <label>
+            Mass (m) [kg]
+            <input type="number" id="mass" placeholder="50" />
+        </label>
+        <label>
+            Acceleration (a) [m/s²]
+            <input type="number" id="accel" placeholder="9.8" />
+        </label>
+    </div>
+
+    <div class="result-area">
+        <span class="label">Force (F)</span>
+        <span class="value" id="result">0.00</span>
+        <span class="unit">Newtons (N)</span>
+    </div>
+
+    <div class="formula">F = m × a</div>
+</div>
+
+<script>
+    const mEl = document.getElementById("mass") as HTMLInputElement;
+    const aEl = document.getElementById("accel") as HTMLInputElement;
+    const resEl = document.getElementById("result");
+
+    function calc() {
+        const m = parseFloat(mEl.value) || 0;
+        const a = parseFloat(aEl.value) || 0;
+        const f = m * a;
+        resEl.textContent = f.toFixed(2);
+    }
+
+    mEl.addEventListener("input", calc);
+    aEl.addEventListener("input", calc);
+</script>
+
+<style>
+    .physics-calc {
+        max-width: 500px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+    .input-row {
+        display: flex;
+        gap: 1rem;
+    }
+    label {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        font-weight: bold;
+    }
+    input {
+        padding: 0.8rem;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+    }
+    .result-area {
+        text-align: center;
+        background: var(--c-surface);
+        padding: 2rem;
+        border-radius: 12px;
+        border: 1px solid var(--c-border);
+    }
+    .value {
+        font-size: 3rem;
+        font-weight: 800;
+        color: var(--c-primary);
+        display: block;
+        margin: 0.5rem 0;
+    }
+    .unit {
+        color: var(--c-text-muted);
+    }
+    .formula {
+        text-align: center;
+        font-family: monospace;
+        background: var(--c-surface-alt);
+        padding: 0.5rem;
+        border-radius: 4px;
+    }
+</style>

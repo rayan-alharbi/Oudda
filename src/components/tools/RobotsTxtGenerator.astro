@@ -1,0 +1,116 @@
+---
+
+---
+
+<div class="tool-split">
+    <div class="inputs">
+        <label>User-Agent (e.g. *, Googlebot)</label>
+        <input type="text" id="agent" value="*" />
+
+        <label>Disallow Paths (one per line)</label>
+        <textarea id="disallow" placeholder="/admin/
+/private/"></textarea>
+
+        <label>Allow Paths (one per line)</label>
+        <textarea id="allow" placeholder="/public/"></textarea>
+
+        <label>Sitemap URL</label>
+        <input
+            type="url"
+            id="sitemap"
+            placeholder="https://example.com/sitemap.xml"
+        />
+
+        <button id="add-btn" class="btn">Add Rule</button>
+    </div>
+
+    <div class="output">
+        <textarea id="result" readonly>User-agent: *</textarea>
+        <button id="copy-btn" class="btn-secondary">Copy</button>
+    </div>
+</div>
+
+<script>
+    const agent = document.getElementById("agent") as HTMLInputElement;
+    const disallow = document.getElementById("disallow") as HTMLTextAreaElement;
+    const allow = document.getElementById("allow") as HTMLTextAreaElement;
+    const sitemap = document.getElementById("sitemap") as HTMLInputElement;
+    const result = document.getElementById("result") as HTMLTextAreaElement;
+
+    // We keep a comprehensive content string
+    let content = "User-agent: *\n";
+
+    document.getElementById("add-btn").addEventListener("click", () => {
+        let block = `User-agent: ${agent.value}\n`;
+
+        const disLines = disallow.value.split("\n");
+        disLines.forEach((l) => {
+            if (l.trim()) block += `Disallow: ${l.trim()}\n`;
+        });
+
+        const allowLines = allow.value.split("\n");
+        allowLines.forEach((l) => {
+            if (l.trim()) block += `Allow: ${l.trim()}\n`;
+        });
+
+        if (sitemap.value.trim()) {
+            block += `Sitemap: ${sitemap.value.trim()}\n`;
+        }
+
+        // Replace ONLY if it's the initial default
+        if (result.value.trim() === "User-agent: *") {
+            result.value = block;
+        } else {
+            result.value += "\n" + block;
+        }
+    });
+
+    // Real-time update for simple case?
+    // Usually robots.txt generator accumulates rules.
+    // Let's just make the Update button overwrite for simplicity
+    // or Append. The logic above allows appending blocks.
+</script>
+
+<style>
+    .tool-split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+    @media (max-width: 768px) {
+        .tool-split {
+            grid-template-columns: 1fr;
+        }
+    }
+    .inputs {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    input,
+    textarea {
+        padding: 0.8rem;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        background: var(--c-surface);
+    }
+    textarea {
+        height: 150px;
+    }
+    .btn {
+        background: var(--c-primary);
+        color: white;
+        padding: 0.8rem;
+        border: none;
+        cursor: pointer;
+        border-radius: 6px;
+    }
+    .btn-secondary {
+        background: var(--c-surface-alt);
+        border: 1px solid var(--c-border);
+        margin-top: 0.5rem;
+        width: 100%;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+</style>

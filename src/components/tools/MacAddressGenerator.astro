@@ -1,0 +1,84 @@
+---
+
+---
+
+<div class="tool-wrapper">
+    <div class="controls">
+        <label>Format</label>
+        <select id="sep">
+            <option value=":">Colon (MM:MM:MM:SS:SS:SS)</option>
+            <option value="-">Dash (MM-MM-MM-SS-SS-SS)</option>
+            <option value="">None (MMMMMMSSSSSS)</option>
+        </select>
+
+        <label>Case</label>
+        <select id="case">
+            <option value="upper">Uppercase</option>
+            <option value="lower">Lowercase</option>
+        </select>
+
+        <button id="gen" class="btn">Generate MAC</button>
+    </div>
+
+    <input type="text" id="output" readonly />
+</div>
+
+<script>
+    const sepEl = document.getElementById("sep") as HTMLSelectElement;
+    const caseEl = document.getElementById("case") as HTMLSelectElement;
+    const outEl = document.getElementById("output") as HTMLInputElement;
+
+    document.getElementById("gen").addEventListener("click", () => {
+        const bytes = new Uint8Array(6);
+        window.crypto.getRandomValues(bytes);
+
+        const sep = sepEl.value;
+        const isUpper = caseEl.value === "upper";
+
+        let mac = [];
+        bytes.forEach((b) => {
+            let h = b.toString(16);
+            if (h.length < 2) h = "0" + h;
+            mac.push(h);
+        });
+
+        let str = mac.join(sep);
+        if (isUpper) str = str.toUpperCase();
+
+        outEl.value = str;
+    });
+</script>
+
+<style>
+    .tool-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+    .controls {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    select,
+    button,
+    input {
+        padding: 1rem;
+        border-radius: 6px;
+        border: 1px solid var(--c-border);
+        font-size: 1.1rem;
+    }
+    button {
+        background: var(--c-primary);
+        color: white;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    input {
+        text-align: center;
+        font-family: monospace;
+        background: var(--c-surface-alt);
+    }
+</style>

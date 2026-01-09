@@ -1,0 +1,73 @@
+---
+
+---
+
+<div class="ratio-box">
+    <div class="row">
+        <input type="number" id="a" placeholder="A" />
+        <span>:</span>
+        <input type="number" id="b" placeholder="B" />
+    </div>
+    <div class="eq">=</div>
+    <div class="row">
+        <input type="number" id="c" placeholder="C" />
+        <span>:</span>
+        <input
+            type="number"
+            id="x"
+            placeholder="X (Result)"
+            readonly
+            class="result"
+        />
+    </div>
+</div>
+
+<script>
+    // Formula: A/B = C/X  =>  X = (B*C)/A
+    const inputs = ["a", "b", "c"].map(
+        (id) => document.getElementById(id) as HTMLInputElement,
+    );
+    const xEl = document.getElementById("x") as HTMLInputElement;
+
+    function calc() {
+        const [a, b, c] = inputs.map((el) => parseFloat(el.value));
+        if (a && b && c) {
+            const x = (b * c) / a;
+            xEl.value = Number.isInteger(x) ? x.toString() : x.toFixed(2);
+        } else {
+            xEl.value = "";
+        }
+    }
+
+    inputs.forEach((el) => el.addEventListener("input", calc));
+</script>
+
+<style>
+    .ratio-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        font-size: 2rem;
+        flex-wrap: wrap;
+    }
+    .row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    input {
+        width: 100px;
+        padding: 0.5rem;
+        font-size: 1.5rem;
+        text-align: center;
+        border: 1px solid var(--c-border);
+        border-radius: 8px;
+    }
+    .result {
+        background: var(--c-surface-alt);
+        border-color: var(--c-primary);
+        color: var(--c-primary);
+        font-weight: bold;
+    }
+</style>

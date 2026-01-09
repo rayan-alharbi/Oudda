@@ -1,0 +1,91 @@
+---
+
+---
+
+<div class="time-calc">
+    <div class="row">
+        <label>Start Time</label>
+        <input type="time" id="start" />
+    </div>
+    <div class="to">to</div>
+    <div class="row">
+        <label>End Time</label>
+        <input type="time" id="end" />
+    </div>
+
+    <div class="result-box">
+        <span class="label">Duration</span>
+        <span class="val" id="result">0h 0m</span>
+    </div>
+</div>
+
+<script>
+    const start = document.getElementById("start") as HTMLInputElement;
+    const end = document.getElementById("end") as HTMLInputElement;
+    const res = document.getElementById("result");
+
+    function calc() {
+        if (!start.value || !end.value) return;
+
+        const d1 = new Date(`2000-01-01T${start.value}`);
+        let d2 = new Date(`2000-01-01T${end.value}`);
+
+        if (d2 < d1) {
+            // Assume next day
+            d2 = new Date(`2000-01-02T${end.value}`);
+        }
+
+        const diffMs = d2.getTime() - d1.getTime();
+        const diffMins = Math.floor(diffMs / 60000);
+        const h = Math.floor(diffMins / 60);
+        const m = diffMins % 60;
+
+        res.textContent = `${h}h ${m}m`;
+    }
+
+    start.addEventListener("input", calc);
+    end.addEventListener("input", calc);
+</script>
+
+<style>
+    .time-calc {
+        max-width: 400px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        background: var(--c-surface);
+        padding: 2rem;
+        border-radius: 12px;
+        border: 1px solid var(--c-border);
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    input {
+        padding: 1rem;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        font-size: 1.2rem;
+    }
+    .to {
+        text-align: center;
+        color: var(--c-text-muted);
+        font-weight: bold;
+    }
+    .result-box {
+        text-align: center;
+        margin-top: 1rem;
+        background: var(--c-bg);
+        padding: 1rem;
+        border-radius: 8px;
+    }
+    .val {
+        display: block;
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--c-primary);
+    }
+</style>

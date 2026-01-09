@@ -1,0 +1,135 @@
+---
+
+---
+
+<div class="ohms-box">
+    <div class="triangle">
+        <div class="top">V</div>
+        <div class="bottom">
+            <span>I</span>
+            <span>R</span>
+        </div>
+    </div>
+
+    <div class="inputs">
+        <div class="field">
+            <label>Voltage (V)</label>
+            <input type="number" id="v" placeholder="Volts" />
+        </div>
+        <div class="field">
+            <label>Current (I)</label>
+            <input type="number" id="i" placeholder="Amps" />
+        </div>
+        <div class="field">
+            <label>Resistance (R)</label>
+            <input type="number" id="r" placeholder="Ohms" />
+        </div>
+    </div>
+
+    <div class="msg">Enter any two values to calculate the third.</div>
+</div>
+
+<script>
+    const vEl = document.getElementById("v") as HTMLInputElement;
+    const iEl = document.getElementById("i") as HTMLInputElement;
+    const rEl = document.getElementById("r") as HTMLInputElement;
+
+    const inputs = [vEl, iEl, rEl];
+
+    // Identify which one is being calculated based on manual edit?
+    // Usually standard calculator lets you pick "What to calculate".
+    // Or we just update the empty one.
+
+    // Better approach: User clears one to calculate it?
+    // Or just simple logic:
+    // If V is empty, and I, R present -> V = I*R
+    // If I is empty, and V, R present -> I = V/R
+    // If R is empty, and V, I present -> R = V/I
+
+    function calc(e) {
+        const v = parseFloat(vEl.value);
+        const i = parseFloat(iEl.value);
+        const r = parseFloat(rEl.value);
+        const target = e.target;
+
+        // Verify we have 2 values excluding the one being edited if we want to live update
+        // But live update is tricky with circular dependency.
+        // Let's use a "Calculate" button or just check what is empty.
+        // But standard behavior: Last edited triggers calc of missing field.
+
+        // Simple Mode:
+        if (target !== vEl && i && r) {
+            vEl.value = (i * r).toString();
+        } else if (target !== iEl && v && r) {
+            iEl.value = (v / r).toString();
+        } else if (target !== rEl && v && i) {
+            rEl.value = (v / i).toString();
+        }
+    }
+
+    inputs.forEach((el) => el.addEventListener("input", calc));
+</script>
+
+<style>
+    .ohms-box {
+        max-width: 500px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .triangle {
+        width: 150px;
+        height: 130px;
+        margin: 0 auto 2rem;
+        border: 4px solid var(--c-primary);
+        border-radius: 20px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.5rem;
+        color: var(--c-primary);
+    }
+    .top {
+        border-bottom: 2px solid var(--c-primary);
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .bottom {
+        display: flex;
+        flex: 1;
+    }
+    .bottom span {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .bottom span:first-child {
+        border-right: 2px solid var(--c-primary);
+    }
+
+    .inputs {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 1rem;
+    }
+    .field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    input {
+        padding: 0.5rem;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        text-align: center;
+    }
+    .msg {
+        margin-top: 1rem;
+        color: var(--c-text-muted);
+        font-size: 0.9rem;
+    }
+</style>

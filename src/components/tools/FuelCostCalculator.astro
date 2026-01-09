@@ -1,0 +1,73 @@
+---
+
+---
+
+<div class="form-grid">
+    <label>
+        المسافة (كم)
+        <input type="number" id="dist" placeholder="100" />
+    </label>
+    <label>
+        الاستهلاك (لتر/100كم)
+        <input type="number" id="eff" placeholder="8.5" />
+    </label>
+    <label>
+        سعر الوقود (لعملة/لتر)
+        <input type="number" id="price" placeholder="2.33" />
+    </label>
+</div>
+
+<div class="result-box">
+    <span>التكلفة المتوقعة:</span>
+    <span id="total" class="total">0.00</span>
+</div>
+
+<script>
+    const els = ["dist", "eff", "price"].map(
+        (id) => document.getElementById(id) as HTMLInputElement,
+    );
+    const totalEl = document.getElementById("total");
+
+    function calc() {
+        const [dist, eff, price] = els.map((el) => parseFloat(el.value) || 0);
+        // (Distance / 100) * Efficiency * Price
+        const cost = (dist / 100) * eff * price;
+        totalEl.textContent = cost.toFixed(2);
+    }
+
+    els.forEach((el) => el.addEventListener("input", calc));
+</script>
+
+<style>
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    label {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        font-weight: bold;
+    }
+    input {
+        padding: 0.8rem;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+    }
+    .result-box {
+        text-align: center;
+        background: var(--c-surface);
+        padding: 2rem;
+        border-radius: 12px;
+        border: 1px solid var(--c-border);
+    }
+    .total {
+        display: block;
+        font-size: 3rem;
+        font-weight: 800;
+        color: var(--c-primary);
+        margin-top: 0.5rem;
+    }
+</style>

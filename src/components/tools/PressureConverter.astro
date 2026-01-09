@@ -1,0 +1,78 @@
+---
+
+---
+
+<div class="conv-grid">
+    <div class="cell">
+        <label>Pascal (Pa)</label>
+        <input type="number" id="pa" />
+    </div>
+    <div class="cell">
+        <label>Bar</label>
+        <input type="number" id="bar" />
+    </div>
+    <div class="cell">
+        <label>PSI</label>
+        <input type="number" id="psi" />
+    </div>
+    <div class="cell">
+        <label>Atmosphere (atm)</label>
+        <input type="number" id="atm" />
+    </div>
+</div>
+
+<script>
+    const els = {
+        pa: document.getElementById("pa") as HTMLInputElement,
+        bar: document.getElementById("bar") as HTMLInputElement,
+        psi: document.getElementById("psi") as HTMLInputElement,
+        atm: document.getElementById("atm") as HTMLInputElement,
+    };
+
+    // Factors relative to Pa
+    const factors = {
+        pa: 1,
+        bar: 100000,
+        psi: 6894.76,
+        atm: 101325,
+    };
+
+    function update(source) {
+        const val = parseFloat(els[source].value);
+        if (isNaN(val)) return;
+
+        // Convert to Pa
+        const paVal = val * factors[source];
+
+        // Update others
+        Object.keys(els).forEach((key) => {
+            if (key !== source) {
+                els[key].value = (paVal / factors[key]).toPrecision(6);
+            }
+        });
+    }
+
+    Object.keys(els).forEach((k) => {
+        els[k].addEventListener("input", () => update(k));
+    });
+</script>
+
+<style>
+    .conv-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    .cell {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    input {
+        padding: 0.8rem;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+    }
+</style>

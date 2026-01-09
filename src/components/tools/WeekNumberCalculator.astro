@@ -1,0 +1,91 @@
+---
+
+---
+
+<div class="date-tool">
+    <div class="display">
+        <label>Current Week Number</label>
+        <div class="val" id="current-week">0</div>
+        <div class="sub" id="current-date">-</div>
+    </div>
+
+    <div class="calc">
+        <label>Check Specific Date</label>
+        <input type="date" id="date-in" />
+        <div class="result" id="res-week">-</div>
+    </div>
+</div>
+
+<script>
+    const currentWeek = document.getElementById("current-week");
+    const currentDate = document.getElementById("current-date");
+    const dateIn = document.getElementById("date-in") as HTMLInputElement;
+    const resWeek = document.getElementById("res-week");
+
+    function getWeek(d) {
+        d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+        d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+        var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+        var weekNo = Math.ceil(
+            ((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7,
+        );
+        return weekNo;
+    }
+
+    const now = new Date();
+    currentWeek.textContent = getWeek(now).toString();
+    currentDate.textContent = now.toLocaleDateString();
+
+    dateIn.addEventListener("input", () => {
+        if (dateIn.value) {
+            const d = new Date(dateIn.value);
+            resWeek.textContent = "Week " + getWeek(d);
+        } else {
+            resWeek.textContent = "-";
+        }
+    });
+</script>
+
+<style>
+    .date-tool {
+        max-width: 400px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        text-align: center;
+    }
+    .display {
+        background: var(--c-surface);
+        padding: 2rem;
+        border-radius: 12px;
+        border: 1px solid var(--c-border);
+    }
+    .val {
+        font-size: 5rem;
+        font-weight: 800;
+        color: var(--c-primary);
+        line-height: 1;
+        margin: 1rem 0;
+    }
+    .sub {
+        color: var(--c-text-muted);
+    }
+    .calc {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    input {
+        padding: 1rem;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        font-size: 1.1rem;
+        text-align: center;
+    }
+    .result {
+        font-weight: bold;
+        font-size: 1.5rem;
+        margin-top: 0.5rem;
+    }
+</style>

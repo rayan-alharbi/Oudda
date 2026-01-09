@@ -1,0 +1,188 @@
+---
+
+---
+
+<div class="resistor-tool">
+    <div class="resistor-visual">
+        <div id="band1" class="band"></div>
+        <div id="band2" class="band"></div>
+        <div id="band3" class="band"></div>
+        <div id="band4" class="band multiplier"></div>
+        <div id="band5" class="band tolerance golden"></div>
+    </div>
+
+    <div class="result-display">
+        <span id="res-value">4.7 kΩ</span> ±<span id="tol-value">5%</span>
+    </div>
+
+    <div class="controls">
+        <div class="select-group">
+            <label>Band 1</label>
+            <select id="s1"></select>
+        </div>
+        <div class="select-group">
+            <label>Band 2</label>
+            <select id="s2"></select>
+        </div>
+        <div class="select-group">
+            <label>Multiplier</label>
+            <select id="s3"></select>
+        </div>
+        <div class="select-group">
+            <label>Tolerance</label>
+            <select id="s4"></select>
+        </div>
+    </div>
+</div>
+
+<script>
+    const colors = [
+        { n: "Black", v: 0, hex: "#000000", m: 1 },
+        { n: "Brown", v: 1, hex: "#8B4513", m: 10, t: 1 },
+        { n: "Red", v: 2, hex: "#FF0000", m: 100, t: 2 },
+        { n: "Orange", v: 3, hex: "#FF8C00", m: 1000 },
+        { n: "Yellow", v: 4, hex: "#FFD700", m: 10000 },
+        { n: "Green", v: 5, hex: "#008000", m: 100000, t: 0.5 },
+        { n: "Blue", v: 6, hex: "#0000FF", m: 1000000, t: 0.25 },
+        { n: "Violet", v: 7, hex: "#EE82EE", m: 10000000, t: 0.1 },
+        { n: "Gray", v: 8, hex: "#808080", t: 0.05 },
+        { n: "White", v: 9, hex: "#FFFFFF" },
+        { n: "Gold", hex: "#FFD700", m: 0.1, t: 5 },
+        { n: "Silver", hex: "#C0C0C0", m: 0.01, t: 10 },
+    ];
+
+    const s1 = document.getElementById("s1") as HTMLSelectElement;
+    const s2 = document.getElementById("s2") as HTMLSelectElement;
+    const s3 = document.getElementById("s3") as HTMLSelectElement;
+    const s4 = document.getElementById("s4") as HTMLSelectElement;
+
+    const bandElements = [
+        document.getElementById("band1"),
+        document.getElementById("band2"),
+        document.getElementById("band4"), // Using 4 visual bands for standard 4-band resistor
+        document.getElementById("band5"),
+    ];
+
+    // Populate Selects
+    // Band 1, 2: Digits (0-9)
+    colors.forEach((c, i) => {
+        if (typeof c.v !== "undefined") {
+            s1.add(new Option(c.n, i.toString()));
+            s2.add(new Option(c.n, i.toString()));
+        }
+    });
+    // Multiplier
+    colors.forEach((c, i) => {
+        if (typeof c.m !== "undefined") {
+            s3.add(new Option(c.n, i.toString()));
+        }
+    });
+    // Tolerance
+    colors.forEach((c, i) => {
+        if (typeof c.t !== "undefined") {
+            s4.add(new Option(c.n, i.toString()));
+        }
+    });
+
+    // Defaults
+    s1.value = "4"; // Yellow
+    s2.value = "7"; // Violet
+    s3.value = "2"; // Red (x100) -> 4700 -> 4.7k
+    s4.value = "10"; // Gold
+
+    function update() {
+        const c1 = colors[parseInt(s1.value)];
+        const c2 = colors[parseInt(s2.value)];
+        const c3 = colors[parseInt(s3.value)];
+        const c4 = colors[parseInt(s4.value)];
+
+        // Update Visuals
+        bandElements[0].style.backgroundColor = c1.hex;
+        bandElements[1].style.backgroundColor = c2.hex;
+        bandElements[2].style.backgroundColor = c3.hex;
+        bandElements[3].style.backgroundColor = c4.hex;
+
+        // Calc
+        const base = parseInt(c1.v.toString() + c2.v.toString());
+        const val = base * c3.m;
+
+        // Format
+        let txt = val.toString();
+        if (val >= 1000000) txt = val / 1000000 + " MΩ";
+        else if (val >= 1000) txt = val / 1000 + " kΩ";
+        else txt += " Ω";
+
+        document.getElementById("res-value").textContent = txt;
+        document.getElementById("tol-value").textContent = c4.t + "%";
+    }
+
+    [s1, s2, s3, s4].forEach((s) => s.addEventListener("change", update));
+    update();
+</script>
+
+<style>
+    .resistor-tool {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .resistor-visual {
+        height: 100px;
+        background: #f0e68c; /* resistor body color */
+        border-radius: 50px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        padding: 0 40px;
+        border: 2px solid #999;
+    }
+    .resistor-visual::before,
+    .resistor-visual::after {
+        content: "";
+        position: absolute;
+        width: 50px;
+        height: 10px;
+        background: #999;
+        z-index: -1;
+    }
+    .resistor-visual::before {
+        left: -50px;
+    }
+    .resistor-visual::after {
+        right: -50px;
+    }
+
+    .band {
+        width: 15px;
+        height: 100%;
+    }
+
+    .result-display {
+        font-size: 2.5rem;
+        text-align: center;
+        font-weight: bold;
+        color: var(--c-primary);
+    }
+
+    .controls {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+    }
+    @media (max-width: 600px) {
+        .controls {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    select {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+    }
+</style>

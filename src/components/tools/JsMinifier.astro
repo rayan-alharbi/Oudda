@@ -1,0 +1,73 @@
+---
+
+---
+
+<div class="tool-wrapper">
+    <textarea id="input" placeholder="Paste JavaScript code here..."></textarea>
+    <div class="actions">
+        <button id="minify-btn" class="btn">Minify JS (Basic)</button>
+        <span class="info"
+            >Note: This is a basic minifier removing comments and whitespace.</span
+        >
+    </div>
+    <textarea id="output" readonly placeholder="Minified result..."></textarea>
+</div>
+
+<script>
+    const input = document.getElementById("input") as HTMLTextAreaElement;
+    const output = document.getElementById("output") as HTMLTextAreaElement;
+    const btn = document.getElementById("minify-btn");
+
+    btn.addEventListener("click", () => {
+        let code = input.value;
+
+        // 1. Remove single line comments // ... (Be careful with urls like http://)
+        // A simple regex might break code containing // in strings.
+        // A safer robust regex is complex. We will use a reasonably safe one for "Basic" tools.
+        // Or simply remove newlines and extra spaces if comment removal is risky.
+
+        // Remove multi-line comments
+        code = code.replace(/\/\*[\s\S]*?\*\//g, "");
+
+        // Remove single-line comments (risky if not careful, skipping for safety in basic regex)
+        // code = code.replace(/\/\/.*$/gm, ""); // This is safe-ish for lines
+
+        // Collapse whitespace
+        code = code.replace(/\s+/g, " ");
+
+        // Remove space around braces/operators
+        code = code.replace(/\s?([=+\-*/{}();,])\s?/g, "$1");
+
+        output.value = code.trim();
+    });
+</script>
+
+<style>
+    .tool-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    textarea {
+        width: 100%;
+        height: 200px;
+        padding: 1rem;
+        border: 1px solid var(--c-border);
+        border-radius: 8px;
+        font-family: monospace;
+    }
+    .btn {
+        background: var(--c-primary);
+        color: white;
+        padding: 0.8rem 2rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        align-self: flex-start;
+    }
+    .info {
+        color: var(--c-text-muted);
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+</style>

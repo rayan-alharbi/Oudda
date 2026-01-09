@@ -1,0 +1,150 @@
+---
+
+---
+
+<div class="sound-tool">
+    <div class="card">
+        <div class="freq-display">
+            <span id="hz-val">440</span> Hz
+        </div>
+
+        <input
+            type="range"
+            id="freq-slider"
+            min="20"
+            max="20000"
+            value="440"
+            step="1"
+        />
+
+        <div class="wave-types">
+            <label
+                ><input type="radio" name="wave" value="sine" checked /> Sine</label
+            >
+            <label
+                ><input type="radio" name="wave" value="square" /> Square</label
+            >
+            <label
+                ><input type="radio" name="wave" value="sawtooth" /> Sawtooth</label
+            >
+            <label
+                ><input type="radio" name="wave" value="triangle" /> Triangle</label
+            >
+        </div>
+
+        <button id="toggle-btn" class="play-btn">Play</button>
+    </div>
+</div>
+
+<script>
+    const slider = document.getElementById("freq-slider") as HTMLInputElement;
+    const val = document.getElementById("hz-val");
+    const btn = document.getElementById("toggle-btn");
+    const radios = document.querySelectorAll('input[name="wave"]');
+
+    let audioCtx = null;
+    let osc = null;
+    let playing = false;
+
+    function initAudio() {
+        if (!audioCtx)
+            audioCtx = new (
+                window.AudioContext || (window as any).webkitAudioContext
+            )();
+    }
+
+    function start() {
+        initAudio();
+        osc = audioCtx.createOscillator();
+        osc.type = (
+            document.querySelector(
+                'input[name="wave"]:checked',
+            ) as HTMLInputElement
+        ).value;
+        osc.frequency.setValueAtTime(
+            parseFloat(slider.value),
+            audioCtx.currentTime,
+        );
+        osc.connect(audioCtx.destination);
+        osc.start();
+        playing = true;
+        btn.textContent = "Stop";
+        btn.classList.add("stop");
+    }
+
+    function stop() {
+        if (osc) {
+            osc.stop();
+            osc.disconnect();
+            osc = null;
+        }
+        playing = false;
+        btn.textContent = "Play";
+        btn.classList.remove("stop");
+    }
+
+    btn.addEventListener("click", () => {
+        if (playing) stop();
+        else start();
+    });
+
+    slider.addEventListener("input", () => {
+        val.textContent = slider.value;
+        if (osc)
+            osc.frequency.setValueAtTime(
+                parseFloat(slider.value),
+                audioCtx.currentTime,
+            );
+    });
+
+    radios.forEach((r) => {
+        r.addEventListener("change", () => {
+            if (osc) osc.type = (r as HTMLInputElement).value;
+        });
+    });
+</script>
+
+<style>
+    .sound-tool {
+        max-width: 500px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .card {
+        background: var(--c-surface);
+        padding: 2rem;
+        border-radius: 12px;
+        border: 1px solid var(--c-border);
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    .freq-display {
+        font-size: 3rem;
+        font-weight: 800;
+        color: var(--c-primary);
+    }
+    input[type="range"] {
+        width: 100%;
+        cursor: pointer;
+    }
+    .wave-types {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .play-btn {
+        font-size: 1.5rem;
+        padding: 1rem 3rem;
+        background: #22c55e;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .play-btn.stop {
+        background: #ef4444;
+    }
+</style>

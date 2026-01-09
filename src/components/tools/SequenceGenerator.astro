@@ -1,0 +1,112 @@
+---
+
+---
+
+<div class="tool-wrapper">
+    <div class="controls">
+        <label>Type</label>
+        <select id="type">
+            <option value="arithmetic">Arithmetic (+)</option>
+            <option value="geometric">Geometric (×)</option>
+            <option value="fib">Fibonacci</option>
+        </select>
+
+        <label>Start</label>
+        <input type="number" id="start" value="1" />
+
+        <label>Step/Ratio</label>
+        <input type="number" id="step" value="2" />
+
+        <label>Count</label>
+        <input type="number" id="count" value="10" max="100" />
+
+        <button id="gen" class="btn">Generate</button>
+    </div>
+
+    <div class="output" id="out"></div>
+</div>
+
+<script>
+    const typeEl = document.getElementById("type") as HTMLSelectElement;
+    const startEl = document.getElementById("start") as HTMLInputElement;
+    const stepEl = document.getElementById("step") as HTMLInputElement;
+    const countEl = document.getElementById("count") as HTMLInputElement;
+    const outEl = document.getElementById("out");
+
+    document.getElementById("gen").addEventListener("click", () => {
+        const type = typeEl.value;
+        const start = parseFloat(startEl.value);
+        const step = parseFloat(stepEl.value);
+        const count = parseInt(countEl.value);
+
+        if (count > 1000) return; // limit
+
+        let seq = [];
+
+        if (type === "arithmetic") {
+            for (let i = 0; i < count; i++) seq.push(start + i * step);
+        } else if (type === "geometric") {
+            let curr = start;
+            for (let i = 0; i < count; i++) {
+                seq.push(curr);
+                curr *= step;
+            }
+        } else if (type === "fib") {
+            let a = 0,
+                b = 1;
+            if (start > 0) {
+                a = start;
+                b = start;
+            } // simplified
+            // Strict fib starts 0,1.
+            // If user input start, maybe find closest fib or just assume n1=start, n2=start?
+            // Let's standard starts: user start is first term. step unused.
+
+            // Actually, custom start fib: n1=Start, n2=Step (as second term)?
+            // Let's do standard Fib starting from 0,1 but returning 'count' items.
+            // Ignore start/step for Fib.
+
+            seq = [0, 1];
+            for (let i = 2; i < count; i++) seq.push(seq[i - 1] + seq[i - 2]);
+        }
+
+        outEl.textContent = seq.join(", ");
+    });
+</script>
+
+<style>
+    .tool-wrapper {
+        max-width: 600px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+    .controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+    input,
+    select {
+        padding: 0.5rem;
+        border: 1px solid var(--c-border);
+        border-radius: 4px;
+    }
+    .btn {
+        grid-column: span 2;
+        padding: 1rem;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 6px;
+    }
+    .output {
+        background: var(--c-surface);
+        padding: 1.5rem;
+        border-radius: 8px;
+        border: 1px solid var(--c-border);
+        word-break: break-all;
+    }
+</style>

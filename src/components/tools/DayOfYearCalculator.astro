@@ -1,0 +1,112 @@
+---
+
+---
+
+<div class="tool-wrapper">
+    <div class="card">
+        <h2>Day of the Year</h2>
+        <div class="big-val" id="doy-now">0</div>
+        <p id="progress-text">0% complete</p>
+        <div class="progress-bar">
+            <div class="fill" id="fill"></div>
+        </div>
+    </div>
+
+    <div class="input-section">
+        <label>Select Date</label>
+        <input type="date" id="picker" />
+        <div class="res" id="picker-res"></div>
+    </div>
+</div>
+
+<script>
+    const doyNow = document.getElementById("doy-now");
+    const progressText = document.getElementById("progress-text");
+    const fill = document.getElementById("fill");
+    const picker = document.getElementById("picker") as HTMLInputElement;
+    const pickerRes = document.getElementById("picker-res");
+
+    function getDOY(date) {
+        const start = new Date(date.getFullYear(), 0, 0);
+        const diff =
+            date.getTime() -
+            start.getTime() +
+            (start.getTimezoneOffset() - date.getTimezoneOffset()) * 60 * 1000;
+        const oneDay = 1000 * 60 * 60 * 24;
+        return Math.floor(diff / oneDay);
+    }
+
+    function isLeap(year) {
+        return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+    }
+
+    function updateNow() {
+        const now = new Date();
+        const doy = getDOY(now);
+        const total = isLeap(now.getFullYear()) ? 366 : 365;
+        const percent = ((doy / total) * 100).toFixed(1);
+
+        doyNow.textContent = doy.toString();
+        progressText.textContent = `${percent}% of ${now.getFullYear()} complete`;
+        fill.style.width = percent + "%";
+    }
+
+    updateNow();
+
+    picker.addEventListener("input", () => {
+        if (picker.value) {
+            const d = new Date(picker.value);
+            const doy = getDOY(d);
+            pickerRes.textContent = `Day #${doy}`;
+        }
+    });
+</script>
+
+<style>
+    .tool-wrapper {
+        max-width: 500px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+    .card {
+        background: var(--c-surface);
+        padding: 2rem;
+        border-radius: 12px;
+        border: 1px solid var(--c-border);
+        text-align: center;
+    }
+    .big-val {
+        font-size: 4rem;
+        font-weight: 800;
+        color: var(--c-primary);
+    }
+    .progress-bar {
+        height: 10px;
+        background: var(--c-bg);
+        border-radius: 5px;
+        margin-top: 1rem;
+        overflow: hidden;
+    }
+    .fill {
+        height: 100%;
+        background: var(--c-primary);
+        width: 0%;
+        transition: width 0.5s ease;
+    }
+    .input-section {
+        text-align: center;
+    }
+    input {
+        padding: 0.8rem;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+    }
+    .res {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-top: 0.5rem;
+        color: var(--c-primary);
+    }
+</style>

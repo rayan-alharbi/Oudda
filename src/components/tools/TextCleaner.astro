@@ -1,0 +1,104 @@
+---
+
+---
+
+<div class="tool-container">
+    <textarea id="input-text" placeholder="النص الخام..."></textarea>
+
+    <div class="options">
+        <label
+            ><input type="checkbox" id="trim-lines" checked /> Trim Lines</label
+        >
+        <label
+            ><input type="checkbox" id="remove-empty" checked /> Remove Empty Lines</label
+        >
+        <label
+            ><input type="checkbox" id="remove-double-space" checked /> Remove Double
+            Spaces</label
+        >
+        <button id="clean-btn" class="btn-primary">تنظيف النص</button>
+    </div>
+
+    <textarea id="output-text" readonly placeholder="النص المنظف..."></textarea>
+</div>
+
+<script>
+    const input = document.getElementById("input-text") as HTMLTextAreaElement;
+    const output = document.getElementById(
+        "output-text",
+    ) as HTMLTextAreaElement;
+    const btn = document.getElementById("clean-btn");
+
+    btn.addEventListener("click", () => {
+        let text = input.value;
+        const lines = text.split("\n");
+
+        const cleanedLines = lines
+            .map((line) => {
+                let l = line;
+                if (
+                    (document.getElementById("trim-lines") as HTMLInputElement)
+                        .checked
+                ) {
+                    l = l.trim();
+                }
+                if (
+                    (
+                        document.getElementById(
+                            "remove-double-space",
+                        ) as HTMLInputElement
+                    ).checked
+                ) {
+                    l = l.replace(/\s+/g, " ");
+                }
+                return l;
+            })
+            .filter((line) => {
+                if (
+                    (
+                        document.getElementById(
+                            "remove-empty",
+                        ) as HTMLInputElement
+                    ).checked
+                ) {
+                    return line.length > 0;
+                }
+                return true;
+            });
+
+        output.value = cleanedLines.join("\n");
+    });
+</script>
+
+<style>
+    .tool-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    textarea {
+        width: 100%;
+        height: 200px;
+        padding: 1rem;
+        border: 1px solid var(--c-border);
+        border-radius: 8px;
+    }
+    .options {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 1rem;
+        background: var(--c-surface-alt);
+        border-radius: 8px;
+    }
+    .btn-primary {
+        margin-right: auto;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>

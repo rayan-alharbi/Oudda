@@ -1,0 +1,140 @@
+---
+
+---
+
+<div class="compress-tool">
+    <div class="file-drop">
+        <input type="file" id="comp-file" accept="image/*" />
+    </div>
+
+    <div class="controls" id="comp-controls" style="display:none;">
+        <label>
+            Quality: <span id="q-val">0.8</span>
+            <input
+                type="range"
+                id="quality"
+                min="0.1"
+                max="1.0"
+                step="0.1"
+                value="0.8"
+            />
+        </label>
+
+        <div class="stats">
+            Original: <span id="orig-size">-</span>
+            Compressed: <span id="new-size">-</span>
+        </div>
+
+        <button id="download-btn" class="btn-primary"
+            >Download Compressed Image</button
+        >
+    </div>
+
+    <img id="comp-preview" class="preview" />
+</div>
+
+<script>
+    const fileIn = document.getElementById("comp-file") as HTMLInputElement;
+    const controls = document.getElementById("comp-controls");
+    const qualityIn = document.getElementById("quality") as HTMLInputElement;
+    const qVal = document.getElementById("q-val");
+    const preview = document.getElementById("comp-preview") as HTMLImageElement;
+    const dlBtn = document.getElementById("download-btn");
+    const origSize = document.getElementById("orig-size");
+    const newSize = document.getElementById("new-size");
+
+    let originalFile = null;
+
+    function formatBytes(bytes) {
+        if (bytes === 0) return "0 B";
+        const k = 1024;
+        const sizes = ["B", "KB", "MB"];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+    }
+
+    function compress() {
+        if (!originalFile) return;
+
+        qVal.textContent = qualityIn.value;
+
+        const q = parseFloat(qualityIn.value);
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        const img = new Image();
+        img.src = URL.createObjectURL(originalFile);
+        img.onload = () => {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+
+            // To Blob
+            canvas.toBlob(
+                (blob) => {
+                    const url = URL.createObjectURL(blob);
+                    preview.src = url;
+                    newSize.textContent = formatBytes(blob.size);
+
+                    // Update download button
+                    (dlBtn as any).onclick = () => {
+                        const l = document.createElement("a");
+                        l.download = "compressed_" + originalFile.name;
+                        l.href = url;
+                        l.click();
+                    };
+                },
+                "image/jpeg",
+                q,
+            ); // Convert to JPEG for compression (PNG doesn't support quality param in toBlob usually)
+        };
+    }
+
+    fileIn.addEventListener("change", (e) => {
+        const f = (e.target as HTMLInputElement).files[0];
+        if (f) {
+            originalFile = f;
+            origSize.textContent = formatBytes(f.size);
+            controls.style.display = "flex";
+            compress();
+        }
+    });
+
+    qualityIn.addEventListener("input", compress);
+</script>
+
+<style>
+    .compress-tool {
+        max-width: 600px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .file-drop {
+        border: 2px dashed var(--c-border);
+        padding: 2rem;
+        text-align: center;
+        border-radius: 8px;
+    }
+    .controls {
+        flex-direction: column;
+        gap: 1rem;
+        background: var(--c-surface);
+        padding: 1rem;
+        border-radius: 8px;
+    }
+    .btn-primary {
+        padding: 0.8rem;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+    .preview {
+        max-width: 100%;
+        border: 1px solid var(--c-border);
+        border-radius: 4px;
+    }
+</style>

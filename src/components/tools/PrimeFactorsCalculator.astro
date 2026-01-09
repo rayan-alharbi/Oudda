@@ -1,0 +1,67 @@
+---
+
+---
+
+<div class="tool-wrapper">
+    <input type="number" id="num" placeholder="Enter a number (e.g. 144)" />
+    <div class="result" id="res"></div>
+</div>
+
+<script>
+    const numEl = document.getElementById("num") as HTMLInputElement;
+    const resEl = document.getElementById("res");
+
+    function getFactors(n) {
+        const factors = [];
+        let d = 2;
+        let temp = n;
+        while (d * d <= temp) {
+            while (temp % d === 0) {
+                factors.push(d);
+                temp /= d;
+            }
+            d++;
+        }
+        if (temp > 1) factors.push(temp);
+        return factors;
+    }
+
+    numEl.addEventListener("input", () => {
+        const n = parseInt(numEl.value);
+        if (isNaN(n) || n < 2) {
+            resEl.textContent = "Enter a number > 1";
+            return;
+        }
+        if (n > 1000000000000) {
+            resEl.textContent = "Number too large";
+            return;
+        }
+
+        const factors = getFactors(n);
+        resEl.textContent = factors.join(" × ");
+    });
+</script>
+
+<style>
+    .tool-wrapper {
+        max-width: 500px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    input {
+        padding: 1rem;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        font-size: 1.5rem;
+        text-align: center;
+    }
+    .result {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--c-primary);
+        min-height: 50px;
+    }
+</style>

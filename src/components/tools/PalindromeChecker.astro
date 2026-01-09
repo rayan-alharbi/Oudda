@@ -1,0 +1,72 @@
+---
+
+---
+
+<div class="tool-box">
+    <textarea id="input" placeholder="Racecar..."></textarea>
+    <div class="result" id="result-box">
+        <span id="label" class="lbl">?</span>
+    </div>
+</div>
+
+<script>
+    const input = document.getElementById("input") as HTMLTextAreaElement;
+    const lbl = document.getElementById("label");
+    const box = document.getElementById("result-box");
+
+    input.addEventListener("input", () => {
+        const text = input.value;
+        if (!text.trim()) {
+            lbl.textContent = "?";
+            box.className = "result";
+            return;
+        }
+
+        // Clean: remove non-alphanumeric, lower case
+        const clean = text.toLowerCase().replace(/[^a-z0-9]/g, "");
+        const rev = clean.split("").reverse().join("");
+
+        const isPal = clean === rev && clean.length > 0;
+
+        lbl.textContent = isPal ? "Yes, it is a Palindrome!" : "No";
+        box.className = "result " + (isPal ? "yes" : "no");
+    });
+</script>
+
+<style>
+    .tool-box {
+        max-width: 500px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    textarea {
+        height: 100px;
+        padding: 1rem;
+        border: 1px solid var(--c-border);
+        border-radius: 8px;
+        font-size: 1.2rem;
+    }
+    .result {
+        padding: 2rem;
+        background: var(--c-surface);
+        text-align: center;
+        border-radius: 8px;
+        border: 2px solid var(--c-border);
+    }
+    .lbl {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+    .yes {
+        border-color: #22c55e;
+        color: #166534;
+        background: #dcfce7;
+    }
+    .no {
+        border-color: #ef4444;
+        color: #991b1b;
+        background: #fee2e2;
+    }
+</style>

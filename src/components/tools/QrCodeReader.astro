@@ -1,0 +1,102 @@
+---
+
+---
+
+<div class="qr-reader">
+    <div class="upload-zone">
+        <label for="qr-input" class="zone-label">
+            <span class="icon">📷</span>
+            <span>Upload QR Image</span>
+        </label>
+        <input type="file" id="qr-input" accept="image/*" hidden />
+    </div>
+
+    <div class="output" id="out-box" style="display:none;">
+        <h3>Result:</h3>
+        <p id="qr-result">Reading...</p>
+    </div>
+
+    <div id="error-msg" class="error"></div>
+</div>
+
+<script>
+    const input = document.getElementById("qr-input") as HTMLInputElement;
+    const resultBox = document.getElementById("out-box");
+    const resultText = document.getElementById("qr-result");
+    const errorMsg = document.getElementById("error-msg");
+
+    input.addEventListener("change", async (e) => {
+        const file = (e.target as HTMLInputElement).files[0];
+        if (!file) return;
+
+        resultBox.style.display = "block";
+        resultText.textContent = "Scanning...";
+        errorMsg.textContent = "";
+
+        if (!("BarcodeDetector" in window)) {
+            errorMsg.textContent =
+                "Your browser does not support the Barcode Detection API. Please use Chrome/Edge/Android.";
+            resultText.textContent = "-";
+            return;
+        }
+
+        try {
+            const barcodeDetector = new (window as any).BarcodeDetector({
+                formats: ["qr_code"],
+            });
+            const imageBitmap = await createImageBitmap(file);
+            const barcodes = await barcodeDetector.detect(imageBitmap);
+
+            if (barcodes.length > 0) {
+                resultText.textContent = barcodes[0].rawValue;
+            } else {
+                resultText.textContent = "No QR code found.";
+            }
+        } catch (err) {
+            errorMsg.textContent = "Error: " + err.message;
+        }
+    });
+</script>
+
+<style>
+    .qr-reader {
+        max-width: 500px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+    .upload-zone {
+        border: 2px dashed var(--c-border);
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .upload-zone:hover {
+        background: var(--c-surface-alt);
+    }
+    .zone-label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.2rem;
+        cursor: pointer;
+    }
+    .icon {
+        font-size: 3rem;
+    }
+    .output {
+        background: var(--c-surface);
+        padding: 1.5rem;
+        border-radius: 8px;
+        border: 1px solid var(--c-border);
+        word-break: break-all;
+    }
+    .error {
+        color: red;
+        text-align: center;
+    }
+</style>

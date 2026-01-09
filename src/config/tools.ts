@@ -96,6 +96,54 @@ import CoinFlipper from '../components/tools/CoinFlipper.astro';
 import DiceRoller from '../components/tools/DiceRoller.astro';
 import ReactionTime from '../components/tools/ReactionTime.astro';
 
+// --- New Imports ---
+import DuplicateLineRemover from '../components/tools/DuplicateLineRemover.astro';
+import TextReverser from '../components/tools/TextReverser.astro';
+import TextCleaner from '../components/tools/TextCleaner.astro';
+import CharacterFrequency from '../components/tools/CharacterFrequency.astro';
+import ZalgoText from '../components/tools/ZalgoText.astro';
+import PxToRem from '../components/tools/PxToRem.astro';
+import HtpasswdGenerator from '../components/tools/HtpasswdGenerator.astro';
+import RobotsTxtGenerator from '../components/tools/RobotsTxtGenerator.astro';
+import SitemapGenerator from '../components/tools/SitemapGenerator.astro';
+import JsMinifier from '../components/tools/JsMinifier.astro';
+import HtmlMinifier from '../components/tools/HtmlMinifier.astro';
+import CsvToMarkdown from '../components/tools/CsvToMarkdown.astro';
+import SqlMinifier from '../components/tools/SqlMinifier.astro';
+import JsonMinifier from '../components/tools/JsonMinifier.astro';
+import GcdLcmCalculator from '../components/tools/GcdLcmCalculator.astro';
+import RatioCalculator from '../components/tools/RatioCalculator.astro';
+import FuelCostCalculator from '../components/tools/FuelCostCalculator.astro';
+import ElectricityCostCalculator from '../components/tools/ElectricityCostCalculator.astro';
+import WaterIntakeCalculator from '../components/tools/WaterIntakeCalculator.astro';
+import OhmsLawCalculator from '../components/tools/OhmsLawCalculator.astro';
+import ResistorColorCode from '../components/tools/ResistorColorCode.astro';
+import KineticEnergyCalculator from '../components/tools/KineticEnergyCalculator.astro';
+import ForceCalculator from '../components/tools/ForceCalculator.astro';
+import TokenGenerator from '../components/tools/TokenGenerator.astro';
+import RsaGenerator from '../components/tools/RsaGenerator.astro';
+import ImageResizer from '../components/tools/ImageResizer.astro';
+import ContrastChecker from '../components/tools/ContrastChecker.astro';
+import ImageCompressor from '../components/tools/ImageCompressor.astro';
+import ZodiacSignCalculator from '../components/tools/ZodiacSignCalculator.astro';
+import QrCodeReader from '../components/tools/QrCodeReader.astro';
+import SoundFrequencyGenerator from '../components/tools/SoundFrequencyGenerator.astro';
+import TypingSpeedTest from '../components/tools/TypingSpeedTest.astro';
+import DecisionWheel from '../components/tools/DecisionWheel.astro';
+import MacAddressGenerator from '../components/tools/MacAddressGenerator.astro';
+import Ipv6Converter from '../components/tools/Ipv6Converter.astro';
+import WeekNumberCalculator from '../components/tools/WeekNumberCalculator.astro';
+import DayOfYearCalculator from '../components/tools/DayOfYearCalculator.astro';
+import TimeDurationCalculator from '../components/tools/TimeDurationCalculator.astro';
+import BrailleConverter from '../components/tools/BrailleConverter.astro';
+import ListRandomizer from '../components/tools/ListRandomizer.astro';
+import MarkdownTableGenerator from '../components/tools/MarkdownTableGenerator.astro';
+import PrimeFactorsCalculator from '../components/tools/PrimeFactorsCalculator.astro';
+import SequenceGenerator from '../components/tools/SequenceGenerator.astro';
+import PalindromeChecker from '../components/tools/PalindromeChecker.astro';
+import PressureConverter from '../components/tools/PressureConverter.astro';
+import VolumeConverter from '../components/tools/VolumeConverter.astro';
+
 export interface ToolConfig {
     id: string;
     title: string;
@@ -228,4 +276,64 @@ export const tools: ToolConfig[] = [
     { id: 'coin-flipper', title: 'رمي عملة', description: 'وجه أم قفى.', icon: 'monetization-on', component: CoinFlipper },
     { id: 'dice-roller', title: 'نرد', description: 'رمي الزهر.', icon: 'casino', component: DiceRoller },
     { id: 'reaction-time', title: 'سرعة البديهة', description: 'اختبر رد فعلك.', icon: 'speed', component: ReactionTime },
+
+    // --- NEWLY ADDED TOOLS FROM BATCH ---
+
+    // -- Text & Code --
+    { id: 'dup-lines', title: 'حذف التكرار', description: 'تنظيف القوائم.', icon: 'playlist-remove', component: DuplicateLineRemover },
+    { id: 'text-rev', title: 'عكس النص', description: 'عكس الحروف/الكلمات.', icon: 'swap-horiz', component: TextReverser },
+    { id: 'text-clean', title: 'تنظيف النص', description: 'إزالة الزوائد.', icon: 'cleaning-services', component: TextCleaner },
+    { id: 'char-freq', title: 'تكرار الأحرف', description: 'إحصاء الرموز.', icon: 'analytics', component: CharacterFrequency },
+    { id: 'zalgo', title: 'نص Zalgo', description: 'نص مشوه.', icon: 'error', component: ZalgoText },
+    { id: 'js-min', title: 'ضغط JS', description: 'Minifier.', icon: 'javascript', component: JsMinifier },
+    { id: 'html-min', title: 'ضغط HTML', description: 'Minifier.', icon: 'html', component: HtmlMinifier },
+    { id: 'sql-min', title: 'ضغط SQL', description: 'Minifier.', icon: 'database', component: SqlMinifier },
+    { id: 'json-min', title: 'ضغط JSON', description: 'Minifier.', icon: 'data-object', component: JsonMinifier },
+    { id: 'csv-md', title: 'CSV to Markdown', description: 'جداول Markdown.', icon: 'table-rows', component: CsvToMarkdown },
+    { id: 'md-table', title: 'مولد جداول', description: 'Markdown Grid.', icon: 'grid-view', component: MarkdownTableGenerator },
+    { id: 'list-rand', title: 'خلط القوائم', description: 'ترتيب عشوائي.', icon: 'shuffle', component: ListRandomizer },
+
+    // -- Web & Dev --
+    { id: 'px-rem', title: 'Px to Rem', description: 'تحويل وحدات CSS.', icon: 'css', component: PxToRem },
+    { id: 'htpasswd', title: 'Htpasswd', description: 'Apache Auth.', icon: 'lock', component: HtpasswdGenerator },
+    { id: 'robots', title: 'Robots.txt', description: 'SEO Tool.', icon: 'smart-toy', component: RobotsTxtGenerator },
+    { id: 'sitemap', title: 'Sitemap.xml', description: 'خريطة الموقع.', icon: 'map', component: SitemapGenerator },
+    { id: 'mac-gen', title: 'توليد MAC', description: 'عناوين الشبكة.', icon: 'router', component: MacAddressGenerator },
+    { id: 'ipv6-conv', title: 'IPv6', description: 'تحويل العناوين.', icon: 'dns', component: Ipv6Converter },
+
+    // -- Math & Physics --
+    { id: 'gcd-lcm', title: 'GCD & LCM', description: 'قواسم ومضاعفات.', icon: 'calculate', component: GcdLcmCalculator },
+    { id: 'prime-fact', title: 'العوامل الأولية', description: 'تحليل الأعداد.', icon: 'account-tree', component: PrimeFactorsCalculator },
+    { id: 'ratio', title: 'التناسب', description: 'حساب النسبة.', icon: 'percent', component: RatioCalculator },
+    { id: 'sequence', title: 'المتتاليات', description: 'حسابية وهندسية.', icon: 'linear-scale', component: SequenceGenerator },
+    { id: 'fuel-cost', title: 'تكلفة الوقود', description: 'حساب الرحلات.', icon: 'local-gas-station', component: FuelCostCalculator },
+    { id: 'elec-cost', title: 'تكلفة الكهرباء', description: 'استهلاك الأجهزة.', icon: 'electric-bolt', component: ElectricityCostCalculator },
+    { id: 'water-calc', title: 'شرب الماء', description: 'احتياج يومي.', icon: 'water-drop', component: WaterIntakeCalculator },
+    { id: 'ohms-law', title: 'قانون أوم', description: 'V = IR.', icon: 'bolt', component: OhmsLawCalculator },
+    { id: 'resistor', title: 'ألوان المقاومة', description: 'Color Code.', icon: 'memory', component: ResistorColorCode },
+    { id: 'kinetic', title: 'الطاقة الحركية', description: 'Kinetic Energy.', icon: 'speed', component: KineticEnergyCalculator },
+    { id: 'force', title: 'القوة', description: 'F = ma.', icon: 'fitness-center', component: ForceCalculator },
+    { id: 'pressure', title: 'الضغط', description: 'Bar, PSI, Pa.', icon: 'compress', component: PressureConverter },
+    { id: 'volume', title: 'الحجوم', description: 'Liters, Gal.', icon: 'water', component: VolumeConverter },
+
+    // -- Security --
+    { id: 'token-gen', title: 'Token Generator', description: 'رموز آمنة.', icon: 'key', component: TokenGenerator },
+    { id: 'rsa-gen', title: 'مفاتيح RSA', description: 'Public/Private.', icon: 'vpn-key', component: RsaGenerator },
+
+    // -- Image & Design --
+    { id: 'img-resize', title: 'تغيير حجم الصور', description: 'Resize.', icon: 'photo-size-select-large', component: ImageResizer },
+    { id: 'img-comp', title: 'ضغط الصور', description: 'Compress.', icon: 'compress', component: ImageCompressor },
+    { id: 'contrast', title: 'التباين', description: 'WCAG Colors.', icon: 'contrast', component: ContrastChecker },
+
+    // -- Misc --
+    { id: 'qr-read', title: 'قارئ QR', description: 'فحص الصور.', icon: 'qr-code-scanner', component: QrCodeReader },
+    { id: 'zodiac', title: 'الأبراج', description: 'حسب التاريخ.', icon: 'stars', component: ZodiacSignCalculator },
+    { id: 'sound-gen', title: 'مولد نغمات', description: 'Frequency.', icon: 'graphic-eq', component: SoundFrequencyGenerator },
+    { id: 'typing-test', title: 'سرعة الكتابة', description: 'WPM Test.', icon: 'keyboard', component: TypingSpeedTest },
+    { id: 'wheel', title: 'عجلة الحظ', description: 'اتخاذ قرار.', icon: 'sync', component: DecisionWheel },
+    { id: 'palindrome', title: 'Palindrome', description: 'عكس النص.', icon: 'swap-horizontal-circle', component: PalindromeChecker },
+    { id: 'week-num', title: 'رقم الأسبوع', description: 'Week No.', icon: 'calendar-view-week', component: WeekNumberCalculator },
+    { id: 'day-year', title: 'يوم في السنة', description: 'Day of Year.', icon: 'today', component: DayOfYearCalculator },
+    { id: 'time-dur', title: 'فرق التوقيت', description: 'Duration.', icon: 'timelapse', component: TimeDurationCalculator },
+    { id: 'braille', title: 'ناطق برايل', description: 'Braille.', icon: 'grid-3x3', component: BrailleConverter },
 ];

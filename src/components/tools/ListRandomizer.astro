@@ -1,0 +1,68 @@
+---
+
+---
+
+<div class="tool-wrapper">
+    <div class="col">
+        <label>List Items (one per line)</label>
+        <textarea id="input" placeholder="Apple
+Banana
+Cherry"></textarea>
+        <button id="shuffle-btn" class="btn">Shuffle / Randomize</button>
+    </div>
+
+    <div class="col">
+        <label>Result</label>
+        <textarea id="output" readonly></textarea>
+    </div>
+</div>
+
+<script>
+    const input = document.getElementById("input") as HTMLTextAreaElement;
+    const output = document.getElementById("output") as HTMLTextAreaElement;
+
+    document.getElementById("shuffle-btn").addEventListener("click", () => {
+        const lines = input.value.split("\n").filter((l) => l.trim());
+
+        // Fisher-Yates
+        for (let i = lines.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [lines[i], lines[j]] = [lines[j], lines[i]];
+        }
+
+        output.value = lines.join("\n");
+    });
+</script>
+
+<style>
+    .tool-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+    @media (max-width: 600px) {
+        .tool-wrapper {
+            grid-template-columns: 1fr;
+        }
+    }
+    .col {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    textarea {
+        height: 300px;
+        padding: 1rem;
+        border: 1px solid var(--c-border);
+        border-radius: 8px;
+    }
+    .btn {
+        padding: 1rem;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+</style>

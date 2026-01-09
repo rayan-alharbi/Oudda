@@ -1,0 +1,93 @@
+---
+
+---
+
+<div class="calc-box">
+    <div class="inputs">
+        <label>الوزن (كجم)</label>
+        <input type="number" id="weight" placeholder="70" />
+
+        <label>مستوى النشاط</label>
+        <select id="activity">
+            <option value="1">منخفض</option>
+            <option value="1.1">متوسط (+10%)</option>
+            <option value="1.2">عالي (+20%)</option>
+            <option value="1.5">رياضي (+50%)</option>
+        </select>
+    </div>
+
+    <div class="result">
+        <span id="liters" class="big-num">0</span>
+        <span class="unit">لتر يومياً</span>
+        <p class="cups">حوالي <span id="cups">0</span> أكواب</p>
+    </div>
+</div>
+
+<script>
+    const wEl = document.getElementById("weight") as HTMLInputElement;
+    const aEl = document.getElementById("activity") as HTMLSelectElement;
+    const lEl = document.getElementById("liters");
+    const cEl = document.getElementById("cups");
+
+    function calc() {
+        const w = parseFloat(wEl.value) || 0;
+        const factor = parseFloat(aEl.value);
+
+        // Basic formula: 35ml per kg roughly
+        let liters = w * 0.033 * factor; // 33ml per kg
+
+        lEl.textContent = liters.toFixed(1);
+        cEl.textContent = Math.round(liters * 4.2).toString(); // ~240ml per cup
+    }
+
+    wEl.addEventListener("input", calc);
+    aEl.addEventListener("change", calc);
+</script>
+
+<style>
+    .calc-box {
+        text-align: center;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+    .inputs {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        text-align: right;
+    }
+    input,
+    select {
+        padding: 0.8rem;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        width: 100%;
+    }
+    .result {
+        padding: 2rem;
+        background: var(--c-surface);
+        border-radius: 50%;
+        width: 250px;
+        height: 250px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto;
+        border: 5px solid var(--c-primary-light, #e0f2fe);
+    }
+    .big-num {
+        font-size: 4rem;
+        font-weight: 800;
+        color: var(--c-primary);
+        line-height: 1;
+    }
+    .unit {
+        color: var(--c-text-muted);
+    }
+    .cups {
+        margin-top: 1rem;
+        font-weight: bold;
+    }
+</style>

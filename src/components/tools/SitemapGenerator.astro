@@ -1,0 +1,117 @@
+---
+
+---
+
+<div class="tool-content">
+    <div class="input-section">
+        <label>URLs (one per line)</label>
+        <textarea
+            id="urls"
+            placeholder="https://example.com/
+https://example.com/about"
+        ></textarea>
+
+        <div class="options">
+            <div>
+                <label>Change Frequency</label>
+                <select id="freq">
+                    <option value="daily">Daily</option>
+                    <option value="weekly" selected>Weekly</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="yearly">Yearly</option>
+                    <option value="never">Never</option>
+                </select>
+            </div>
+            <div>
+                <label>Priority (0.0 - 1.0)</label>
+                <input
+                    type="number"
+                    id="priority"
+                    step="0.1"
+                    min="0"
+                    max="1"
+                    value="0.8"
+                />
+            </div>
+            <div>
+                <label>Last Modified</label>
+                <input type="date" id="lastmod" />
+            </div>
+        </div>
+
+        <button id="gen-btn" class="btn-primary">Generate XML</button>
+    </div>
+
+    <div class="output-section">
+        <textarea id="output" readonly></textarea>
+    </div>
+</div>
+
+<script>
+    const urls = document.getElementById("urls") as HTMLTextAreaElement;
+    const output = document.getElementById("output") as HTMLTextAreaElement;
+
+    document.getElementById("gen-btn").addEventListener("click", () => {
+        const urlList = urls.value.split("\n").filter((u) => u.trim() !== "");
+        const freq = (document.getElementById("freq") as HTMLSelectElement)
+            .value;
+        const prio = (document.getElementById("priority") as HTMLInputElement)
+            .value;
+        const dateInput = (
+            document.getElementById("lastmod") as HTMLInputElement
+        ).value;
+        const lastmod = dateInput || new Date().toISOString().split("T")[0];
+
+        let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+        xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+
+        urlList.forEach((url) => {
+            xml += "   <url>\n";
+            xml += `      <loc>${url.trim()}</loc>\n`;
+            xml += `      <lastmod>${lastmod}</lastmod>\n`;
+            xml += `      <changefreq>${freq}</changefreq>\n`;
+            xml += `      <priority>${prio}</priority>\n`;
+            xml += "   </url>\n";
+        });
+
+        xml += "</urlset>";
+        output.value = xml;
+    });
+</script>
+
+<style>
+    .tool-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    textarea {
+        width: 100%;
+        height: 200px;
+        padding: 1rem;
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: 8px;
+        font-family: monospace;
+    }
+    .options {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    select,
+    input {
+        padding: 0.5rem;
+        border-radius: 4px;
+        border: 1px solid var(--c-border);
+    }
+    .btn-primary {
+        padding: 0.8rem;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        align-self: flex-start;
+    }
+</style>
