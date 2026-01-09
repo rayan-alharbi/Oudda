@@ -1,43 +1,297 @@
-# Astro Starter Kit: Minimal
+<div align="center">
 
-```sh
-npm create astro@latest -- --template minimal
+# ⚡ UniConvert
+
+### أدواتك اليومية في مكان واحد
+
+[![Demo](https://img.shields.io/badge/🌐_Demo-UniConvert-2563eb?style=for-the-badge)](https://uniconvert.pages.dev/)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![Astro](https://img.shields.io/badge/Astro-5.x-ff5d01?style=for-the-badge&logo=astro)](https://astro.build/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=for-the-badge)](CONTRIBUTING.md)
+
+**[🚀 تجربة الموقع](https://uniconvert.pages.dev/)** · **[📖 التوثيق](#-التثبيت)** · **[🤝 المساهمة](#-المساهمة)**
+
+---
+
+مجموعة شاملة تضم **+145 أداة** مجانية ومفتوحة المصدر لتحويل الوحدات، التواريخ، الألوان، الأكواد والمزيد!
+
+</div>
+
+---
+
+## ✨ المميزات
+
+| الميزة | الوصف |
+|--------|-------|
+| 🚀 **سريع للغاية** | مبني على Astro مع صفحات ثابتة وصفر JavaScript غير ضروري |
+| 🔍 **بحث ذكي** | بحث فوري مع دعم الأخطاء الإملائية والنص العربي |
+| 📱 **متجاوب بالكامل** | يعمل على جميع الأجهزة بسلاسة |
+| 🎨 **واجهة عصرية** | تصميم نظيف وأنيق باللغة العربية |
+| 🔒 **خصوصية تامة** | جميع الأدوات تعمل محلياً بدون إرسال البيانات لأي سيرفر |
+| 🌐 **مفتوح المصدر** | MIT License - حرية الاستخدام والتعديل |
+
+---
+
+## 🛠️ الأدوات المتوفرة
+
+### 📐 التحويلات الأساسية
+- تحويل الوحدات (طول، وزن، حرارة، حجم، ضغط)
+- تحويل التواريخ (هجري ↔ ميلادي)
+- حاسبة العمر
+- أنظمة العد (Binary, Hex, Octal)
+- Unix Timestamp
+
+### 🔐 الأمان والتشفير
+- مولد كلمات المرور
+- فاحص قوة كلمات المرور
+- Hash Generator (MD5, SHA-256)
+- HMAC Generator
+- BIP39 Mnemonic
+- مولد Token & RSA Keys
+- Base64 / URL Encoder
+
+### 💻 أدوات المطورين
+- منسق JSON / SQL / YAML / XML
+- Regex Tester
+- JWT Decoder
+- Cron Job Generator
+- ضغط CSS / JS / HTML / SQL
+- مولد Dockerfile 🐳
+- مولد Docker Compose 🐳
+- مرجع أوامر Docker 🐳
+- Chmod Calculator
+- HTTP Status Codes
+- MIME Types Reference
+
+### 🎨 الألوان والتصميم
+- محول الألوان (RGB, HEX, HSL)
+- دمج الألوان
+- محاكي عمى الألوان
+- مولد التدرجات CSS
+- Box Shadow Generator
+- Border Radius Generator
+- Glassmorphism / Neumorphism
+
+### 🖼️ الصور
+- قص الصور
+- ضغط الصور
+- تغيير حجم الصور
+- فلاتر الصور
+- SVG to PNG
+- صورة إلى Base64
+- قارئ EXIF
+- مولد أيقونات ICO
+
+### 📝 النصوص
+- عداد الكلمات والأحرف
+- محول حالة الأحرف
+- مكرر النصوص
+- فرز النصوص
+- مقارنة النصوص (Diff)
+- حذف السطور المكررة
+- استخراج الإيميلات والروابط
+- Markdown Preview
+- نص → كلام (TTS)
+
+### 💰 المالية والحسابات
+- حاسبة القروض
+- حاسبة الضريبة (VAT)
+- حاسبة الخصومات
+- محول الراتب
+- حاسبة الفائدة المركبة
+- حاسبة تكلفة الوقود والكهرباء
+
+### 🔢 الرياضيات والفيزياء
+- حاسبة علمية
+- حاسبة الإحصاء
+- حاسبة المصفوفات
+- GCD & LCM
+- العوامل الأولية
+- قانون أوم
+- الطاقة الحركية
+- ألوان المقاومة
+
+### 🌐 الشبكات
+- IP Subnet Calculator
+- IPv6 Converter
+- MAC Address Generator
+- محلل الروابط (URL Parser)
+
+### ⏱️ الوقت والإنتاجية
+- ساعة إيقاف
+- مؤقت بومودورو
+- المناطق الزمنية
+- فرق التوقيت
+
+### 🎲 أدوات متنوعة
+- مولد QR Code / قارئ QR
+- مولد باركود
+- فاحص IBAN
+- فاحص بطاقات الائتمان
+- فاحص أرقام الهاتف
+- عجلة الحظ
+- رمي العملة والنرد
+- اختبار سرعة البديهة
+- اختبار سرعة الكتابة
+
+---
+
+## 🚀 التثبيت
+
+### المتطلبات
+- Node.js 18+ 
+- npm أو yarn أو pnpm
+
+### خطوات التثبيت
+
+```bash
+# استنساخ المشروع
+git clone https://github.com/your-username/UniConvert.git
+cd UniConvert
+
+# تثبيت الاعتماديات
+npm install
+
+# تشغيل خادم التطوير
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+سيعمل الموقع على `http://localhost:4321`
 
-## 🚀 Project Structure
+### أوامر البناء
 
-Inside of your Astro project, you'll see the following folders and files:
+```bash
+# بناء للإنتاج
+npm run build
 
-```text
-/
-├── public/
+# معاينة البناء
+npm run preview
+```
+
+---
+
+## 📁 هيكل المشروع
+
+```
+UniConvert/
+├── public/              # الملفات الثابتة
 ├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+│   ├── components/
+│   │   └── tools/       # 145+ أداة (Astro Components)
+│   ├── config/
+│   │   └── tools.ts     # سجل الأدوات
+│   ├── layouts/
+│   │   └── Layout.astro # القالب الرئيسي
+│   ├── pages/
+│   │   ├── index.astro  # الصفحة الرئيسية
+│   │   └── tool/[id].astro
+│   └── styles/
+│       └── global.css   # الأنماط العامة
+├── package.json
+└── astro.config.mjs
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+---
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## ➕ إضافة أداة جديدة
 
-Any static assets, like images, can be placed in the `public/` directory.
+### 1. إنشاء الملف
+أنشئ ملف جديد في `src/components/tools/MyTool.astro`:
 
-## 🧞 Commands
+```astro
+---
+---
 
-All commands are run from the root of the project, from a terminal:
+<div class="tool-container">
+    <h1>🔧 أداتي الجديدة</h1>
+    <!-- محتوى الأداة -->
+</div>
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+<script>
+    // منطق الأداة
+</script>
 
-## 👀 Want to learn more?
+<style>
+    .tool-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+</style>
+```
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+### 2. التسجيل في tools.ts
+
+```typescript
+// أضف الاستيراد
+import MyTool from '../components/tools/MyTool.astro';
+
+// أضف في مصفوفة tools
+{
+    id: 'my-tool',
+    title: 'أداتي الجديدة',
+    description: 'وصف مختصر للأداة',
+    icon: 'construction',  // من Material Symbols
+    component: MyTool
+}
+```
+
+### 3. اختبار
+```bash
+npm run dev
+# افتح http://localhost:4321/tool/my-tool
+```
+
+---
+
+## 🤝 المساهمة
+
+نرحب بجميع المساهمات! إليك كيفية المشاركة:
+
+1. **Fork** المشروع
+2. أنشئ فرع للميزة: `git checkout -b feature/amazing-feature`
+3. Commit التغييرات: `git commit -m 'Add amazing feature'`
+4. Push للفرع: `git push origin feature/amazing-feature`
+5. افتح **Pull Request**
+
+### أفكار للمساهمة
+- 🌍 إضافة دعم لغات أخرى
+- 🛠️ إضافة أدوات جديدة
+- 🐛 إصلاح الأخطاء
+- 📖 تحسين التوثيق
+- 🎨 تحسين التصميم
+
+---
+
+## 📄 الرخصة
+
+هذا المشروع مرخص تحت رخصة **MIT** - راجع ملف [LICENSE](LICENSE) للتفاصيل.
+
+```
+MIT License
+
+Copyright (c) 2024 UniConvert
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software...
+```
+
+---
+
+## 🙏 شكر وتقدير
+
+- [Astro](https://astro.build/) - إطار العمل السريع
+- [Material Symbols](https://fonts.google.com/icons) - الأيقونات
+- [Tajawal Font](https://fonts.google.com/specimen/Tajawal) - الخط العربي
+
+---
+
+<div align="center">
+
+صُنع بـ ❤️ للمجتمع العربي
+
+**[⬆ العودة للأعلى](#-uniconvert)**
+
+</div>
