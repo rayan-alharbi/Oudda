@@ -1,15 +1,15 @@
 <div align="center">
 
-# ⚡ UniConvert
+# ⚒️ عُـدّة (Oudda)
 
 ### أدواتك اليومية في مكان واحد
 
-[![Demo](https://img.shields.io/badge/🌐_Demo-UniConvert-2563eb?style=for-the-badge)](https://uniconvert.pages.dev/)
+[![Demo](https://img.shields.io/badge/🌐_Demo-عُـدّة-2563eb?style=for-the-badge)](https://Oudda.pages.dev/)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 [![Astro](https://img.shields.io/badge/Astro-5.x-ff5d01?style=for-the-badge&logo=astro)](https://astro.build/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=for-the-badge)](CONTRIBUTING.md)
 
-**[🚀 تجربة الموقع](https://uniconvert.pages.dev/)** · **[📖 التوثيق](#-التثبيت)** · **[🤝 المساهمة](#-المساهمة)**
+**[🚀 تجربة الموقع](https://Oudda.pages.dev/)** · **[📖 التوثيق](#-التثبيت)** · **[🤝 المساهمة](#-المساهمة)**
 
 ---
 
@@ -146,8 +146,8 @@
 
 ```bash
 # استنساخ المشروع
-git clone https://github.com/your-username/UniConvert.git
-cd UniConvert
+git clone https://github.com/rayan-alharbi/Oudda.git
+cd Oudda
 
 # تثبيت الاعتماديات
 npm install
@@ -173,7 +173,7 @@ npm run preview
 ## 📁 هيكل المشروع
 
 ```
-UniConvert/
+Oudda/ -> عُـدّة/
 ├── public/              # الملفات الثابتة
 ├── src/
 │   ├── components/
@@ -269,7 +269,7 @@ npm run dev
 ```
 MIT License
 
-Copyright (c) 2024 UniConvert
+Copyright (c) 2024 Oudda (عُـدّة)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -292,6 +292,6 @@ copies of the Software...
 
 صُنع بـ ❤️ للمجتمع العربي
 
-**[⬆ العودة للأعلى](#-uniconvert)**
+**[⬆ العودة للأعلى](#-Oudda)**
 
 </div>
