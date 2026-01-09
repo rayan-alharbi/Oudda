@@ -1,0 +1,499 @@
+---
+
+---
+
+<div class="tool-container">
+    <h1>🐳 مولد Docker Compose</h1>
+    <p class="tool-description">أنشئ ملف docker-compose.yml لخدماتك المتعددة</p>
+
+    <div class="services-section">
+        <div class="section-header">
+            <h3>الخدمات</h3>
+            <button id="addService" class="add-btn">+ إضافة خدمة</button>
+        </div>
+
+        <div id="servicesList">
+            <!-- Services will be added here -->
+        </div>
+    </div>
+
+    <div class="compose-options">
+        <h3>خيارات إضافية</h3>
+        <div class="options-grid">
+            <label class="checkbox-label">
+                <input type="checkbox" id="addRedis" />
+                <span>🔴 Redis Cache</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="addPostgres" />
+                <span>🐘 PostgreSQL</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="addMongo" />
+                <span>🍃 MongoDB</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="addNginx" />
+                <span>🌐 Nginx Proxy</span>
+            </label>
+        </div>
+    </div>
+
+    <button id="generateBtn" class="primary-btn"
+        >🚀 توليد docker-compose.yml</button
+    >
+
+    <div class="output-section">
+        <div class="output-header">
+            <span>docker-compose.yml</span>
+            <button id="copyBtn" class="copy-btn">📋 نسخ</button>
+        </div>
+        <pre id="output"></pre>
+    </div>
+</div>
+
+<script>
+    interface ServiceConfig {
+        name: string;
+        image: string;
+        port: string;
+        volumes: string;
+        envVars: string;
+    }
+
+    let services: ServiceConfig[] = [];
+    let serviceCount = 0;
+
+    const servicesList = document.getElementById(
+        "servicesList",
+    ) as HTMLDivElement;
+    const addServiceBtn = document.getElementById(
+        "addService",
+    ) as HTMLButtonElement;
+    const generateBtn = document.getElementById(
+        "generateBtn",
+    ) as HTMLButtonElement;
+    const copyBtn = document.getElementById("copyBtn") as HTMLButtonElement;
+    const output = document.getElementById("output") as HTMLPreElement;
+
+    const addRedis = document.getElementById("addRedis") as HTMLInputElement;
+    const addPostgres = document.getElementById(
+        "addPostgres",
+    ) as HTMLInputElement;
+    const addMongo = document.getElementById("addMongo") as HTMLInputElement;
+    const addNginx = document.getElementById("addNginx") as HTMLInputElement;
+
+    function createServiceCard(index: number): string {
+        return `
+            <div class="service-card" data-index="${index}">
+                <div class="service-header">
+                    <span class="service-title">خدمة ${index + 1}</span>
+                    <button class="remove-btn" onclick="removeService(${index})">✕</button>
+                </div>
+                <div class="service-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>اسم الخدمة</label>
+                            <input type="text" class="service-name" value="app${index > 0 ? index + 1 : ""}" placeholder="web">
+                        </div>
+                        <div class="form-group">
+                            <label>الصورة / Build</label>
+                            <input type="text" class="service-image" value="." placeholder="node:20-alpine أو .">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>المنافذ (host:container)</label>
+                            <input type="text" class="service-port" value="3000:3000" placeholder="8080:80">
+                        </div>
+                        <div class="form-group">
+                            <label>Volumes</label>
+                            <input type="text" class="service-volumes" value="./:/app" placeholder="./data:/data">
+                        </div>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>متغيرات البيئة (KEY=value، فاصلة بين كل متغير)</label>
+                        <input type="text" class="service-env" placeholder="NODE_ENV=production, PORT=3000">
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function addService() {
+        servicesList.insertAdjacentHTML(
+            "beforeend",
+            createServiceCard(serviceCount),
+        );
+        serviceCount++;
+    }
+
+    (window as any).removeService = function (index: number) {
+        const card = document.querySelector(
+            `.service-card[data-index="${index}"]`,
+        );
+        if (card) card.remove();
+    };
+
+    function collectServices(): ServiceConfig[] {
+        const cards = document.querySelectorAll(".service-card");
+        const result: ServiceConfig[] = [];
+
+        cards.forEach((card) => {
+            result.push({
+                name:
+                    (card.querySelector(".service-name") as HTMLInputElement)
+                        ?.value || "app",
+                image:
+                    (card.querySelector(".service-image") as HTMLInputElement)
+                        ?.value || ".",
+                port:
+                    (card.querySelector(".service-port") as HTMLInputElement)
+                        ?.value || "",
+                volumes:
+                    (card.querySelector(".service-volumes") as HTMLInputElement)
+                        ?.value || "",
+                envVars:
+                    (card.querySelector(".service-env") as HTMLInputElement)
+                        ?.value || "",
+            });
+        });
+
+        return result;
+    }
+
+    function generate() {
+        const services = collectServices();
+        let yaml = `version: '3.8'\n\nservices:\n`;
+
+        // User-defined services
+        services.forEach((service) => {
+            yaml += `  ${service.name}:\n`;
+
+            if (service.image === "." || service.image.startsWith("./")) {
+                yaml += `    build:\n`;
+                yaml += `      context: ${service.image}\n`;
+                yaml += `      dockerfile: Dockerfile\n`;
+            } else {
+                yaml += `    image: ${service.image}\n`;
+            }
+
+            yaml += `    container_name: ${service.name}\n`;
+            yaml += `    restart: unless-stopped\n`;
+
+            if (service.port) {
+                yaml += `    ports:\n`;
+                yaml += `      - "${service.port}"\n`;
+            }
+
+            if (service.volumes) {
+                yaml += `    volumes:\n`;
+                service.volumes.split(",").forEach((vol) => {
+                    yaml += `      - ${vol.trim()}\n`;
+                });
+            }
+
+            if (service.envVars) {
+                yaml += `    environment:\n`;
+                service.envVars.split(",").forEach((env) => {
+                    const trimmed = env.trim();
+                    if (trimmed) yaml += `      - ${trimmed}\n`;
+                });
+            }
+
+            // Add depends_on based on selected databases
+            const deps: string[] = [];
+            if (addRedis.checked) deps.push("redis");
+            if (addPostgres.checked) deps.push("postgres");
+            if (addMongo.checked) deps.push("mongo");
+
+            if (deps.length > 0) {
+                yaml += `    depends_on:\n`;
+                deps.forEach((dep) => {
+                    yaml += `      - ${dep}\n`;
+                });
+            }
+
+            yaml += "\n";
+        });
+
+        // Redis
+        if (addRedis.checked) {
+            yaml += `  redis:\n`;
+            yaml += `    image: redis:7-alpine\n`;
+            yaml += `    container_name: redis\n`;
+            yaml += `    restart: unless-stopped\n`;
+            yaml += `    ports:\n`;
+            yaml += `      - "6379:6379"\n`;
+            yaml += `    volumes:\n`;
+            yaml += `      - redis_data:/data\n\n`;
+        }
+
+        // PostgreSQL
+        if (addPostgres.checked) {
+            yaml += `  postgres:\n`;
+            yaml += `    image: postgres:16-alpine\n`;
+            yaml += `    container_name: postgres\n`;
+            yaml += `    restart: unless-stopped\n`;
+            yaml += `    ports:\n`;
+            yaml += `      - "5432:5432"\n`;
+            yaml += `    environment:\n`;
+            yaml += `      - POSTGRES_USER=admin\n`;
+            yaml += `      - POSTGRES_PASSWORD=secret\n`;
+            yaml += `      - POSTGRES_DB=myapp\n`;
+            yaml += `    volumes:\n`;
+            yaml += `      - postgres_data:/var/lib/postgresql/data\n\n`;
+        }
+
+        // MongoDB
+        if (addMongo.checked) {
+            yaml += `  mongo:\n`;
+            yaml += `    image: mongo:7\n`;
+            yaml += `    container_name: mongo\n`;
+            yaml += `    restart: unless-stopped\n`;
+            yaml += `    ports:\n`;
+            yaml += `      - "27017:27017"\n`;
+            yaml += `    environment:\n`;
+            yaml += `      - MONGO_INITDB_ROOT_USERNAME=admin\n`;
+            yaml += `      - MONGO_INITDB_ROOT_PASSWORD=secret\n`;
+            yaml += `    volumes:\n`;
+            yaml += `      - mongo_data:/data/db\n\n`;
+        }
+
+        // Nginx
+        if (addNginx.checked) {
+            yaml += `  nginx:\n`;
+            yaml += `    image: nginx:alpine\n`;
+            yaml += `    container_name: nginx\n`;
+            yaml += `    restart: unless-stopped\n`;
+            yaml += `    ports:\n`;
+            yaml += `      - "80:80"\n`;
+            yaml += `      - "443:443"\n`;
+            yaml += `    volumes:\n`;
+            yaml += `      - ./nginx.conf:/etc/nginx/nginx.conf:ro\n`;
+            yaml += `    depends_on:\n`;
+            if (services.length > 0) {
+                yaml += `      - ${services[0].name}\n`;
+            }
+            yaml += "\n";
+        }
+
+        // Volumes
+        const volumes: string[] = [];
+        if (addRedis.checked) volumes.push("redis_data");
+        if (addPostgres.checked) volumes.push("postgres_data");
+        if (addMongo.checked) volumes.push("mongo_data");
+
+        if (volumes.length > 0) {
+            yaml += `volumes:\n`;
+            volumes.forEach((vol) => {
+                yaml += `  ${vol}:\n`;
+            });
+        }
+
+        output.textContent = yaml;
+    }
+
+    addServiceBtn.addEventListener("click", addService);
+    generateBtn.addEventListener("click", generate);
+
+    copyBtn.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(output.textContent || "");
+        copyBtn.textContent = "✅ تم!";
+        setTimeout(() => (copyBtn.textContent = "📋 نسخ"), 2000);
+    });
+
+    // Initialize with one service
+    addService();
+    generate();
+</script>
+
+<style>
+    .tool-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .tool-description {
+        text-align: center;
+        color: var(--c-text-muted);
+        margin-bottom: 2rem;
+    }
+
+    .services-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .section-header h3 {
+        margin: 0;
+    }
+
+    .add-btn {
+        padding: 0.5rem 1rem;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+    }
+
+    .service-card {
+        background: var(--c-background);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        margin-bottom: 1rem;
+        overflow: hidden;
+    }
+
+    .service-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        background: var(--c-surface);
+        border-bottom: 1px solid var(--c-border);
+    }
+
+    .service-title {
+        font-weight: 600;
+    }
+
+    .remove-btn {
+        background: #ef4444;
+        color: white;
+        border: none;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+    .service-form {
+        padding: 1rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-group label {
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    .form-group input {
+        padding: 0.6rem;
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        font-size: 0.9rem;
+    }
+
+    .compose-options {
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: var(--c-background);
+        border-radius: var(--radius-md);
+    }
+
+    .compose-options h3 {
+        margin: 0 0 1rem;
+    }
+
+    .options-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+    }
+
+    .primary-btn {
+        width: 100%;
+        padding: 1rem;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius-md);
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .output-section {
+        margin-top: 1.5rem;
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+    }
+
+    .output-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        background: var(--c-background);
+        border-bottom: 1px solid var(--c-border);
+        font-weight: 600;
+    }
+
+    .copy-btn {
+        padding: 0.5rem 1rem;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+    }
+
+    #output {
+        margin: 0;
+        padding: 1rem;
+        background: #1e1e1e;
+        color: #9cdcfe;
+        font-family: monospace;
+        font-size: 0.85rem;
+        line-height: 1.6;
+        overflow-x: auto;
+        white-space: pre;
+        min-height: 300px;
+        direction: ltr;
+        text-align: left;
+    }
+
+    @media (max-width: 640px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

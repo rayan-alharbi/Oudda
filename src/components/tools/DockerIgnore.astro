@@ -1,0 +1,444 @@
+---
+
+---
+
+<div class="tool-container">
+    <h1>🙈 مولد .dockerignore</h1>
+    <p class="tool-description">
+        أنشئ ملف .dockerignore لتجاهل الملفات غير الضرورية
+    </p>
+
+    <div class="presets-section">
+        <h3>اختر نوع المشروع</h3>
+        <div class="presets-grid">
+            <button class="preset-btn active" data-preset="node">
+                <span class="preset-icon">💚</span>
+                <span>Node.js</span>
+            </button>
+            <button class="preset-btn" data-preset="python">
+                <span class="preset-icon">🐍</span>
+                <span>Python</span>
+            </button>
+            <button class="preset-btn" data-preset="go">
+                <span class="preset-icon">🐹</span>
+                <span>Go</span>
+            </button>
+            <button class="preset-btn" data-preset="rust">
+                <span class="preset-icon">🦀</span>
+                <span>Rust</span>
+            </button>
+            <button class="preset-btn" data-preset="java">
+                <span class="preset-icon">☕</span>
+                <span>Java</span>
+            </button>
+            <button class="preset-btn" data-preset="php">
+                <span class="preset-icon">🐘</span>
+                <span>PHP</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="extras-section">
+        <h3>ملفات إضافية للتجاهل</h3>
+        <div class="extras-grid">
+            <label class="checkbox-label">
+                <input
+                    type="checkbox"
+                    class="extra-check"
+                    data-extra="git"
+                    checked
+                />
+                <span>Git files</span>
+            </label>
+            <label class="checkbox-label">
+                <input
+                    type="checkbox"
+                    class="extra-check"
+                    data-extra="ide"
+                    checked
+                />
+                <span>IDE files</span>
+            </label>
+            <label class="checkbox-label">
+                <input
+                    type="checkbox"
+                    class="extra-check"
+                    data-extra="docker"
+                    checked
+                />
+                <span>Docker files</span>
+            </label>
+            <label class="checkbox-label">
+                <input
+                    type="checkbox"
+                    class="extra-check"
+                    data-extra="logs"
+                    checked
+                />
+                <span>Logs</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" class="extra-check" data-extra="tests" />
+                <span>Test files</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" class="extra-check" data-extra="docs" />
+                <span>Documentation</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="custom-section">
+        <h3>إضافات مخصصة (سطر لكل نمط)</h3>
+        <textarea
+            id="customPatterns"
+            rows="3"
+            placeholder="secrets/
+*.backup
+temp/"></textarea>
+    </div>
+
+    <button id="generateBtn" class="primary-btn">🚀 توليد .dockerignore</button>
+
+    <div class="output-section">
+        <div class="output-header">
+            <span>.dockerignore</span>
+            <button id="copyBtn" class="copy-btn">📋 نسخ</button>
+        </div>
+        <pre id="output"></pre>
+    </div>
+</div>
+
+<script>
+    const presets: Record<string, string[]> = {
+        node: [
+            "# Dependencies",
+            "node_modules/",
+            "npm-debug.log*",
+            "yarn-debug.log*",
+            "yarn-error.log*",
+            "package-lock.json",
+            "yarn.lock",
+            "",
+            "# Build outputs",
+            "dist/",
+            "build/",
+            ".next/",
+            ".nuxt/",
+            "",
+            "# Environment",
+            ".env",
+            ".env.local",
+            ".env.*.local",
+        ],
+        python: [
+            "# Python",
+            "__pycache__/",
+            "*.py[cod]",
+            "*$py.class",
+            "*.so",
+            ".Python",
+            "venv/",
+            ".venv/",
+            "env/",
+            ".env/",
+            "pip-log.txt",
+            "",
+            "# Distribution",
+            "dist/",
+            "build/",
+            "*.egg-info/",
+            ".eggs/",
+        ],
+        go: [
+            "# Go",
+            "*.exe",
+            "*.exe~",
+            "*.dll",
+            "*.so",
+            "*.dylib",
+            "*.test",
+            "*.out",
+            "vendor/",
+            "go.work",
+        ],
+        rust: ["# Rust", "target/", "*.rs.bk", "Cargo.lock"],
+        java: [
+            "# Java",
+            "*.class",
+            "*.jar",
+            "*.war",
+            "*.ear",
+            "target/",
+            ".gradle/",
+            "build/",
+            ".m2/",
+        ],
+        php: [
+            "# PHP",
+            "vendor/",
+            "composer.lock",
+            "*.cache",
+            ".phpunit.result.cache",
+        ],
+    };
+
+    const extras: Record<string, string[]> = {
+        git: ["# Git", ".git/", ".gitignore", ".gitattributes"],
+        ide: [
+            "# IDE",
+            ".idea/",
+            ".vscode/",
+            "*.swp",
+            "*.swo",
+            ".DS_Store",
+            "Thumbs.db",
+        ],
+        docker: [
+            "# Docker",
+            "Dockerfile*",
+            "docker-compose*.yml",
+            ".dockerignore",
+        ],
+        logs: ["# Logs", "*.log", "logs/"],
+        tests: [
+            "# Tests",
+            "test/",
+            "tests/",
+            "__tests__/",
+            "*.test.*",
+            "*.spec.*",
+            "coverage/",
+            ".nyc_output/",
+        ],
+        docs: [
+            "# Documentation",
+            "docs/",
+            "README.md",
+            "CHANGELOG.md",
+            "LICENSE",
+        ],
+    };
+
+    let currentPreset = "node";
+
+    const presetBtns = document.querySelectorAll(
+        ".preset-btn",
+    ) as NodeListOf<HTMLButtonElement>;
+    const extraChecks = document.querySelectorAll(
+        ".extra-check",
+    ) as NodeListOf<HTMLInputElement>;
+    const customPatterns = document.getElementById(
+        "customPatterns",
+    ) as HTMLTextAreaElement;
+    const generateBtn = document.getElementById(
+        "generateBtn",
+    ) as HTMLButtonElement;
+    const copyBtn = document.getElementById("copyBtn") as HTMLButtonElement;
+    const output = document.getElementById("output") as HTMLPreElement;
+
+    function generate() {
+        let result: string[] = [];
+
+        // Add preset
+        result.push(`# ===== ${currentPreset.toUpperCase()} Project =====`);
+        result.push("");
+        result = result.concat(presets[currentPreset] || []);
+        result.push("");
+
+        // Add extras
+        extraChecks.forEach((check) => {
+            if (check.checked) {
+                const extraKey = check.dataset.extra || "";
+                if (extras[extraKey]) {
+                    result = result.concat(extras[extraKey]);
+                    result.push("");
+                }
+            }
+        });
+
+        // Add custom patterns
+        const custom = customPatterns.value.trim();
+        if (custom) {
+            result.push("# Custom");
+            custom.split("\n").forEach((line) => {
+                if (line.trim()) result.push(line.trim());
+            });
+        }
+
+        output.textContent = result.join("\n");
+    }
+
+    // Preset selection
+    presetBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            presetBtns.forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+            currentPreset = btn.dataset.preset || "node";
+            generate();
+        });
+    });
+
+    // Extra checkboxes
+    extraChecks.forEach((check) => {
+        check.addEventListener("change", generate);
+    });
+
+    // Generate button
+    generateBtn.addEventListener("click", generate);
+
+    // Copy button
+    copyBtn.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(output.textContent || "");
+        copyBtn.textContent = "✅ تم!";
+        setTimeout(() => (copyBtn.textContent = "📋 نسخ"), 2000);
+    });
+
+    // Initial generation
+    generate();
+</script>
+
+<style>
+    .tool-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .tool-description {
+        text-align: center;
+        color: var(--c-text-muted);
+        margin-bottom: 2rem;
+    }
+
+    h3 {
+        margin: 0 0 1rem;
+        font-size: 1rem;
+    }
+
+    .presets-section,
+    .extras-section,
+    .custom-section {
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: var(--c-background);
+        border-radius: var(--radius-md);
+    }
+
+    .presets-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 0.75rem;
+    }
+
+    .preset-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        background: var(--c-surface);
+        border: 2px solid var(--c-border);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .preset-btn:hover {
+        border-color: var(--c-primary);
+    }
+
+    .preset-btn.active {
+        border-color: var(--c-primary);
+        background: rgba(37, 99, 235, 0.1);
+    }
+
+    .preset-icon {
+        font-size: 1.5rem;
+    }
+
+    .extras-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 0.75rem;
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+    }
+
+    .checkbox-label input {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--c-primary);
+    }
+
+    #customPatterns {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        font-family: monospace;
+        resize: vertical;
+    }
+
+    .primary-btn {
+        width: 100%;
+        padding: 1rem;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius-md);
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .output-section {
+        margin-top: 1.5rem;
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+    }
+
+    .output-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        background: var(--c-background);
+        border-bottom: 1px solid var(--c-border);
+        font-weight: 600;
+    }
+
+    .copy-btn {
+        padding: 0.5rem 1rem;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+    }
+
+    #output {
+        margin: 0;
+        padding: 1rem;
+        background: #1e1e1e;
+        color: #98c379;
+        font-family: monospace;
+        font-size: 0.85rem;
+        line-height: 1.6;
+        overflow-x: auto;
+        white-space: pre;
+        min-height: 250px;
+        direction: ltr;
+        text-align: left;
+    }
+</style>

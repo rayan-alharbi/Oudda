@@ -12,12 +12,61 @@ import { tools } from "../config/tools";
 				مجموعة متكاملة من الأدوات الذكية لتحويل الوحدات، التواريخ،
 				والمزيد.
 			</p>
+
+			<!-- Smart Search Component -->
+			<div class="search-wrapper">
+				<div class="search-box">
+					<Icon name="material-symbols:search" class="search-icon" />
+					<input
+						type="text"
+						id="toolSearch"
+						placeholder="ابحث عن أداة... (مثل: JSON، تحويل، ألوان)"
+						autocomplete="off"
+					/>
+					<button
+						id="clearSearch"
+						class="clear-btn"
+						aria-label="مسح البحث"
+					>
+						<Icon name="material-symbols:close" />
+					</button>
+				</div>
+				<div class="search-meta">
+					<span id="resultsCount" class="results-count"></span>
+					<div class="search-tips">
+						<span class="tip-label">اقتراحات:</span>
+						<button class="tip-btn" data-search="json">JSON</button>
+						<button class="tip-btn" data-search="ألوان"
+							>ألوان</button
+						>
+						<button class="tip-btn" data-search="تحويل"
+							>تحويل</button
+						>
+						<button class="tip-btn" data-search="حاسبة"
+							>حاسبة</button
+						>
+					</div>
+				</div>
+			</div>
 		</div>
 
-		<div class="tools-grid">
+		<!-- No Results Message -->
+		<div id="noResults" class="no-results" hidden>
+			<Icon name="material-symbols:search-off" size={64} />
+			<h3>لا توجد نتائج</h3>
+			<p>جرّب كلمات أخرى أو تصفح الأدوات المتاحة</p>
+		</div>
+
+		<div class="tools-grid" id="toolsGrid">
 			{
 				tools.map((tool) => (
-					<a href={`/tool/${tool.id}`} class="tool-card">
+					<a
+						href={`/tool/${tool.id}`}
+						class="tool-card"
+						data-title={tool.title}
+						data-description={tool.description}
+						data-id={tool.id}
+					>
 						<div class="card-icon">
 							<Icon
 								name={`material-symbols:${tool.icon}`}
@@ -32,6 +81,191 @@ import { tools } from "../config/tools";
 		</div>
 	</div>
 </Layout>
+
+<script>
+	// Smart Search Implementation
+	const searchInput = document.getElementById(
+		"toolSearch",
+	) as HTMLInputElement;
+	const clearBtn = document.getElementById(
+		"clearSearch",
+	) as HTMLButtonElement;
+	const resultsCount = document.getElementById(
+		"resultsCount",
+	) as HTMLSpanElement;
+	const noResults = document.getElementById("noResults") as HTMLDivElement;
+	const toolsGrid = document.getElementById("toolsGrid") as HTMLDivElement;
+	const toolCards = document.querySelectorAll(
+		".tool-card",
+	) as NodeListOf<HTMLAnchorElement>;
+	const tipButtons = document.querySelectorAll(
+		".tip-btn",
+	) as NodeListOf<HTMLButtonElement>;
+
+	// Normalize Arabic text for better search
+	function normalizeArabic(text: string): string {
+		return text
+			.toLowerCase()
+			.replace(/[أإآا]/g, "ا")
+			.replace(/ة/g, "ه")
+			.replace(/ى/g, "ي")
+			.replace(/ئ/g, "ي")
+			.replace(/ء/g, "")
+			.trim();
+	}
+
+	// Fuzzy match function - checks if search terms exist in text
+	function fuzzyMatch(text: string, search: string): boolean {
+		const normalizedText = normalizeArabic(text);
+		const normalizedSearch = normalizeArabic(search);
+
+		// Split search into words for multi-word search
+		const searchWords = normalizedSearch
+			.split(/\s+/)
+			.filter((w) => w.length > 0);
+
+		// All words must be found somewhere in the text
+		return searchWords.every((word) => normalizedText.includes(word));
+	}
+
+	// Calculate match score for sorting results
+	function getMatchScore(
+		title: string,
+		description: string,
+		search: string,
+	): number {
+		const normalizedTitle = normalizeArabic(title);
+		const normalizedDesc = normalizeArabic(description);
+		const normalizedSearch = normalizeArabic(search);
+
+		let score = 0;
+
+		// Exact match in title = highest score
+		if (normalizedTitle === normalizedSearch) score += 100;
+		// Title starts with search
+		else if (normalizedTitle.startsWith(normalizedSearch)) score += 50;
+		// Title contains search
+		else if (normalizedTitle.includes(normalizedSearch)) score += 30;
+
+		// Description contains search
+		if (normalizedDesc.includes(normalizedSearch)) score += 10;
+
+		return score;
+	}
+
+	// Perform search
+	function performSearch(query: string) {
+		const trimmedQuery = query.trim();
+
+		// Show/hide clear button
+		clearBtn.style.display = trimmedQuery ? "flex" : "none";
+
+		if (!trimmedQuery) {
+			// Show all cards
+			toolCards.forEach((card) => {
+				card.style.display = "";
+				card.style.order = "0";
+			});
+			resultsCount.textContent = "";
+			noResults.hidden = true;
+			toolsGrid.style.display = "";
+			return;
+		}
+
+		let visibleCount = 0;
+		const results: { card: HTMLAnchorElement; score: number }[] = [];
+
+		toolCards.forEach((card) => {
+			const title = card.dataset.title || "";
+			const description = card.dataset.description || "";
+			const id = card.dataset.id || "";
+
+			const searchableText = `${title} ${description} ${id}`;
+
+			if (fuzzyMatch(searchableText, trimmedQuery)) {
+				const score = getMatchScore(title, description, trimmedQuery);
+				results.push({ card, score });
+				visibleCount++;
+			} else {
+				card.style.display = "none";
+			}
+		});
+
+		// Sort by score and apply order
+		results.sort((a, b) => b.score - a.score);
+		results.forEach((result, index) => {
+			result.card.style.display = "";
+			result.card.style.order = String(index);
+		});
+
+		// Update UI
+		if (visibleCount === 0) {
+			noResults.hidden = false;
+			toolsGrid.style.display = "none";
+			resultsCount.textContent = "";
+		} else {
+			noResults.hidden = true;
+			toolsGrid.style.display = "";
+			resultsCount.textContent = `${visibleCount} أداة`;
+		}
+	}
+
+	// Debounce function for performance
+	function debounce(func: Function, wait: number) {
+		let timeout: number;
+		return function executedFunction(...args: any[]) {
+			clearTimeout(timeout);
+			timeout = setTimeout(
+				() => func(...args),
+				wait,
+			) as unknown as number;
+		};
+	}
+
+	// Event listeners
+	const debouncedSearch = debounce(
+		(value: string) => performSearch(value),
+		150,
+	);
+
+	searchInput.addEventListener("input", (e) => {
+		debouncedSearch((e.target as HTMLInputElement).value);
+	});
+
+	clearBtn.addEventListener("click", () => {
+		searchInput.value = "";
+		performSearch("");
+		searchInput.focus();
+	});
+
+	// Keyboard shortcut: Ctrl/Cmd + K to focus search
+	document.addEventListener("keydown", (e) => {
+		if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+			e.preventDefault();
+			searchInput.focus();
+			searchInput.select();
+		}
+		// Escape to clear search
+		if (e.key === "Escape" && document.activeElement === searchInput) {
+			searchInput.value = "";
+			performSearch("");
+			searchInput.blur();
+		}
+	});
+
+	// Tip buttons
+	tipButtons.forEach((btn) => {
+		btn.addEventListener("click", () => {
+			const searchTerm = btn.dataset.search || "";
+			searchInput.value = searchTerm;
+			performSearch(searchTerm);
+			searchInput.focus();
+		});
+	});
+
+	// Initialize clear button state
+	clearBtn.style.display = "none";
+</script>
 
 <style>
 	.hero {
@@ -49,8 +283,132 @@ import { tools } from "../config/tools";
 	.hero p {
 		font-size: 1.125rem;
 		color: var(--c-text-muted);
+		margin-bottom: var(--space-lg);
 	}
 
+	/* Search Styles */
+	.search-wrapper {
+		max-width: 600px;
+		margin: 0 auto;
+	}
+
+	.search-box {
+		position: relative;
+		display: flex;
+		align-items: center;
+		background: var(--c-surface);
+		border: 2px solid var(--c-border);
+		border-radius: 50px;
+		padding: 0.75rem 1.5rem;
+		transition: all 0.3s ease;
+		box-shadow: var(--shadow-sm);
+	}
+
+	.search-box:focus-within {
+		border-color: var(--c-primary);
+		box-shadow:
+			0 0 0 4px rgba(37, 99, 235, 0.1),
+			var(--shadow-md);
+	}
+
+	.search-box .search-icon {
+		color: var(--c-text-muted);
+		font-size: 1.5rem;
+		margin-left: 0.75rem;
+		flex-shrink: 0;
+	}
+
+	.search-box input {
+		flex: 1;
+		border: none;
+		outline: none;
+		background: transparent;
+		font-size: 1rem;
+		color: var(--c-text-main);
+		min-width: 0;
+	}
+
+	.search-box input::placeholder {
+		color: var(--c-text-muted);
+	}
+
+	.clear-btn {
+		background: var(--c-background);
+		border: none;
+		width: 32px;
+		height: 32px;
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		color: var(--c-text-muted);
+		transition: all 0.2s;
+		flex-shrink: 0;
+	}
+
+	.clear-btn:hover {
+		background: var(--c-primary);
+		color: white;
+	}
+
+	.search-meta {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-top: var(--space-sm);
+		flex-wrap: wrap;
+		gap: var(--space-xs);
+	}
+
+	.results-count {
+		font-size: 0.875rem;
+		color: var(--c-primary);
+		font-weight: 500;
+	}
+
+	.search-tips {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		flex-wrap: wrap;
+	}
+
+	.tip-label {
+		font-size: 0.8rem;
+		color: var(--c-text-muted);
+	}
+
+	.tip-btn {
+		background: var(--c-background);
+		border: 1px solid var(--c-border);
+		padding: 0.25rem 0.75rem;
+		border-radius: 20px;
+		font-size: 0.8rem;
+		cursor: pointer;
+		transition: all 0.2s;
+		color: var(--c-text-main);
+	}
+
+	.tip-btn:hover {
+		background: var(--c-primary);
+		color: white;
+		border-color: var(--c-primary);
+	}
+
+	/* No Results */
+	.no-results {
+		text-align: center;
+		padding: var(--space-xl);
+		color: var(--c-text-muted);
+	}
+
+	.no-results h3 {
+		margin: var(--space-md) 0 var(--space-xs);
+		color: var(--c-text-main);
+	}
+
+	/* Tools Grid */
 	.tools-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -64,7 +422,8 @@ import { tools } from "../config/tools";
 		border: 1px solid var(--c-border);
 		transition:
 			transform 0.2s,
-			box-shadow 0.2s;
+			box-shadow 0.2s,
+			opacity 0.2s;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -98,5 +457,40 @@ import { tools } from "../config/tools";
 	.tool-card p {
 		font-size: 0.875rem;
 		color: var(--c-text-muted);
+	}
+
+	/* Animations */
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.tool-card {
+		animation: fadeIn 0.3s ease-out;
+	}
+
+	/* Responsive */
+	@media (max-width: 640px) {
+		.hero h1 {
+			font-size: 1.75rem;
+		}
+
+		.search-box {
+			padding: 0.5rem 1rem;
+		}
+
+		.search-tips {
+			justify-content: center;
+		}
+
+		.search-meta {
+			justify-content: center;
+		}
 	}
 </style>

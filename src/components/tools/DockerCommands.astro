@@ -1,0 +1,298 @@
+---
+
+---
+
+<div class="tool-container">
+    <h1>📖 مرجع أوامر Docker</h1>
+    <p class="tool-description">دليل سريع لأوامر Docker</p>
+
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="🔍 ابحث عن أمر..." />
+    </div>
+
+    <div class="categories">
+        <button class="category-btn active" data-category="all">الكل</button>
+        <button class="category-btn" data-category="images">Images</button>
+        <button class="category-btn" data-category="containers"
+            >Containers</button
+        >
+        <button class="category-btn" data-category="compose">Compose</button>
+        <button class="category-btn" data-category="system">System</button>
+    </div>
+
+    <div id="commandsList" class="commands-list"></div>
+</div>
+
+<script>
+    const commands = [
+        {
+            category: "images",
+            command: "docker images",
+            description: "عرض الصور",
+            example: "docker images -a",
+        },
+        {
+            category: "images",
+            command: "docker pull <image>",
+            description: "تحميل صورة",
+            example: "docker pull nginx:alpine",
+        },
+        {
+            category: "images",
+            command: "docker build -t <name> .",
+            description: "بناء صورة",
+            example: "docker build -t app:v1 .",
+        },
+        {
+            category: "images",
+            command: "docker push <image>",
+            description: "رفع صورة",
+            example: "docker push user/app:v1",
+        },
+        {
+            category: "images",
+            command: "docker rmi <image>",
+            description: "حذف صورة",
+            example: "docker rmi nginx",
+        },
+        {
+            category: "containers",
+            command: "docker ps",
+            description: "عرض الحاويات",
+            example: "docker ps -a",
+        },
+        {
+            category: "containers",
+            command: "docker run <image>",
+            description: "تشغيل حاوية",
+            example: "docker run -d -p 8080:80 nginx",
+        },
+        {
+            category: "containers",
+            command: "docker stop <container>",
+            description: "إيقاف حاوية",
+            example: "docker stop app",
+        },
+        {
+            category: "containers",
+            command: "docker rm <container>",
+            description: "حذف حاوية",
+            example: "docker rm -f app",
+        },
+        {
+            category: "containers",
+            command: "docker logs <container>",
+            description: "عرض السجلات",
+            example: "docker logs -f app",
+        },
+        {
+            category: "containers",
+            command: "docker exec -it <c> <cmd>",
+            description: "تنفيذ أمر",
+            example: "docker exec -it app sh",
+        },
+        {
+            category: "compose",
+            command: "docker compose up",
+            description: "تشغيل الخدمات",
+            example: "docker compose up -d",
+        },
+        {
+            category: "compose",
+            command: "docker compose down",
+            description: "إيقاف الخدمات",
+            example: "docker compose down -v",
+        },
+        {
+            category: "compose",
+            command: "docker compose logs",
+            description: "عرض السجلات",
+            example: "docker compose logs -f",
+        },
+        {
+            category: "compose",
+            command: "docker compose build",
+            description: "بناء الصور",
+            example: "docker compose build",
+        },
+        {
+            category: "system",
+            command: "docker system prune",
+            description: "تنظيف الموارد",
+            example: "docker system prune -af",
+        },
+        {
+            category: "system",
+            command: "docker system df",
+            description: "استخدام القرص",
+            example: "docker system df",
+        },
+        {
+            category: "system",
+            command: "docker info",
+            description: "معلومات Docker",
+            example: "docker info",
+        },
+    ];
+
+    let currentCategory = "all";
+    let searchQuery = "";
+
+    const searchInput = document.getElementById(
+        "searchInput",
+    ) as HTMLInputElement;
+    const categoryBtns = document.querySelectorAll(
+        ".category-btn",
+    ) as NodeListOf<HTMLButtonElement>;
+    const commandsList = document.getElementById(
+        "commandsList",
+    ) as HTMLDivElement;
+
+    function renderCommands() {
+        const filtered = commands.filter((cmd) => {
+            const matchCat =
+                currentCategory === "all" || cmd.category === currentCategory;
+            const matchSearch =
+                !searchQuery ||
+                cmd.command.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                cmd.description.includes(searchQuery);
+            return matchCat && matchSearch;
+        });
+
+        commandsList.innerHTML = filtered
+            .map(
+                (cmd) => `
+            <div class="command-card">
+                <div class="command-main">
+                    <code>${cmd.command}</code>
+                    <button class="copy-btn" data-cmd="${cmd.example}">📋</button>
+                </div>
+                <p>${cmd.description}</p>
+                <div class="example"><code>${cmd.example}</code></div>
+            </div>
+        `,
+            )
+            .join("");
+
+        document.querySelectorAll(".copy-btn").forEach((btn) => {
+            btn.addEventListener("click", async () => {
+                await navigator.clipboard.writeText(
+                    (btn as HTMLButtonElement).dataset.cmd || "",
+                );
+                btn.textContent = "✅";
+                setTimeout(() => (btn.textContent = "📋"), 1500);
+            });
+        });
+    }
+
+    categoryBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            categoryBtns.forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+            currentCategory = btn.dataset.category || "all";
+            renderCommands();
+        });
+    });
+
+    searchInput.addEventListener("input", (e) => {
+        searchQuery = (e.target as HTMLInputElement).value;
+        renderCommands();
+    });
+
+    renderCommands();
+</script>
+
+<style>
+    .tool-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    h1 {
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+    .tool-description {
+        text-align: center;
+        color: var(--c-text-muted);
+        margin-bottom: 1.5rem;
+    }
+    .search-box {
+        margin-bottom: 1rem;
+    }
+    .search-box input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid var(--c-border);
+        border-radius: 50px;
+        font-size: 1rem;
+    }
+    .search-box input:focus {
+        outline: none;
+        border-color: var(--c-primary);
+    }
+    .categories {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .category-btn {
+        padding: 0.5rem 1rem;
+        background: var(--c-background);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+    }
+    .category-btn.active {
+        background: var(--c-primary);
+        color: white;
+        border-color: var(--c-primary);
+    }
+    .commands-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    .command-card {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        padding: 1rem;
+    }
+    .command-main {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+    .command-main code {
+        background: #1e1e1e;
+        color: #e6db74;
+        padding: 0.5rem 0.75rem;
+        border-radius: var(--radius-md);
+        font-size: 0.9rem;
+        direction: ltr;
+    }
+    .copy-btn {
+        background: none;
+        border: none;
+        font-size: 1.25rem;
+        cursor: pointer;
+    }
+    .command-card p {
+        margin: 0;
+        color: var(--c-text-muted);
+        font-size: 0.9rem;
+    }
+    .example {
+        margin-top: 0.5rem;
+        direction: ltr;
+    }
+    .example code {
+        background: var(--c-background);
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        color: var(--c-primary);
+        font-size: 0.85rem;
+    }
+</style>

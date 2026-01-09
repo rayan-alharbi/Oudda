@@ -125,7 +125,11 @@ import RsaGenerator from '../components/tools/RsaGenerator.astro';
 import ImageResizer from '../components/tools/ImageResizer.astro';
 import ContrastChecker from '../components/tools/ContrastChecker.astro';
 import ImageCompressor from '../components/tools/ImageCompressor.astro';
-import ZodiacSignCalculator from '../components/tools/ZodiacSignCalculator.astro';
+import DockerfileGenerator from '../components/tools/DockerfileGenerator.astro';
+import DockerCompose from '../components/tools/DockerCompose.astro';
+import DockerIgnore from '../components/tools/DockerIgnore.astro';
+import DockerCommands from '../components/tools/DockerCommands.astro';
+import DockerPortMapper from '../components/tools/DockerPortMapper.astro';
 import QrCodeReader from '../components/tools/QrCodeReader.astro';
 import SoundFrequencyGenerator from '../components/tools/SoundFrequencyGenerator.astro';
 import TypingSpeedTest from '../components/tools/TypingSpeedTest.astro';
@@ -327,7 +331,11 @@ export const tools: ToolConfig[] = [
 
     // -- Misc --
     { id: 'qr-read', title: 'قارئ QR', description: 'فحص الصور.', icon: 'qr-code-scanner', component: QrCodeReader },
-    { id: 'zodiac', title: 'الأبراج', description: 'حسب التاريخ.', icon: 'stars', component: ZodiacSignCalculator },
+    { id: 'dockerfile-gen', title: 'Dockerfile', description: 'مولد Dockerfile.', icon: 'deployed-code', component: DockerfileGenerator },
+    { id: 'docker-compose', title: 'Docker Compose', description: 'مولد docker-compose.', icon: 'stacks', component: DockerCompose },
+    { id: 'dockerignore', title: 'Dockerignore', description: 'مولد .dockerignore.', icon: 'visibility-off', component: DockerIgnore },
+    { id: 'docker-cmd', title: 'أوامر Docker', description: 'مرجع الأوامر.', icon: 'terminal', component: DockerCommands },
+    { id: 'docker-ports', title: 'منافذ Docker', description: 'Port Mapping.', icon: 'hub', component: DockerPortMapper },
     { id: 'sound-gen', title: 'مولد نغمات', description: 'Frequency.', icon: 'graphic-eq', component: SoundFrequencyGenerator },
     { id: 'typing-test', title: 'سرعة الكتابة', description: 'WPM Test.', icon: 'keyboard', component: TypingSpeedTest },
     { id: 'wheel', title: 'عجلة الحظ', description: 'اتخاذ قرار.', icon: 'sync', component: DecisionWheel },

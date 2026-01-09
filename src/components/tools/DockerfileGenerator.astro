@@ -1,0 +1,378 @@
+---
+
+---
+
+<div class="tool-container">
+    <h1>🐳 مولد Dockerfile</h1>
+    <p class="tool-description">أنشئ Dockerfile احترافي لمشروعك بخطوات سهلة</p>
+
+    <div class="form-grid">
+        <div class="form-group">
+            <label for="baseImage">الصورة الأساسية</label>
+            <select id="baseImage">
+                <option value="node:20-alpine">Node.js 20 (Alpine)</option>
+                <option value="node:20-slim">Node.js 20 (Slim)</option>
+                <option value="python:3.12-alpine">Python 3.12 (Alpine)</option>
+                <option value="python:3.12-slim">Python 3.12 (Slim)</option>
+                <option value="golang:1.22-alpine">Go 1.22 (Alpine)</option>
+                <option value="rust:1.75-alpine">Rust 1.75 (Alpine)</option>
+                <option value="php:8.3-fpm-alpine">PHP 8.3 FPM (Alpine)</option>
+                <option value="nginx:alpine">Nginx (Alpine)</option>
+                <option value="ubuntu:24.04">Ubuntu 24.04</option>
+                <option value="debian:bookworm-slim"
+                    >Debian Bookworm (Slim)</option
+                >
+                <option value="alpine:3.19">Alpine 3.19</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="workdir">مجلد العمل</label>
+            <input type="text" id="workdir" value="/app" placeholder="/app" />
+        </div>
+
+        <div class="form-group">
+            <label for="port">المنفذ</label>
+            <input type="number" id="port" value="3000" placeholder="3000" />
+        </div>
+
+        <div class="form-group">
+            <label for="envVars">متغيرات البيئة (سطر لكل متغير)</label>
+            <textarea
+                id="envVars"
+                rows="3"
+                placeholder="NODE_ENV=production
+PORT=3000"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="copyFiles">ملفات للنسخ</label>
+            <input
+                type="text"
+                id="copyFiles"
+                value="."
+                placeholder=". أو package*.json"
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="runCommand">أمر التثبيت</label>
+            <input
+                type="text"
+                id="runCommand"
+                value="npm ci --only=production"
+                placeholder="npm install"
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="startCommand">أمر التشغيل</label>
+            <input
+                type="text"
+                id="startCommand"
+                value="node server.js"
+                placeholder="npm start"
+            />
+        </div>
+    </div>
+
+    <div class="options-row">
+        <label class="checkbox-label">
+            <input type="checkbox" id="multiStage" checked />
+            <span>Multi-stage Build</span>
+        </label>
+        <label class="checkbox-label">
+            <input type="checkbox" id="nonRoot" checked />
+            <span>مستخدم غير root</span>
+        </label>
+        <label class="checkbox-label">
+            <input type="checkbox" id="healthCheck" />
+            <span>Health Check</span>
+        </label>
+    </div>
+
+    <button id="generateBtn" class="primary-btn">🚀 توليد Dockerfile</button>
+
+    <div class="output-section">
+        <div class="output-header">
+            <span>Dockerfile</span>
+            <button id="copyBtn" class="copy-btn">📋 نسخ</button>
+        </div>
+        <pre id="output"></pre>
+    </div>
+</div>
+
+<script>
+    const baseImage = document.getElementById("baseImage") as HTMLSelectElement;
+    const workdir = document.getElementById("workdir") as HTMLInputElement;
+    const port = document.getElementById("port") as HTMLInputElement;
+    const envVars = document.getElementById("envVars") as HTMLTextAreaElement;
+    const copyFiles = document.getElementById("copyFiles") as HTMLInputElement;
+    const runCommand = document.getElementById(
+        "runCommand",
+    ) as HTMLInputElement;
+    const startCommand = document.getElementById(
+        "startCommand",
+    ) as HTMLInputElement;
+    const multiStage = document.getElementById(
+        "multiStage",
+    ) as HTMLInputElement;
+    const nonRoot = document.getElementById("nonRoot") as HTMLInputElement;
+    const healthCheck = document.getElementById(
+        "healthCheck",
+    ) as HTMLInputElement;
+    const generateBtn = document.getElementById(
+        "generateBtn",
+    ) as HTMLButtonElement;
+    const copyBtn = document.getElementById("copyBtn") as HTMLButtonElement;
+    const output = document.getElementById("output") as HTMLPreElement;
+
+    function generate() {
+        const base = baseImage.value;
+        const isNodeBased = base.includes("node");
+        const isPythonBased = base.includes("python");
+
+        let dockerfile = "";
+
+        // Multi-stage build
+        if (multiStage.checked && (isNodeBased || isPythonBased)) {
+            dockerfile += `# ======== Build Stage ========\n`;
+            dockerfile += `FROM ${base} AS builder\n\n`;
+            dockerfile += `WORKDIR ${workdir.value}\n\n`;
+
+            if (isNodeBased) {
+                dockerfile += `# Install dependencies\n`;
+                dockerfile += `COPY package*.json ./\n`;
+                dockerfile += `RUN npm ci\n\n`;
+                dockerfile += `# Copy source and build\n`;
+                dockerfile += `COPY . .\n`;
+                dockerfile += `RUN npm run build\n\n`;
+            } else if (isPythonBased) {
+                dockerfile += `COPY requirements.txt ./\n`;
+                dockerfile += `RUN pip install --no-cache-dir -r requirements.txt\n\n`;
+                dockerfile += `COPY . .\n\n`;
+            }
+
+            dockerfile += `# ======== Production Stage ========\n`;
+        }
+
+        dockerfile += `FROM ${base}\n\n`;
+
+        // Labels
+        dockerfile += `LABEL maintainer="your-email@example.com"\n`;
+        dockerfile += `LABEL version="1.0"\n\n`;
+
+        // Environment variables
+        const envLines = envVars.value
+            .trim()
+            .split("\n")
+            .filter((l) => l.trim());
+        if (envLines.length > 0) {
+            dockerfile += `# Environment variables\n`;
+            envLines.forEach((env) => {
+                if (env.includes("=")) {
+                    dockerfile += `ENV ${env}\n`;
+                }
+            });
+            dockerfile += "\n";
+        }
+
+        // Workdir
+        dockerfile += `WORKDIR ${workdir.value}\n\n`;
+
+        // Non-root user
+        if (nonRoot.checked) {
+            dockerfile += `# Create non-root user for security\n`;
+            dockerfile += `RUN addgroup -g 1001 -S appgroup && \\\n`;
+            dockerfile += `    adduser -S appuser -u 1001 -G appgroup\n\n`;
+        }
+
+        // Copy files
+        if (multiStage.checked && (isNodeBased || isPythonBased)) {
+            dockerfile += `# Copy from builder\n`;
+            dockerfile += `COPY --from=builder ${workdir.value} .\n\n`;
+        } else {
+            dockerfile += `# Copy application files\n`;
+            dockerfile += `COPY ${copyFiles.value} .\n\n`;
+
+            if (runCommand.value.trim()) {
+                dockerfile += `# Install dependencies\n`;
+                dockerfile += `RUN ${runCommand.value}\n\n`;
+            }
+        }
+
+        // Change ownership and user
+        if (nonRoot.checked) {
+            dockerfile += `# Set ownership and switch to non-root user\n`;
+            dockerfile += `RUN chown -R appuser:appgroup ${workdir.value}\n`;
+            dockerfile += `USER appuser\n\n`;
+        }
+
+        // Expose port
+        if (port.value) {
+            dockerfile += `# Expose port\n`;
+            dockerfile += `EXPOSE ${port.value}\n\n`;
+        }
+
+        // Health check
+        if (healthCheck.checked && port.value) {
+            dockerfile += `# Health check\n`;
+            dockerfile += `HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \\\n`;
+            dockerfile += `    CMD wget --no-verbose --tries=1 --spider http://localhost:${port.value}/health || exit 1\n\n`;
+        }
+
+        // Start command
+        if (startCommand.value.trim()) {
+            const cmdParts = startCommand.value.split(" ");
+            const cmdJson = JSON.stringify(cmdParts);
+            dockerfile += `# Start application\n`;
+            dockerfile += `CMD ${cmdJson}\n`;
+        }
+
+        output.textContent = dockerfile;
+    }
+
+    generateBtn.addEventListener("click", generate);
+
+    copyBtn.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(output.textContent || "");
+        copyBtn.textContent = "✅ تم النسخ!";
+        setTimeout(() => (copyBtn.textContent = "📋 نسخ"), 2000);
+    });
+
+    // Generate on load
+    generate();
+</script>
+
+<style>
+    .tool-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .tool-description {
+        text-align: center;
+        color: var(--c-text-muted);
+        margin-bottom: 2rem;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .form-group label {
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 0.75rem;
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        font-size: 0.95rem;
+        background: var(--c-surface);
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        font-family: monospace;
+    }
+
+    .options-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: var(--c-background);
+        border-radius: var(--radius-md);
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--c-primary);
+    }
+
+    .primary-btn {
+        width: 100%;
+        padding: 1rem;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius-md);
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .primary-btn:hover {
+        background: var(--c-primary-hover);
+    }
+
+    .output-section {
+        margin-top: 1.5rem;
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+    }
+
+    .output-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        background: var(--c-background);
+        border-bottom: 1px solid var(--c-border);
+        font-weight: 600;
+    }
+
+    .copy-btn {
+        padding: 0.5rem 1rem;
+        background: var(--c-primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        font-size: 0.85rem;
+    }
+
+    #output {
+        margin: 0;
+        padding: 1rem;
+        background: #1e1e1e;
+        color: #d4d4d4;
+        font-family: "Fira Code", "Monaco", monospace;
+        font-size: 0.85rem;
+        line-height: 1.6;
+        overflow-x: auto;
+        white-space: pre-wrap;
+        min-height: 300px;
+        direction: ltr;
+        text-align: left;
+    }
+</style>
