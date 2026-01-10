@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  oudda:
+    build: .
+    container_name: oudda_app
+    ports:
+      - "7433:7433"
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
